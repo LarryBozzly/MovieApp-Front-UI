@@ -11,6 +11,14 @@ export class TrendingMoviesComponent extends LitElement {
 
   @property() movies: Movie[] = [];
 
+  private formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
   render() {
     return html`
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
@@ -23,7 +31,7 @@ export class TrendingMoviesComponent extends LitElement {
             >
             <div class="p-4">
               <h3 class="text-lg wrap-break-word font-semibold text-gray-800 mb-2">${movie.title}</h3>
-              <p class="text-sm text-gray-600">${movie.release_date}</p>
+              <p class="text-sm text-gray-600">${this.formatDate(movie.release_date)}</p>
               <div class="mt-2 flex items-center">
                 <span class="text-yellow-500">★</span>
                 <span class="ml-1 text-sm text-gray-600">${movie.vote_average.toFixed(1)}</span>
