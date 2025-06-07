@@ -35,7 +35,7 @@ export class TrendingMoviesComponent extends LitElement {
               <div class="mt-2 flex items-center">
                 <span class="text-yellow-500">★</span>
                 <span class="ml-1 text-sm text-gray-600">${movie.vote_average.toFixed(1)}</span>
-                <span class="ml-1 text-sm text-gray-600">${movie.popularity}</span>
+                <span class="ml-1 text-xs text-gray-600">(${movie.popularity})</span>
               </div>
             </div>
           </div>

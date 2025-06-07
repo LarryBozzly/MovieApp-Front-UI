@@ -27,7 +27,9 @@ export class HomePage extends connect(LitElement, appStore) {
   }
 
   async firstUpdated() {
-    await movieEffects.fetchTrendingMovies(this.$state.page);
+    if (!this.$state.movies.length) {
+      await movieEffects.fetchTrendingMovies(this.$state.page);
+    }
     this.setupInfiniteScroll();
   }
 
