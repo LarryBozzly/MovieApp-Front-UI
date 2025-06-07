@@ -29,15 +29,17 @@ export class NavbarComponent extends LitElement {
     super.connectedCallback();
     window.addEventListener('resize', this.handleResize);
     document.addEventListener('click', this.handleClickOutside);
+    document.addEventListener('touchstart', this.handleClickOutside);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener('resize', this.handleResize);
     document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('touchstart', this.handleClickOutside);
   }
 
-  private handleClickOutside = (event: MouseEvent) => {
+  private handleClickOutside = (event: MouseEvent | TouchEvent) => {
     // Prevent handling if click is inside the component
     if (this.contains(event.target as Node)) {
       return;
