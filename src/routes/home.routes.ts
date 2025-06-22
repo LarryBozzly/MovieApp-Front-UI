@@ -3,5 +3,8 @@ import type { Route } from '@vaadin/router';
 import '../pages/home.page';
 
 export const homeViews: Route[] = [
-    { path: '/', component: 'home-page' },
+    {
+        path: '/',
+        component: 'home-page',
+    },
 ];

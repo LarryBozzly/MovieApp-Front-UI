@@ -23,3 +23,23 @@ export interface Movie {
   vote_average: number;
   vote_count: number;
 }
+
+
+// app
+export interface LoginRequest {
+  email: string;
+  password: string;
+  remember: boolean;
+}
+
+export interface LoginResponse {
+  data: {
+    id: number;
+    email: string;
+  };
+  message: string;
+}
+
+export interface CheckLoginResponse {
+  message: string;
+}

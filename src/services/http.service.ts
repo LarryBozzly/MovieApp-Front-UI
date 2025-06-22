@@ -1,9 +1,7 @@
 class HttpService {
     private baseUrl: string;
-    private apiKey?: string;
 
-    constructor(baseUrl: string, apiKey?: string) {
-        this.apiKey = apiKey;
+    constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
     }
 
@@ -13,6 +11,7 @@ class HttpService {
         const response = await fetch(url, {
             method: 'GET',
             headers: this.getHeaders(),
+            credentials: 'include',
         });
         if (!response.ok) {
             const error = await response.json();
@@ -26,6 +25,7 @@ class HttpService {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: 'POST',
             headers: this.getHeaders(),
+            credentials: 'include',
             body: JSON.stringify(body),
         });
         if (!response.ok) {
@@ -40,6 +40,7 @@ class HttpService {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: 'PUT',
             headers: this.getHeaders(),
+            credentials: 'include',
             body: JSON.stringify(body),
         });
         if (!response.ok) {
@@ -54,6 +55,7 @@ class HttpService {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: 'DELETE',
             headers: this.getHeaders(),
+            credentials: 'include',
         });
         if (!response.ok) {
             const error = await response.json();
@@ -67,12 +69,6 @@ class HttpService {
         const headers: HeadersInit = {
             'Content-Type': 'application/json',
         };
-
-        // Add Authorization header if apiKey is provided
-        if (this.apiKey) {
-            headers['Authorization'] = `Bearer ${this.apiKey}`;
-        }
-
         return headers;
     }
 

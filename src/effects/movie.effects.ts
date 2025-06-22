@@ -3,12 +3,16 @@ import HttpService from '../services/http.service';
 import { tryCatch } from '../utils/try-catch';
 import { env } from '../config';
 import { appStore } from '../store/app-store';
+import AuthService from '../services/auth.service';
+import { Router } from '@vaadin/router';
 
 export class MovieEffects {
     private httpService: HttpService;
+    private authService: AuthService;
 
     constructor() {
-        this.httpService = new HttpService(env.MOVIEDB_API_BASE_URL, env.MOVIEDB_API_KEY);
+        this.authService = new AuthService();
+        this.httpService = new HttpService(env.MOVIEDB_API_BASE_URL);
     }
 
     async fetchTrendingMovies(page: number) {
@@ -21,7 +25,8 @@ export class MovieEffects {
         );
 
         if (error) {
-            console.error('Failed to fetch trending movies:', error);
+            const isAuthorized = await this.authService.isAuthorized();
+            if (!isAuthorized) Router.go('/login');
             return;
         }
 
