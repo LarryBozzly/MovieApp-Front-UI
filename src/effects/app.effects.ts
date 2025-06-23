@@ -29,13 +29,9 @@ export class AppEffects {
     }
 
     async logout() {
-        const { error } = await tryCatch(this.httpService.get('/logout'));
+        await tryCatch(this.httpService.get('/logout'));
 
-        if (error) return;
-        
-        const isAuthorized = await this.authService.isAuthorized();
-        authStore.getState().setAuthorization(isAuthorized)
-
+        authStore.getState().setAuthorization(false)
         Router.go('/login');
     }
 }
