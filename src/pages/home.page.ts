@@ -60,7 +60,7 @@ export class HomePage extends connect(LitElement, appStore) {
 
   render() {
     return html`
-      <trending-movies-component .movies="${this.$state.movies}"></trending-movies-component>
+      <trending-movies-component .isLoading=${this.$state.isLoading} .movies="${this.$state.movies}"></trending-movies-component>
       <div id="sentinel" class="w-full"></div>
     `;
   }

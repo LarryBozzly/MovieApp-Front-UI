@@ -10,6 +10,7 @@ export class TrendingMoviesComponent extends LitElement {
     `;
 
   @property() movies: Movie[] = [];
+  @property() isLoading!: boolean;
 
   private formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -44,6 +45,11 @@ export class TrendingMoviesComponent extends LitElement {
             </div>
           </div>
         `)}
+        ${this.isLoading ? html`
+          <div class="col-span-full flex justify-center items-center min-h-[10vh]">
+            <span class="loading loading-dots w-14 text-primary"></span>
+          </div>
+        ` : ''}
       </div>
     `;
   }

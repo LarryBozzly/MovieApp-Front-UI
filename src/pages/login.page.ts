@@ -49,7 +49,7 @@ export class LoginPage extends connect(LitElement, authStore) {
                 type="submit"
                 class="btn btn-primary w-full"
               >
-                ${this.$state.isLoading ? html`<span class="loading loading-spinner"></span>` : 'Login'}
+                ${this.$state.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
               </button>
             </form>
           </div>

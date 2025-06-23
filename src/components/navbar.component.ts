@@ -23,7 +23,7 @@ export class NavbarComponent extends connect(LitElement, authStore) {
 
   render() {
     return html`
-    <div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+    <div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50">
       <div class="flex-1">
         <a class="btn btn-ghost text-xl">MovieApp</a>
       </div>

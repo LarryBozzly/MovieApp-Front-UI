@@ -18,12 +18,14 @@ export class MovieEffects {
 
     async fetchTrendingMovies(page: number) {
         appStore.getState().setPage(page);
+        appStore.getState().setLoading(true);
 
         const params = { language: 'en-US', page: appStore.getState().page };
 
         const { data, error } = await tryCatch(
             this.httpService.get<TrendingMovieListResponse>('/movie/now_playing', params)
         );
+        appStore.getState().setLoading(false);
 
         if (error) {
             const isAuthorized = await this.authService.isAuthorized();
