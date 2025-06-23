@@ -27,8 +27,8 @@ export class MovieEffects {
 
         if (error) {
             const isAuthorized = await this.authService.isAuthorized();
+            authStore.getState().setAuthorization(isAuthorized);
             if (!isAuthorized) {
-                authStore.getState().setAuthorization(isAuthorized);
                 Router.go('/login')
             }
             return;

@@ -15,23 +15,29 @@ export class AppEffects {
     }
 
     async login(loginData: LoginRequest) {
+        authStore.getState().setLoading(true);
+
         const { error } = await tryCatch(
             this.httpService.post<LoginResponse>('/login', loginData)
         );
         const isAuthorized = await this.authService.isAuthorized();
+        authStore.getState().setAuthorization(isAuthorized);
+        authStore.getState().setLoading(false);
 
         if (error) return;
 
         if (isAuthorized) {
-            authStore.getState().setAuthorization(isAuthorized)
             Router.go('/');
         }
     }
 
     async logout() {
+        authStore.getState().setLoading(true);
         await tryCatch(this.httpService.get('/logout'));
 
-        authStore.getState().setAuthorization(false)
+        authStore.getState().setLoading(false);
+
+        authStore.getState().setAuthorization(false);
         Router.go('/login');
     }
 }

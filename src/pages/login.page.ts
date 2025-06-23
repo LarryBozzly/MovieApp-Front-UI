@@ -43,13 +43,12 @@ export class LoginPage extends connect(LitElement, authStore) {
               autocomplete="current-password"
               class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
-            <button type="submit" class="btn btn-active btn-primary">
-              <!-- <span class="loading loading-spinner"></span> -->
-              Login
+            <button ?disabled=${this.$state.isLoading} type="submit" class="btn btn-active btn-primary">
+              ${this.$state.isLoading ? html`<span class="loading loading-spinner"></span>` : 'Login'}
             </button>
           </form>
-        </div>
-      </div>
-    `;
+          </div>
+          </div>
+        `;
   }
 }

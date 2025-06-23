@@ -21,21 +21,25 @@ export class TrendingMoviesComponent extends LitElement {
 
   render() {
     return html`
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         ${this.movies.map(movie => html`
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <img 
-              class="w-full h-64 object-contain"
-              src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
-              alt="${movie.title}"
-            >
-            <div class="p-4">
-              <h3 class="text-lg wrap-break-word font-semibold text-gray-800 mb-2">${movie.title}</h3>
+          <div class="card bg-base-100 shadow-sm w-full">
+            <figure>
+              <img
+                class="h-64 object-contain"
+                src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
+                alt="${movie.title}"
+              />
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title">
+                ${movie.title}
+              </h2>
               <p class="text-sm text-gray-600">${this.formatDate(movie.release_date)}</p>
-              <div class="mt-2 flex items-center">
+              <div class="flex items-center gap-2 mt-2">
                 <span class="text-yellow-500">★</span>
-                <span class="ml-1 text-sm text-gray-600">${movie.vote_average.toFixed(1)}</span>
-                <span class="ml-1 text-xs text-gray-600">(${movie.popularity})</span>
+                <span class="text-sm text-gray-600">${movie.vote_average.toFixed(1)}</span>
+                <span class="badge badge-outline">${movie.popularity}</span>
               </div>
             </div>
           </div>
