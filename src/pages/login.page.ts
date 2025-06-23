@@ -43,10 +43,8 @@ export class LoginPage extends connect(LitElement, authStore) {
               autocomplete="current-password"
               class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
-            <button
-              type="submit"
-              class="w-full py-2 bg-blue-700 text-white rounded font-semibold hover:bg-blue-800 transition"
-            >
+            <button type="submit" class="btn btn-active btn-primary">
+              <!-- <span class="loading loading-spinner"></span> -->
               Login
             </button>
           </form>

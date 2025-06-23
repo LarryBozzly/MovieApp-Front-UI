@@ -1,4 +1,5 @@
-import { css, unsafeCSS } from 'lit';
-import styles from '../tailwind.css?inline';
+import { unsafeCSS } from 'lit';
+import globalStyles from "../index.css?inline";
 
-export const tailwindStyles = css`${unsafeCSS(styles)}`;
+export const tailwindStyles = unsafeCSS(globalStyles);
+
