@@ -9,7 +9,7 @@ import { authStore } from '../store/auth-store';
 @customElement('login-page')
 export class LoginPage extends connect(LitElement, authStore) {
   static styles = css`
-   ${tailwindStyles}
+    ${tailwindStyles}
   `;
 
   private async handleSubmit(e: Event) {
@@ -23,32 +23,38 @@ export class LoginPage extends connect(LitElement, authStore) {
 
   render() {
     return html`
-      <div class="flex justify-center items-center min-h-screen bg-gray-100">
-        <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8 mt-8">
-          <h2 class="text-2xl font-bold mb-6 text-center">Sign In</h2>
-          <form @submit="${this.handleSubmit}" class="flex flex-col gap-4">
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              required
-              autocomplete="username"
-              class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              autocomplete="current-password"
-              class="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-            <button ?disabled=${this.$state.isLoading} type="submit" class="btn btn-active btn-primary">
-              ${this.$state.isLoading ? html`<span class="loading loading-spinner"></span>` : 'Login'}
-            </button>
-          </form>
+      <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="card w-full max-w-md bg-white shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
+            <form @submit="${this.handleSubmit}" class="flex flex-col gap-4">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+                autocomplete="username"
+                class="input input-bordered w-full"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+                autocomplete="current-password"
+                class="input input-bordered w-full"
+              />
+              <button
+                ?disabled=${this.$state.isLoading}
+                type="submit"
+                class="btn btn-primary w-full"
+              >
+                ${this.$state.isLoading ? html`<span class="loading loading-spinner"></span>` : 'Login'}
+              </button>
+            </form>
           </div>
-          </div>
-        `;
+        </div>
+      </div>
+    `;
   }
 }
