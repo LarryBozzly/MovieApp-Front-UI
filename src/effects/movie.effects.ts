@@ -5,6 +5,7 @@ import { env } from '../config';
 import { appStore } from '../store/app-store';
 import AuthService from '../services/auth.service';
 import { Router } from '@vaadin/router';
+import { authStore } from '../store/auth-store';
 
 export class MovieEffects {
     private httpService: HttpService;
@@ -26,7 +27,10 @@ export class MovieEffects {
 
         if (error) {
             const isAuthorized = await this.authService.isAuthorized();
-            if (!isAuthorized) Router.go('/login');
+            if (!isAuthorized) {
+                authStore.getState().setAuthorization(isAuthorized);
+                Router.go('/login')
+            }
             return;
         }
 

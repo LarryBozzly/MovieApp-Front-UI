@@ -2,145 +2,56 @@ import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { appEffects } from '../effects/app.effects';
+import { Router } from '@vaadin/router';
+import { connect } from 'zustand-lit';
+import { authStore } from '../store/auth-store';
 
 @customElement('navbar-component')
-export class NavbarComponent extends LitElement {
+export class NavbarComponent extends connect(LitElement, authStore) {
   static styles = css`
   ${tailwindStyles}
     `;
-  @state() private isMenuOpen = false;
-  @state() private isProfileOpen = false;
 
-
-  private toggleMenu(e: Event) {
-    e.stopPropagation();
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  private toggleProfile(e: Event) {
-    e.stopPropagation();
-    this.isProfileOpen = !this.isProfileOpen;
-  }
-
-  private async signOut(e: Event) {
+  private async logout(e: Event) {
     e.stopPropagation();
     await appEffects.logout();
-    if (this.isProfileOpen) this.isProfileOpen = false;
   }
 
-  private handleResize = () => {
-    this.isMenuOpen = false;
-  };
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('resize', this.handleResize);
-    document.addEventListener('click', this.handleClickOutside);
-    document.addEventListener('touchstart', this.handleClickOutside);
+  private redirectToProfile() {
+    Router.go('/profile');
   }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('resize', this.handleResize);
-    document.removeEventListener('click', this.handleClickOutside);
-    document.removeEventListener('touchstart', this.handleClickOutside);
-  }
-
-  private handleClickOutside = (event: MouseEvent | TouchEvent) => {
-    // Prevent handling if click is inside the component
-    if (this.contains(event.target as Node)) {
-      return;
-    }
-
-    const target = event.target as HTMLElement;
-    const isOutsideMenu = !target.closest('#mobile-menu');
-    const isOutsideProfile = !target.closest('#profile-menu');
-
-    if (this.isMenuOpen && isOutsideMenu) {
-      this.isMenuOpen = false;
-    }
-    if (this.isProfileOpen && isOutsideProfile) {
-      this.isProfileOpen = false;
-    }
-  };
-
 
   render() {
     return html`
-    <nav class="bg-gray-800 sticky top-0 z-50">
-      <div class="mx-auto max-w-6xl px-2 sm:px-6 lg:px-8">
-        <div class="relative flex h-16 items-center justify-between">
-          <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            <!-- Mobile menu button-->
-            <button @click=${this.toggleMenu}  type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset" aria-controls="mobile-menu" aria-expanded="false">
-              <span class="absolute -inset-0.5"></span>
-              <span class="sr-only">Open main menu</span>
-              
-              <!--
-                Icon when menu is closed.
-
-                Menu open: "hidden", Menu closed: "block"
-              -->
-              <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
-              <!--
-                Icon when menu is open.
-
-                Menu open: "block", Menu closed: "hidden"
-              -->
-              <svg class="hidden size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <!-- <div class="flex shrink-0 items-center">
-              <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
-            </div> -->
-            <div class="hidden sm:ml-6 sm:block">
-              <div class="flex space-x-4">
-                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="/" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Home</a>
-                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
-                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+    <div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+      <div class="flex-1">
+        <a class="btn btn-ghost text-xl">MovieApp</a>
+      </div>
+        ${this.$state.isAuthorized ? html`
+        <div class="flex-none">
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
               </div>
             </div>
-          </div>
-          <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <!-- Profile dropdown -->
-            <div class="relative ml-3">
-              <div>
-                <button id="profile-menu" @click=${this.toggleProfile} type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                  <span class="absolute -inset-1.5"></span>
-                  <span class="sr-only">Open user menu</span>
-                  <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                </button>
-              </div>
-
-              <div class="${this.isProfileOpen ? 'opacity-100' : 'opacity-0 hidden'} absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                <!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
-                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
-                <a href="#" @click=${this.signOut} class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
-              </div>
-            </div>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+              <li>
+                <a @click="${this.redirectToProfile}" class="justify-between">
+                  Profile
+                </a>
+              </li>
+              <li><a>Settings</a></li>
+              <li><a @click="${this.logout}" >Logout</a></li>
+            </ul>
           </div>
         </div>
-      </div>
-
-      <!-- Mobile menu, show/hide based on menu state. -->
-      <div id="mobile-menu" class="sm:hidden transition-all duration-200 ease-in-out ${this.isMenuOpen ? 'opacity-100' : 'opacity-0 hidden'}">
-        <div class="space-y-1 px-2 pt-2 pb-3">
-          <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-          <a href="/" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">Home</a>
-          <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
-          <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-          <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
-        </div>
-      </div>
-    </nav>
+      ` : ''}
+    </div>
     `;
   }
 }

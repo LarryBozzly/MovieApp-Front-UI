@@ -1,16 +1,13 @@
 import { createStore } from 'zustand/vanilla';
 
 export interface AuthState {
-    token: string | null;
+    isAuthorized: boolean;
+    setAuthorization: (status: boolean) => void;
 }
 
 export const authStore = createStore<AuthState>(set => ({
-    token: null,
-    movies: [],
-    setToken: (token: string) => set((state) => {
-        return {
-            ...state,
-            token,
-        }
-    }),
+    isAuthorized: false,
+    setAuthorization: (status: boolean) => set({
+        isAuthorized: status
+    })
 }));
