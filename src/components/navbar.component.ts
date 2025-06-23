@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
+import { appEffects } from '../effects/app.effects';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {
@@ -19,6 +20,11 @@ export class NavbarComponent extends LitElement {
   private toggleProfile(e: Event) {
     e.stopPropagation();
     this.isProfileOpen = !this.isProfileOpen;
+  }
+
+  private async signOut(e: Event) {
+    e.stopPropagation();
+    await appEffects.logout();
   }
 
   private handleResize = () => {
@@ -68,6 +74,7 @@ export class NavbarComponent extends LitElement {
             <button @click=${this.toggleMenu}  type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset" aria-controls="mobile-menu" aria-expanded="false">
               <span class="absolute -inset-0.5"></span>
               <span class="sr-only">Open main menu</span>
+              
               <!--
                 Icon when menu is closed.
 
@@ -113,9 +120,9 @@ export class NavbarComponent extends LitElement {
 
               <div class="${this.isProfileOpen ? 'opacity-100' : 'opacity-0 hidden'} absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                 <!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
                 <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                <a href="#" @click=${this.signOut} class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
               </div>
             </div>
           </div>

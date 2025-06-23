@@ -20,6 +20,14 @@ export class AppEffects {
 
         if (data) Router.go('/');
     }
+
+    async logout() {
+        const { error } = await tryCatch(this.httpService.get('/logout'));
+
+        if (error) return;
+
+        Router.go('/login');
+    }
 }
 
 export const appEffects = new AppEffects();
