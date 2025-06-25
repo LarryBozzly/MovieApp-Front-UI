@@ -40,7 +40,7 @@ export const authStore = createStore<AuthState>((set, get) => ({
             httpService.post<LoginResponse>('/login', loginData)
         );
         const isAuthorized = await authService.isAuthorized();
-        setLoading(true);
+        setLoading(false);
         setAuthorization(isAuthorized);
 
         if (error) return;
