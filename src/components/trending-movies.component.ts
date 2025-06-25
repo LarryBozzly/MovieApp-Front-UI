@@ -45,8 +45,8 @@ export class TrendingMoviesComponent extends LitElement {
             </div>
           </div>
         `)}
-        ${this.isLoading ? html`
-          <div class="col-span-full flex justify-center items-center min-h-[10vh]">
+       ${this.isLoading ? html`
+          <div class="col-span-full flex justify-center items-center ${this.movies.length ? 'min-h-[10vh]' : 'min-h-[100vh]'}">
             <span class="loading loading-dots w-14 text-primary"></span>
           </div>
         ` : ''}
