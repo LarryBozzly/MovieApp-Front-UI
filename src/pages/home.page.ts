@@ -36,7 +36,7 @@ export class HomePage extends connect(LitElement, appStore) {
     this.observer = new IntersectionObserver(
       async (entries) => {
         const [target] = entries;
-        if (target.isIntersecting) {
+        if (target.isIntersecting && !this.$state.isLoading) {
           await this.$state.fetchTrendingMovies(this.$state.page + 1);
         }
       },
