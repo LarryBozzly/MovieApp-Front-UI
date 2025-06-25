@@ -4,6 +4,7 @@ import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import { tryCatch } from '../utils/try-catch';
 import { Router } from '@vaadin/router';
+import { createEffect } from '../utils/create-effect.functions';
 
 export interface AuthState {
     deps?: {
@@ -19,7 +20,7 @@ export interface AuthState {
     logout: () => Promise<void>;
 }
 
-export const authStore = createStore<AuthState>((set, get) => ({
+export const authStore = createStore<AuthState>((set, _get, store) => ({
     isAuthorized: false,
     isLoading: false,
     deps: undefined,
@@ -28,11 +29,9 @@ export const authStore = createStore<AuthState>((set, get) => ({
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setAuthorization: (status: boolean) => set({ isAuthorized: status }),
     // effects
-    login: async (loginData: LoginRequest) => {
-        const deps = get().deps;
-        if (!deps) throw new Error('Dependencies not set!');
+    login: createEffect(store, async (deps, store, loginData) => {
         const { httpService, authService } = deps;
-        const { setLoading, setAuthorization } = get();
+        const { setLoading, setAuthorization } = store.getState();
 
         setLoading(true);
 
@@ -48,19 +47,17 @@ export const authStore = createStore<AuthState>((set, get) => ({
         if (isAuthorized) {
             Router.go('/');
         }
-    },
-    logout: async () => {
-        const deps = get().deps;
-        if (!deps) throw new Error('Dependencies not set!');
+    }),
+    logout: createEffect(store, async (deps, store) => {
         const { httpService } = deps;
-        const { setLoading, setAuthorization } = get();
+        const { setLoading, setAuthorization } = store.getState();
 
         setLoading(true);
         await tryCatch(httpService.get('/logout'));
         setLoading(false);
         setAuthorization(false);
         Router.go('/login');
-    }
+    }),
 }));
 
 // selectors 

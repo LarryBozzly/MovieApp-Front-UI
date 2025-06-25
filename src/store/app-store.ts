@@ -2,9 +2,10 @@ import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { Movie, TrendingMovieListResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
-import type { AuthState } from './auth-store'; // <-- Import the type, not the instance
+import type { AuthState } from './auth-store';
 import { tryCatch } from '../utils/try-catch';
 import { Router } from '@vaadin/router';
+import { createEffect } from '../utils/create-effect.functions';
 
 export interface AppState {
     deps?: {
@@ -22,7 +23,7 @@ export interface AppState {
     fetchTrendingMovies: (page: number) => Promise<void>;
 }
 
-export const appStore = createStore<AppState>((set, get) => ({
+export const appStore = createStore<AppState>((set, _get, store) => ({
     page: 1,
     movies: [],
     isLoading: false,
@@ -33,16 +34,13 @@ export const appStore = createStore<AppState>((set, get) => ({
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
     // effects
-    fetchTrendingMovies: async (page: number) => {
-        const deps = get().deps;
-        if (!deps) throw new Error('Dependencies not set!');
-
+    fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService, authService, authStore } = deps;
-        const { setPage, setLoading, setMovies } = get();
+        const { setPage, setLoading, setMovies } = store.getState();
         setPage(page);
         setLoading(true);
 
-        const params = { language: 'en-US', page: get().page };
+        const params = { language: 'en-US', page };
 
         const { data, error } = await tryCatch(
             httpService.get<TrendingMovieListResponse>('/movie/now_playing', params)
@@ -60,7 +58,7 @@ export const appStore = createStore<AppState>((set, get) => ({
         }
         const movies = data?.results ?? [];
         setMovies(movies);
-    }
+    }),
 }));
 
 // selectors 
