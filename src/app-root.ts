@@ -24,7 +24,6 @@ export class AppRoot extends LitElement {
     // Create and attach outlet programmatically
     const outlet = document.createElement('div');
     outlet.id = 'outlet';
-    outlet.className = 'pt-16';
     this.shadowRoot!.appendChild(outlet);
     router.setOutlet(outlet);
   }

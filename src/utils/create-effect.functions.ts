@@ -1,8 +1,10 @@
 import type { StoreApi } from "zustand/vanilla";
 
 /**
- * Overload #1: For stores whose state has `deps` (optional or required).
- *   Effect callback receives (deps, store, ...args).
+ * Creates an async effect for a Zustand store that optionally uses `deps` from the store state.
+ *
+ * Overload #1: Use when the store state includes a `deps` property.
+ *   - The effect receives (deps, store, ...args).
  */
 export function createEffect<
     TState extends { deps?: any },
