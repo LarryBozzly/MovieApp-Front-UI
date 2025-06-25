@@ -21,6 +21,7 @@ export interface AppState {
     setMovies: (movies: Movie[]) => void;
     fetchTrendingMovies: (page: number) => Promise<void>;
 }
+
 export const appStore = createStore<AppState>((set, get) => ({
     page: 1,
     movies: [],
@@ -61,3 +62,8 @@ export const appStore = createStore<AppState>((set, get) => ({
         setMovies(movies);
     }
 }));
+
+// selectors 
+export const selectIsLoading = (state: AppState) => state.isLoading;
+export const selectMovies = (state: AppState) => state.movies;
+export const selectPage = (state: AppState) => state.page;

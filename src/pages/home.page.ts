@@ -1,12 +1,18 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
-import { connect } from 'zustand-lit';
-import { appStore } from '../store/app-store';
+import { appStore, selectIsLoading, selectMovies, selectPage, type AppState } from '../store/app-store';
 import '../components/trending-movies.component';
 import { tailwindStyles } from '../utils/app.constants';
+import { watch, watchWithSelector } from 'zustand-lit';
+import type { Movie } from '../models/models';
 
 @customElement('home-page')
-export class HomePage extends connect(LitElement, appStore) {
+export class HomePage extends LitElement {
+  @watch(appStore) appState!: AppState;
+  @watchWithSelector({ store: appStore, selector: selectIsLoading }) readonly isLoading!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectMovies }) readonly movies!: Movie[];
+  @watchWithSelector({ store: appStore, selector: selectPage }) readonly page!: number;
+
   static styles = css`
    ${tailwindStyles}
     :host {
@@ -26,8 +32,8 @@ export class HomePage extends connect(LitElement, appStore) {
   }
 
   async firstUpdated() {
-    if (!this.$state.movies.length) {
-      await this.$state.fetchTrendingMovies(this.$state.page);
+    if (!this.movies.length) {
+      await this.appState.fetchTrendingMovies(this.page);
     }
     this.setupInfiniteScroll();
   }
@@ -36,8 +42,8 @@ export class HomePage extends connect(LitElement, appStore) {
     this.observer = new IntersectionObserver(
       async (entries) => {
         const [target] = entries;
-        if (target.isIntersecting && !this.$state.isLoading) {
-          await this.$state.fetchTrendingMovies(this.$state.page + 1);
+        if (target.isIntersecting && !this.isLoading) {
+          await this.appState.fetchTrendingMovies(this.page + 1);
         }
       },
       {
@@ -59,7 +65,7 @@ export class HomePage extends connect(LitElement, appStore) {
 
   render() {
     return html`
-      <trending-movies-component .isLoading=${this.$state.isLoading} .movies="${this.$state.movies}"></trending-movies-component>
+      <trending-movies-component .isLoading=${this.isLoading} .movies="${this.movies}"></trending-movies-component>
       <div id="sentinel" class="w-full"></div>
     `;
   }

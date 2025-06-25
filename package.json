@@ -15,7 +15,7 @@
     "lit": "^3.3.0",
     "tailwindcss": "^4.1.10",
     "zustand": "^5.0.5",
-    "zustand-lit": "^1.3.0"
+    "zustand-lit": "^2.0.0"
   },
   "devDependencies": {
     "bonjour": "^3.5.0",

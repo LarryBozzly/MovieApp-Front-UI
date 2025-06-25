@@ -2,18 +2,21 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
-import { connect } from 'zustand-lit';
-import { authStore } from '../store/auth-store';
+import { authStore, selectIsAuthorized, type AuthState } from '../store/auth-store';
+import { watch, watchWithSelector } from 'zustand-lit';
 
 @customElement('navbar-component')
-export class NavbarComponent extends connect(LitElement, authStore) {
+export class NavbarComponent extends LitElement {
+  @watch(authStore) authState!: AuthState;
+  @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
+
   static styles = css`
   ${tailwindStyles}
     `;
 
   private async logout(e: Event) {
     e.stopPropagation();
-    await this.$state.logout();
+    await this.authState.logout();
   }
 
   private redirectToProfile() {
@@ -26,7 +29,7 @@ export class NavbarComponent extends connect(LitElement, authStore) {
       <div class="flex-1">
         <a class="btn btn-ghost text-xl">MovieApp</a>
       </div>
-        ${this.$state.isAuthorized ? html`
+        ${this.isAuthorized ? html`
         <div class="flex-none">
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">

@@ -1,12 +1,15 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { connect } from 'zustand-lit';
+import { watch, watchWithSelector } from 'zustand-lit';
 import '../components/trending-movies.component';
 import { tailwindStyles } from '../utils/app.constants';
-import { authStore } from '../store/auth-store';
+import { authStore, selectIsLoading, type AuthState } from '../store/auth-store';
 
 @customElement('login-page')
-export class LoginPage extends connect(LitElement, authStore) {
+export class LoginPage extends LitElement {
+  @watch(authStore) authState!: AuthState;
+  @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
+
   static styles = css`
     ${tailwindStyles}
   `;
@@ -17,7 +20,7 @@ export class LoginPage extends connect(LitElement, authStore) {
     const formData = new FormData(form);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    await this.$state.login({ email, password, remember: true });
+    await this.authState.login({ email, password, remember: true });
   }
 
   render() {
@@ -44,11 +47,11 @@ export class LoginPage extends connect(LitElement, authStore) {
                 class="input input-bordered w-full"
               />
               <button
-                ?disabled=${this.$state.isLoading}
+                ?disabled=${this.isLoading}
                 type="submit"
                 class="btn btn-primary w-full"
               >
-                ${this.$state.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
+                ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
               </button>
             </form>
           </div>

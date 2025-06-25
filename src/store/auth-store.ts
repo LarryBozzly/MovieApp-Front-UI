@@ -62,3 +62,7 @@ export const authStore = createStore<AuthState>((set, get) => ({
         Router.go('/login');
     }
 }));
+
+// selectors 
+export const selectIsAuthorized = (state: AuthState) => state.isAuthorized;
+export const selectIsLoading = (state: AuthState) => state.isLoading;
