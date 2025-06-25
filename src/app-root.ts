@@ -3,6 +3,11 @@ import { customElement } from 'lit/decorators.js';
 import { router } from './routes';
 import './components/navbar.component';
 import { tailwindStyles } from './utils/app.constants';
+import { env } from './config';
+import { appStore } from './store/app-store';
+import HttpService from './services/http.service';
+import AuthService from './services/auth.service';
+import { authStore } from './store/auth-store';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -24,8 +29,25 @@ export class AppRoot extends LitElement {
     router.setOutlet(outlet);
   }
 
+  private initAppStore() {
+    appStore.getInitialState().storeInit({
+      httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
+      authService: new AuthService(),
+      authStore,
+    });
+  }
+
+  private initAuthStore() {
+    authStore.getInitialState().storeInit({
+      httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
+      authService: new AuthService(),
+    });
+  }
+
   firstUpdated() {
     this.initRouter();
+    this.initAuthStore();
+    this.initAppStore();
   }
 
   render() {

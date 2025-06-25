@@ -3,7 +3,6 @@ import { customElement, query } from 'lit/decorators.js';
 import { connect } from 'zustand-lit';
 import { appStore } from '../store/app-store';
 import '../components/trending-movies.component';
-import { movieEffects } from '../effects/movie.effects';
 import { tailwindStyles } from '../utils/app.constants';
 
 @customElement('home-page')
@@ -28,7 +27,7 @@ export class HomePage extends connect(LitElement, appStore) {
 
   async firstUpdated() {
     if (!this.$state.movies.length) {
-      await movieEffects.fetchTrendingMovies(this.$state.page);
+      await this.$state.fetchTrendingMovies(this.$state.page);
     }
     this.setupInfiniteScroll();
   }
@@ -38,7 +37,7 @@ export class HomePage extends connect(LitElement, appStore) {
       async (entries) => {
         const [target] = entries;
         if (target.isIntersecting) {
-          await movieEffects.fetchTrendingMovies(this.$state.page + 1);
+          await this.$state.fetchTrendingMovies(this.$state.page + 1);
         }
       },
       {

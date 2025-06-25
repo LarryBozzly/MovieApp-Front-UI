@@ -3,7 +3,6 @@ import { customElement } from 'lit/decorators.js';
 import { connect } from 'zustand-lit';
 import '../components/trending-movies.component';
 import { tailwindStyles } from '../utils/app.constants';
-import { appEffects } from '../effects/app.effects';
 import { authStore } from '../store/auth-store';
 
 @customElement('login-page')
@@ -18,7 +17,7 @@ export class LoginPage extends connect(LitElement, authStore) {
     const formData = new FormData(form);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    await appEffects.login({ email, password, remember: true });
+    await this.$state.login({ email, password, remember: true });
   }
 
   render() {

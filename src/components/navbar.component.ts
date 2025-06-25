@@ -1,7 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
-import { appEffects } from '../effects/app.effects';
 import { Router } from '@vaadin/router';
 import { connect } from 'zustand-lit';
 import { authStore } from '../store/auth-store';
@@ -14,7 +13,7 @@ export class NavbarComponent extends connect(LitElement, authStore) {
 
   private async logout(e: Event) {
     e.stopPropagation();
-    await appEffects.logout();
+    await this.$state.logout();
   }
 
   private redirectToProfile() {
