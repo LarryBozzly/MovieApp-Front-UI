@@ -29,24 +29,22 @@ export default class WebSocketService {
             this.socket.onopen = async () => {
                 console.log('✅ WebSocket connected');
                 this.isConnected = true;
-                await authStore.getState().setWSConnected(this.isConnected);
+                await authStore.getState().setWSConnected(true);
                 resolve();
             };
 
             this.socket.onerror = async (error) => {
                 console.error('❌ WebSocket error:', error);
-                this.isConnected = true;
-                await authStore.getState().setWSConnected(this.isConnected);
+                this.isConnected = false;
+                await authStore.getState().setWSConnected(false);
                 reject(error);
-
                 await authStore.getState().refresh();
             };
 
             this.socket.onclose = async () => {
                 console.warn('🔌 WebSocket disconnected');
                 this.isConnected = false;
-                this.isConnected = true;
-                await authStore.getState().setWSConnected(this.isConnected);
+                await authStore.getState().setWSConnected(false);
                 await authStore.getState().refresh();
             };
 
@@ -82,56 +80,31 @@ export default class WebSocketService {
         this.listeners.push(callback);
     }
 
-    sendInvitationRequest(toTag: string) {
-        if (!this.ClientMessage || !this.socket || !this.isConnected) {
-            console.warn('🚫 Cannot send invite: socket not ready');
+    private send(payload: object) {
+        if (!this.ClientMessage || !this.socket || !this.isConnected || this.socket.readyState !== WebSocket.OPEN) {
+            console.warn('🚫 Cannot send message: socket not ready');
             return;
         }
-
-        const msg = this.ClientMessage.create({
-            invitationRequest: {
-                to: toTag,
-            },
-        });
-
+        const msg = this.ClientMessage.create(payload);
         const buffer = this.ClientMessage.encode(msg).finish();
         this.socket.send(buffer);
+    }
+
+    sendInvitationRequest(toTag: string) {
+        this.send({ invitationRequest: { to: toTag } });
     }
 
     sendInvitationResponse(toTag: string, fromTag: string) {
-        if (!this.ClientMessage || !this.socket || !this.isConnected) {
-            console.warn('🚫 Cannot send invite: socket not ready');
-            return;
-        }
-
-        const msg = this.ClientMessage.create({
-            invitationResponse: {
-                to: toTag,
-                from: fromTag
-            },
-        });
-
-        const buffer = this.ClientMessage.encode(msg).finish();
-        this.socket.send(buffer);
+        this.send({ invitationResponse: { to: toTag, from: fromTag } });
     }
 
     sendMovieSelection(movie: Movie) {
-        if (!this.ClientMessage || !this.socket || !this.isConnected) {
-            console.warn('🚫 Cannot send invite: socket not ready');
-            return;
-        }
-
-        const msg = this.ClientMessage.create({
-            movieSelection: {
-                movie,
-            },
-        });
-
-        const buffer = this.ClientMessage.encode(msg).finish();
-        this.socket.send(buffer);
+        this.send({ movieSelection: { movie } });
     }
 
     close() {
         this.socket?.close();
+        this.isConnected = false;
+        authStore.getState().setWSConnected(false);
     }
 }
