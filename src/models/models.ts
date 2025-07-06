@@ -28,11 +28,17 @@ export interface Movie {
   vote_count: number;
 }
 
+export const WebSocketStatus = {
+  CONNECTING: 'connecting',
+  CONNECTED: 'connected',
+  DISCONNECTED: 'disconnected',
+} as const;
+export type WebSocketStatus = typeof WebSocketStatus[keyof typeof WebSocketStatus];
+
 export const MovieMatchDirection = {
   Like: 'like',
   Dislike: 'dislike',
 } as const;
-
 export type MovieMatchDirection = typeof MovieMatchDirection[keyof typeof MovieMatchDirection];
 
 // app

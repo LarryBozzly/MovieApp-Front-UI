@@ -14,6 +14,9 @@ message Identify {
   string userId = 1;
 }
 
+message Ping {} // 🔄 Client → Server
+message Pong {} // 🔄 Server → Client
+
 // ------------------------------
 // Invitation Flow
 // ------------------------------
@@ -84,6 +87,7 @@ message ClientMessage {
     InvitationResponse invitationResponse = 3;
     MovieSelection movieSelection = 4;
     NoMovieSelected noMovieSelected = 5;
+    Ping ping = 6;
   }
 }
 
@@ -94,6 +98,7 @@ message ServerMessage {
     StartMovieMatch startMovieMatch = 3;
     MovieSelection movieSelection = 4;
     NoMovieSelected noMovieSelected = 5;
-    MovieMatch movieMatch = 6;  // <-- new message added here
+    MovieMatch movieMatch = 6;
+    Pong pong = 7;
   }
 }

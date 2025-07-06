@@ -17,9 +17,11 @@ export interface AuthState {
     isAuthorized: boolean;
     isLoading: boolean;
     tag: string;
+    isWSConnected: boolean;
     storeInit: (deps: Required<AuthState>['deps']) => void;
     setAuthorization: (status: boolean) => void;
     setLoading: (loading: boolean) => void;
+    setWSConnected: (isWSConnected: boolean) => void;
     setTag: (tag: string) => void;
     login: (loginData: LoginRequest) => Promise<void>;
     logout: () => Promise<void>;
@@ -34,9 +36,11 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     isLoading: false,
     deps: undefined,
     tag: '',
+    isWSConnected: false,
     // reducers
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),
+    setWSConnected: (isWSConnected: boolean) => set({ isWSConnected }),
     setTag: (tag: string) => set({ tag }),
     setAuthorization: (status: boolean) => set({ isAuthorized: status }),
     // effects
@@ -131,3 +135,4 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 export const selectIsAuthorized = (state: AuthState) => state.isAuthorized;
 export const selectIsLoading = (state: AuthState) => state.isLoading;
 export const selectTag = (state: AuthState) => state.tag;
+export const selectIsWSConnected = (state: AuthState) => state.isWSConnected;
