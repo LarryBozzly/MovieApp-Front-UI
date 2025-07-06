@@ -11,7 +11,10 @@ export default class WebSocketService {
     private listeners: EventCallback[] = [];
     private isConnected: boolean = false;
 
-    async connect(url: string) {
+    async connect(baseUrl: string, wsToken: string | null) {
+        let url = new URL(baseUrl);
+        if (wsToken) url.searchParams.set('token', wsToken);
+
         const protoSource = await fetch('/proto/ws.proto').then(res => res.text());
         const root = protobuf.parse(protoSource, { keepCase: true }).root;
 
@@ -19,7 +22,7 @@ export default class WebSocketService {
         this.ServerMessage = root.lookupType('ws.ServerMessage');
 
         return new Promise<void>((resolve, reject) => {
-            this.socket = new WebSocket(url);
+            this.socket = new WebSocket(url.toString());
             this.socket.binaryType = 'arraybuffer';
 
             this.socket.onopen = () => {
@@ -44,7 +47,6 @@ export default class WebSocketService {
                 try {
                     const rawData = new Uint8Array(event.data);
                     const decoded = this.ServerMessage.decode(rawData);
-                    // const msg = this.ServerMessage.toObject(decoded, { defaults: true });
                     const msg = this.ServerMessage.toObject(decoded, { defaults: false, arrays: true });
 
                     if (msg.invitationNotification) await appStore.getState().openReceivedInvitationModal(msg.invitationNotification.from);

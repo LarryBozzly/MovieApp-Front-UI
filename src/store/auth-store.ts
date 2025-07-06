@@ -55,7 +55,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
         if (error) return;
 
-        webSocketService.connect(env.VITE_WS_URL)
+        const wsToken = await authService.getWsToken();
+        webSocketService.connect(env.VITE_WS_URL, wsToken);
+
         if (isAuthorized) {
             setTag(data.data.tag);
             Router.go('/');
@@ -72,7 +74,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         Router.go('/login');
     }),
     refresh: createEffect(store, async (deps, store) => {
-        const { httpService, webSocketService } = deps;
+        const { httpService, webSocketService, authService } = deps;
         const { setLoading, setAuthorization, setTag } = store.getState();
 
         setLoading(true);
@@ -81,7 +83,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
             httpService.get<LoginResponse>('/refresh')
         );
 
-        webSocketService.connect(env.VITE_WS_URL)
+        const wsToken = await authService.getWsToken();
+        webSocketService.connect(env.VITE_WS_URL, wsToken)
 
         setLoading(false);
 
