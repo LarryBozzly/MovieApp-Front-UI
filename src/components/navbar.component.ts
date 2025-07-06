@@ -2,13 +2,16 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
-import { authStore, selectIsAuthorized, type AuthState } from '../store/auth-store';
+import { authStore, selectIsAuthorized, selectTag, type AuthState } from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
+import { appStore, type AppState } from '../store/app-store';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
+  @watch(appStore) appState!: AppState;
   @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
 
   static styles = css`
   ${tailwindStyles}
@@ -17,6 +20,16 @@ export class NavbarComponent extends LitElement {
   private async logout(e: Event) {
     e.stopPropagation();
     await this.authState.logout();
+  }
+
+  private async copyTagToClipboard(e: Event) {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(this.tag);
+  }
+
+  private async sendInvitationRequest(e: Event) {
+    e.stopPropagation();
+    await this.appState.openSendInvitationModal();
   }
 
   private redirectToProfile() {
@@ -47,7 +60,8 @@ export class NavbarComponent extends LitElement {
                   Profile
                 </a>
               </li>
-              <li><a>Settings</a></li>
+              <li><a @click="${this.copyTagToClipboard}">Tag: ${this.tag}</a></li>
+              <li><a @click="${this.sendInvitationRequest}">Send Invite</a></li>
               <li><a @click="${this.logout}" >Logout</a></li>
             </ul>
           </div>

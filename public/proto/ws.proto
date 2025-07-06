@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package ws;
+
+// ------------------------------
+// Common Messages
+// ------------------------------
+
+message Error {
+  string message = 1;
+}
+
+message Identify {
+  string userId = 1;
+}
+
+// ------------------------------
+// Invitation Flow
+// ------------------------------
+
+message InvitationRequest {
+  // Client → Server: Send an invite
+  string to = 1;
+}
+
+message InvitationNotification {
+  // Server → Recipient: You have an invite
+  string from = 1;
+}
+
+message InvitationResponse {
+  // Recipient → Server: Accept the invite
+  // Presence of both fields implies acceptance
+  string from = 1; // Recipient's ID
+  string to = 2;   // Original inviter's ID
+}
+
+// ------------------------------
+// Movie Matching Flow
+// ------------------------------
+
+message Movie {
+  bool adult = 1;
+  string backdrop_path = 2;
+  repeated uint32 genre_ids = 3;
+  uint32 id = 4;
+  string original_language = 5;
+  string original_title = 6;
+  string overview = 7;
+  float popularity = 8;
+  string poster_path = 9;
+  string release_date = 10;
+  string title = 11;
+  bool video = 12;
+  float vote_average = 13;
+  uint32 vote_count = 14;
+}
+
+message MovieSelection {
+  // Client → Server & Server → Client
+  Movie movie = 1;
+}
+
+message NoMovieSelected {}
+
+message StartMovieMatch {
+  // Server → Both users: Start movie selection
+  repeated Movie movies = 1;
+}
+
+message MovieMatch {
+  // Server → Both users: A match on a movie both liked
+  Movie movie = 1;
+}
+
+// ------------------------------
+// Top-Level Envelopes
+// ------------------------------
+
+message ClientMessage {
+  oneof payload {
+    Identify identify = 1;
+    InvitationRequest invitationRequest = 2;
+    InvitationResponse invitationResponse = 3;
+    MovieSelection movieSelection = 4;
+    NoMovieSelected noMovieSelected = 5;
+  }
+}
+
+message ServerMessage {
+  oneof payload {
+    Error error = 1;
+    InvitationNotification invitationNotification = 2;
+    StartMovieMatch startMovieMatch = 3;
+    MovieSelection movieSelection = 4;
+    NoMovieSelected noMovieSelected = 5;
+    MovieMatch movieMatch = 6;  // <-- new message added here
+  }
+}

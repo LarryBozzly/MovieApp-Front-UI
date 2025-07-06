@@ -13,6 +13,7 @@
     "@vaadin/router": "^2.0.0",
     "daisyui": "^5.0.43",
     "lit": "^3.3.0",
+    "protobufjs": "^7.5.3",
     "tailwindcss": "^4.1.10",
     "zustand": "^5.0.5",
     "zustand-lit": "^2.0.0"

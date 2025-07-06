@@ -1,10 +1,14 @@
-export interface TrendingMovieListResponse {
-  dates: {
-    maximum: string;
-    minimum: string;
-  };
+interface Dates {
+  maximum: string;
+  minimum: string;
+}
+
+export interface MoviesResponse {
+  dates: Dates;
   page: number;
   results: Movie[];
+  total_pages: number;
+  total_results: number;
 }
 
 export interface Movie {
@@ -24,6 +28,12 @@ export interface Movie {
   vote_count: number;
 }
 
+export const MovieMatchDirection = {
+  Like: 'like',
+  Dislike: 'dislike',
+} as const;
+
+export type MovieMatchDirection = typeof MovieMatchDirection[keyof typeof MovieMatchDirection];
 
 // app
 export interface LoginRequest {
@@ -36,6 +46,7 @@ export interface LoginResponse {
   data: {
     id: number;
     email: string;
+    tag: string;
   };
   message: string;
 }

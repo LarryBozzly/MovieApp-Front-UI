@@ -8,6 +8,8 @@ import { appStore } from './store/app-store';
 import HttpService from './services/http.service';
 import AuthService from './services/auth.service';
 import { authStore } from './store/auth-store';
+import WebSocketService from './services/websocket.service';
+import ModalService from './services/modal.service';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -33,6 +35,7 @@ export class AppRoot extends LitElement {
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
       authService: new AuthService(),
       authStore,
+      modalService: new ModalService(),
     });
   }
 
@@ -40,6 +43,7 @@ export class AppRoot extends LitElement {
     authStore.getInitialState().storeInit({
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
       authService: new AuthService(),
+      webSocketService: new WebSocketService(),
     });
   }
 
