@@ -6,6 +6,7 @@ import { tryCatch } from '../utils/try-catch';
 import { Router } from '@vaadin/router';
 import { createEffect } from '../utils/create-effect.functions';
 import type WebSocketService from '../services/websocket.service';
+import { env } from '../config';
 
 export interface AuthState {
     deps?: {
@@ -54,7 +55,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
         if (error) return;
 
-        webSocketService.connect('ws://localhost:8080')
+        webSocketService.connect(env.VITE_WS_URL)
         if (isAuthorized) {
             setTag(data.data.tag);
             Router.go('/');
@@ -80,7 +81,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
             httpService.get<LoginResponse>('/refresh')
         );
 
-        webSocketService.connect('ws://localhost:8080')
+        webSocketService.connect(env.VITE_WS_URL)
 
         setLoading(false);
 

@@ -1,10 +1,12 @@
 
 interface EnvConfig {
     MOVIEDB_API_BASE_URL: string;
+    VITE_WS_URL: string;
 }
 
 export const env: EnvConfig = {
     MOVIEDB_API_BASE_URL: import.meta.env.VITE_MOVIEDB_API_BASE_URL,
+    VITE_WS_URL: import.meta.env.VITE_WS_URL,
 } as const;
 
 // Validate environment variables
