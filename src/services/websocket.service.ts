@@ -1,6 +1,7 @@
 import protobuf from 'protobufjs';
 import { appStore } from '../store/app-store';
 import type { Movie } from '../models/models';
+import { authStore } from '../store/auth-store';
 
 type EventCallback = (data: any) => void;
 
@@ -25,20 +26,28 @@ export default class WebSocketService {
             this.socket = new WebSocket(url.toString());
             this.socket.binaryType = 'arraybuffer';
 
-            this.socket.onopen = () => {
+            this.socket.onopen = async () => {
                 console.log('✅ WebSocket connected');
                 this.isConnected = true;
+                await authStore.getState().setWSConnected(this.isConnected);
                 resolve();
             };
 
-            this.socket.onerror = (error) => {
+            this.socket.onerror = async (error) => {
                 console.error('❌ WebSocket error:', error);
+                this.isConnected = true;
+                await authStore.getState().setWSConnected(this.isConnected);
                 reject(error);
+
+                await authStore.getState().refresh();
             };
 
-            this.socket.onclose = () => {
+            this.socket.onclose = async () => {
                 console.warn('🔌 WebSocket disconnected');
                 this.isConnected = false;
+                this.isConnected = true;
+                await authStore.getState().setWSConnected(this.isConnected);
+                await authStore.getState().refresh();
             };
 
             this.socket.onmessage = async (event: MessageEvent<ArrayBuffer>) => {
