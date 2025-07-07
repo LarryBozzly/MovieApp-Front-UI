@@ -10,70 +10,92 @@ export default class WebSocketService {
     private ClientMessage: protobuf.Type | null = null;
     private ServerMessage: protobuf.Type | null = null;
     private listeners: EventCallback[] = [];
-    private isConnected: boolean = false;
+    private isConnected = false;
+    private isConnecting = false;
+    private reconnectIntervalId: NodeJS.Timeout | null = null;
+    private readonly pollInterval = 3000;
 
-    async connect(baseUrl: string, wsToken: string | null) {
-        let url = new URL(baseUrl);
-        if (wsToken) url.searchParams.set('token', wsToken);
+    async connect(baseUrl: string, wsToken: string | null): Promise<void> {
+        if (this.isConnected || this.isConnecting) return;
 
-        const protoSource = await fetch('/proto/ws.proto').then(res => res.text());
-        const root = protobuf.parse(protoSource, { keepCase: true }).root;
+        this.isConnecting = true;
 
-        this.ClientMessage = root.lookupType('ws.ClientMessage');
-        this.ServerMessage = root.lookupType('ws.ServerMessage');
+        try {
+            const url = new URL(baseUrl);
+            if (wsToken) url.searchParams.set('token', wsToken);
 
-        return new Promise<void>((resolve, reject) => {
-            this.socket = new WebSocket(url.toString());
-            this.socket.binaryType = 'arraybuffer';
+            if (!this.ClientMessage || !this.ServerMessage) {
+                const protoSource = await fetch('/proto/ws.proto').then(res => res.text());
+                const root = protobuf.parse(protoSource, { keepCase: true }).root;
+                this.ClientMessage = root.lookupType('ws.ClientMessage');
+                this.ServerMessage = root.lookupType('ws.ServerMessage');
+            }
 
-            this.socket.onopen = async () => {
-                console.log('✅ WebSocket connected');
-                this.isConnected = true;
-                await authStore.getState().setWSConnected(true);
-                resolve();
-            };
+            await new Promise<void>((resolve, reject) => {
+                this.socket = new WebSocket(url.toString());
+                this.socket.binaryType = 'arraybuffer';
 
-            this.socket.onerror = async (error) => {
-                console.error('❌ WebSocket error:', error);
-                this.isConnected = false;
-                await authStore.getState().setWSConnected(false);
-                reject(error);
-                await authStore.getState().refresh();
-            };
+                this.socket.onopen = async () => {
+                    console.log('✅ WebSocket connected');
+                    this.isConnected = true;
+                    await authStore.getState().setWSConnected(true);
 
-            this.socket.onclose = async () => {
-                console.warn('🔌 WebSocket disconnected');
-                this.isConnected = false;
-                await authStore.getState().setWSConnected(false);
-                await authStore.getState().refresh();
-            };
-
-            this.socket.onmessage = async (event: MessageEvent<ArrayBuffer>) => {
-                if (!this.ServerMessage) return;
-
-                try {
-                    const rawData = new Uint8Array(event.data);
-                    const decoded = this.ServerMessage.decode(rawData);
-                    const msg = this.ServerMessage.toObject(decoded, { defaults: false, arrays: true });
-
-                    if (msg.invitationNotification) await appStore.getState().openReceivedInvitationModal(msg.invitationNotification.from);
-
-                    if (msg.startMovieMatch) {
-                        await appStore.getState().closeModal();
-                        await appStore.getState().openStartMovieMatchModal(msg.startMovieMatch.movies);
+                    if (this.reconnectIntervalId) {
+                        clearInterval(this.reconnectIntervalId);
+                        this.reconnectIntervalId = null;
+                        console.log('🛑 Stopped reconnect polling');
                     }
 
-                    if (msg.movieMatch) {
-                        await appStore.getState().closeModal();
-                        await appStore.getState().openMovieMatchModal(msg.movieMatch.movie);
-                    }
+                    resolve();
+                };
 
-                    this.listeners.forEach(cb => cb(msg));
-                } catch (e) {
-                    console.error('❌ Failed to decode server message:', e);
-                }
-            };
-        });
+                this.socket.onerror = async (error) => {
+                    console.error('❌ WebSocket error:', error);
+                    this.isConnected = false;
+                    await authStore.getState().setWSConnected(false);
+                    reject(error);
+                };
+
+                this.socket.onclose = async () => {
+                    console.warn('🔌 WebSocket disconnected');
+                    this.isConnected = false;
+                    await authStore.getState().setWSConnected(false);
+                    this.startReconnectPolling();
+                };
+
+                this.socket.onmessage = async (event: MessageEvent<ArrayBuffer>) => {
+                    if (!this.ServerMessage) return;
+
+                    try {
+                        const rawData = new Uint8Array(event.data);
+                        const decoded = this.ServerMessage.decode(rawData);
+                        const msg = this.ServerMessage.toObject(decoded, {
+                            defaults: false,
+                            arrays: true,
+                        });
+
+                        if (msg.invitationNotification)
+                            await appStore.getState().openReceivedInvitationModal(msg.invitationNotification.from);
+
+                        if (msg.startMovieMatch) {
+                            await appStore.getState().closeModal();
+                            await appStore.getState().openStartMovieMatchModal(msg.startMovieMatch.movies);
+                        }
+
+                        if (msg.movieMatch) {
+                            await appStore.getState().closeModal();
+                            await appStore.getState().openMovieMatchModal(msg.movieMatch.movie);
+                        }
+
+                        this.listeners.forEach(cb => cb(msg));
+                    } catch (e) {
+                        console.error('❌ Failed to decode server message:', e);
+                    }
+                };
+            });
+        } finally {
+            this.isConnecting = false;
+        }
     }
 
     onMessage(callback: EventCallback) {
@@ -106,5 +128,28 @@ export default class WebSocketService {
         this.socket?.close();
         this.isConnected = false;
         authStore.getState().setWSConnected(false);
+
+        if (this.reconnectIntervalId) {
+            clearInterval(this.reconnectIntervalId);
+            this.reconnectIntervalId = null;
+        }
+    }
+
+    private startReconnectPolling() {
+        if (this.reconnectIntervalId) return;
+
+        console.warn('🔁 Starting reconnect polling...');
+
+        this.reconnectIntervalId = setInterval(async () => {
+            try {
+                // Google generate_204 returns 204 with no content, great for online check
+                await fetch('https://www.google.com/generate_204', { mode: 'no-cors' });
+
+                console.log('🌐 Internet available, attempting reconnect...');
+                await authStore.getState().refresh(); // This should re-initiate WebSocket connection
+            } catch {
+                console.warn('📡 Still offline or network error');
+            }
+        }, this.pollInterval);
     }
 }
