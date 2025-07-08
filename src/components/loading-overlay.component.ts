@@ -17,7 +17,7 @@ export class LoadingOverlayComponent extends LitElement {
     return html`
       ${this.isLoading || !this.isWSConnected
         ? html`
-            <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/65 z-50">
+            <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/65 z-50 pointer-events-none">
               <span class="loading loading-dots text-white w-16 h-16"></span>
             </div>
           `
