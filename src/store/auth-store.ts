@@ -60,7 +60,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         if (error) return;
 
         const wsToken = await authService.getWsToken();
-        webSocketService.connect(env.VITE_WS_URL, wsToken);
+        await webSocketService.connect(env.VITE_WS_URL, wsToken);
 
         if (isAuthorized) {
             setTag(data.data.tag);
@@ -88,7 +88,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         );
 
         const wsToken = await authService.getWsToken();
-        webSocketService.connect(env.VITE_WS_URL, wsToken)
+        await webSocketService.connect(env.VITE_WS_URL, wsToken)
 
         setLoading(false);
 

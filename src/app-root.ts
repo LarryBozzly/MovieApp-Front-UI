@@ -10,11 +10,12 @@ import AuthService from './services/auth.service';
 import { authStore } from './store/auth-store';
 import WebSocketService from './services/websocket.service';
 import ModalService from './services/modal.service';
+import './components/loading-overlay.component';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
   static styles = css`
-   ${tailwindStyles} 
+    ${tailwindStyles}
     :host {
       width: 100%;
       display: block;
@@ -23,7 +24,6 @@ export class AppRoot extends LitElement {
   `;
 
   private initRouter() {
-    // Create and attach outlet programmatically
     const outlet = document.createElement('div');
     outlet.id = 'outlet';
     this.shadowRoot!.appendChild(outlet);
@@ -56,6 +56,7 @@ export class AppRoot extends LitElement {
   render() {
     return html`
       <navbar-component></navbar-component>
+      <loading-overlay-component></loading-overlay-component>
     `;
   }
 }
