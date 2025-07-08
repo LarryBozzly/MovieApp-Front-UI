@@ -7,10 +7,6 @@ import { tryCatch } from '../utils/try-catch';
 import { Router } from '@vaadin/router';
 import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
-import '../components/send-invite-modal.component';
-import '../components/invitation-notification-modal.component';
-import '../components/movie-match-modal.component';
-import '../components/movie-match-result-modal.component';
 
 export interface AppState {
     deps?: {

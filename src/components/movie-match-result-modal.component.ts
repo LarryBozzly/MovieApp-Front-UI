@@ -2,11 +2,12 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
-import { appStore } from '../store/app-store';
+import { appStore, type AppState } from '../store/app-store';
+import { watch } from 'zustand-lit';
 
 @customElement('movie-match-result-modal')
 export class MovieMatchResultModal extends LitElement {
-
+  @watch(appStore) appState!: AppState;
 
   static styles = css`
       ${tailwindStyles}
@@ -15,7 +16,7 @@ export class MovieMatchResultModal extends LitElement {
   @property({ type: Object }) movie!: Movie;
 
   private async close() {
-    await appStore.getState().closeModal();
+    await this.appState.closeModal();
   }
   render() {
     return html`
