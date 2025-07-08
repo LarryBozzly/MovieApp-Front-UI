@@ -7,6 +7,10 @@ import { tryCatch } from '../utils/try-catch';
 import { Router } from '@vaadin/router';
 import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
+import '../components/send-invite-modal.component';
+import '../components/invitation-notification-modal.component';
+import '../components/movie-match-modal.component';
+import '../components/movie-match-result-modal.component';
 
 export interface AppState {
     deps?: {
@@ -68,26 +72,20 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     }),
     openSendInvitationModal: createEffect(store, async (deps, _store) => {
         const { modalService } = deps;
-
-        await import('../components/send-invite-modal.component');
         modalService.open({ tag: 'send-invite-modal-component' });
     }),
     openReceivedInvitationModal: createEffect(store, async (deps, _store, fromTag: string) => {
         const { modalService } = deps;
-
-        await import('../components/invitation-notification-modal.component');
         modalService.open({ tag: 'invitation-notification-modal-component', props: { tag: fromTag } });
     }),
     openStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
         const { modalService } = deps;
 
-        await import('../components/movie-match-modal.component');
         modalService.open({ tag: 'movie-match-modal-component', props: { movies } });
     }),
     openMovieMatchModal: createEffect(store, async (deps, _store, movie: Movie) => {
         const { modalService } = deps;
 
-        await import('../components/movie-match-result-modal.component');
         modalService.open({ tag: 'movie-match-result-modal', props: { movie } });
     }),
     closeModal: createEffect(store, async (deps, _store) => {
