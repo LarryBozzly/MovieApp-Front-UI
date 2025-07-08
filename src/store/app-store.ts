@@ -83,10 +83,17 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         modalService.open({ tag: 'movie-match-modal-component', props: { movies } });
     }),
-    openMovieMatchModal: createEffect(store, async (deps, _store, movie: Movie) => {
+    openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie) => {
         const { modalService } = deps;
+        const { closeModal } = store.getState();
 
-        modalService.open({ tag: 'movie-match-result-modal', props: { movie } });
+        modalService.open({
+            tag: 'movie-match-result-modal',
+            props: {
+                movie,
+                onClose: closeModal,
+            }
+        });
     }),
     closeModal: createEffect(store, async (deps, _store) => {
         const { modalService } = deps;

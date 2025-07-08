@@ -50,7 +50,7 @@ export default class ModalService {
         this.contentContainer = contentContainer;
     }
 
-    open(content: ModalContent, onCloseCallback?: () => void): void {
+    open(content: ModalContent): void {
         // Remove everything except the close form
         [...this.contentContainer.children].forEach((child) => {
             if (child.tagName !== 'FORM') {
@@ -95,26 +95,10 @@ export default class ModalService {
         }
 
         this.contentContainer.appendChild(element);
-
-        if (onCloseCallback) {
-            this.onClose(onCloseCallback);
-        }
-
         this.modal.showModal();
     }
 
     close(): void {
         this.modal.close();
-    }
-
-    /**
-     * Registers a one-time close event listener on the modal
-     */
-    onClose(callback: () => void): void {
-        const handler = () => {
-            callback();
-            this.modal.removeEventListener('close', handler);
-        };
-        this.modal.addEventListener('close', handler);
     }
 }
