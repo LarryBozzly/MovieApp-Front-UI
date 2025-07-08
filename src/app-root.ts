@@ -11,10 +11,6 @@ import { authStore } from './store/auth-store';
 import WebSocketService from './services/websocket.service';
 import ModalService from './services/modal.service';
 import './components/loading-overlay.component';
-import './components/send-invite-modal.component';
-import './components/invitation-notification-modal.component';
-import './components/movie-match-modal.component';
-import './components/movie-match-result-modal.component';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
