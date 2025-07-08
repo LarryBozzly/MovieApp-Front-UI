@@ -13,11 +13,23 @@ export class LoadingOverlayComponent extends LitElement {
     ${tailwindStyles}
   `;
 
+  updated() {
+    if (this.overLayLoading) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }
+
+  get overLayLoading() {
+    return this.isLoading || !this.isWSConnected;
+  }
+
   render() {
     return html`
-      ${this.isLoading || !this.isWSConnected
+      ${this.overLayLoading
         ? html`
-            <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-50 overflow-hidden">
+            <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-50">
               <span class="loading loading-spinner text-white w-16 h-16"></span>
             </div>
           `
