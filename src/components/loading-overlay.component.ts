@@ -2,13 +2,15 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
-import { authStore, selectIsLoading, selectIsWSConnected } from '../store/auth-store';
+import { authStore, selectIsAuthorized, selectIsLoading, selectIsWSConnected } from '../store/auth-store';
 
 @customElement('loading-overlay-component')
 export class LoadingOverlayComponent extends LitElement {
   @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
   @watchWithSelector({ store: authStore, selector: selectIsWSConnected }) readonly isWSConnected!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
 
+  
   static styles = css`
     ${tailwindStyles}
   `;
@@ -22,7 +24,7 @@ export class LoadingOverlayComponent extends LitElement {
   }
 
   get overLayLoading() {
-    return this.isLoading || (this.isLoading && !this.isWSConnected)
+    return this.isLoading || (this.isAuthorized && !this.isWSConnected)
   }
 
   render() {
