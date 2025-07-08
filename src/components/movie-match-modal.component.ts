@@ -60,6 +60,11 @@ export class MovieMatchModalComponent extends LitElement {
             />
             <div class="p-4 space-y-1">
               <h3 class="text-xl font-semibold truncate">${movie.title}</h3>
+              <div class="flex items-center gap-2 mt-2">
+                <span class="text-yellow-500">★</span>
+                <span class="text-sm text-gray-600">${movie.vote_average.toFixed(2)}</span>
+                <span class="badge badge-outline">${movie.popularity}</span>
+              </div>
               <p class="text-sm text-gray-600 line-clamp-3">
                 ${movie.overview || 'No description available.'}
               </p>

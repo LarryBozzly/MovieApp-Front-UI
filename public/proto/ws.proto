@@ -47,12 +47,12 @@ message Movie {
   string original_language = 5;
   string original_title = 6;
   string overview = 7;
-  float popularity = 8;
+  double popularity = 8;
   string poster_path = 9;
   string release_date = 10;
   string title = 11;
   bool video = 12;
-  float vote_average = 13;
+  double vote_average = 13;
   uint32 vote_count = 14;
 }
 
