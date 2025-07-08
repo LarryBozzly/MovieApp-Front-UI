@@ -2,7 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
-import { authStore, selectIsAuthorized, selectIsWSConnected, selectTag, type AuthState } from '../store/auth-store';
+import { authStore, selectIsAuthorized, selectTag, type AuthState } from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '../store/app-store';
 
@@ -12,7 +12,6 @@ export class NavbarComponent extends LitElement {
   @watch(appStore) appState!: AppState;
   @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
   @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
-  @watchWithSelector({ store: authStore, selector: selectIsWSConnected }) readonly isWSConnected!: boolean;
 
   static styles = css`
   ${tailwindStyles}
@@ -41,7 +40,7 @@ export class NavbarComponent extends LitElement {
     return html`
     <div class="navbar bg-base-100 shadow-sm sticky top-0 left-0 w-full z-50">
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl">MovieApp   Is WSConnected: ${this.isWSConnected}</a>
+        <a class="btn btn-ghost text-xl">Movviator</a>
       </div>
         ${this.isAuthorized ? html`
         <div class="flex-none">
