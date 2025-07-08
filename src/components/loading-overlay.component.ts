@@ -22,14 +22,14 @@ export class LoadingOverlayComponent extends LitElement {
   }
 
   get overLayLoading() {
-    return this.isLoading || !this.isWSConnected;
+    return this.isLoading || (this.isLoading && !this.isWSConnected)
   }
 
   render() {
     return html`
       ${this.overLayLoading
         ? html`
-            <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-50">
+            <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-50 pointer-events-none">
               <span class="loading loading-spinner text-white w-16 h-16"></span>
             </div>
           `

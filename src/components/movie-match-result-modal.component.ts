@@ -2,15 +2,21 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
+import { appStore } from '../store/app-store';
 
 @customElement('movie-match-result-modal')
 export class MovieMatchResultModal extends LitElement {
+
+
   static styles = css`
       ${tailwindStyles}
   `;
 
   @property({ type: Object }) movie!: Movie;
 
+  private async close() {
+    await appStore.getState().closeModal();
+  }
   render() {
     return html`
        <div class="p-6 space-y-6">
@@ -31,7 +37,8 @@ export class MovieMatchResultModal extends LitElement {
             <p class="text-gray-700">${this.movie.overview || 'No description available.'}</p>
 
             <button
-              class="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+             @click=${this.close}
+              class="btn btn-primary w-full"
             >
               Close
             </button>
