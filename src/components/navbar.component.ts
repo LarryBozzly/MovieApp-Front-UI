@@ -49,11 +49,9 @@ export class NavbarComponent extends LitElement {
         ${this.isAuthorized ? html`
         <div class="flex-none">
           <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-              <div class="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase">
+                  ${this.tag?.[0] ?? '?'}
               </div>
             </div>
             <ul
