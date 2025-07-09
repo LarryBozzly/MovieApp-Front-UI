@@ -18,8 +18,10 @@ export interface AuthState {
     isLoading: boolean;
     tag: string;
     isWSConnected: boolean;
+    error: Error | null;
     storeInit: (deps: Required<AuthState>['deps']) => void;
     setAuthorization: (status: boolean) => void;
+    setError: (error: Error | null) => void;
     setLoading: (loading: boolean) => void;
     setWSConnected: (isWSConnected: boolean) => void;
     setTag: (tag: string) => void;
@@ -37,16 +39,18 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     deps: undefined,
     tag: '',
     isWSConnected: false,
+    error: null,
     // reducers
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),
+    setError: (error: Error | null) => set({ error }),
     setWSConnected: (isWSConnected: boolean) => set({ isWSConnected }),
     setTag: (tag: string) => set({ tag }),
     setAuthorization: (status: boolean) => set({ isAuthorized: status }),
     // effects
     login: createEffect(store, async (deps, store, loginData) => {
         const { httpService, authService, webSocketService } = deps;
-        const { setLoading, setAuthorization, setTag } = store.getState();
+        const { setLoading, setAuthorization, setTag, setError } = store.getState();
 
         setLoading(true);
 
@@ -56,6 +60,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const isAuthorized = await authService.isAuthorized();
         setLoading(false);
         setAuthorization(isAuthorized);
+        setError(error);
 
         if (error) return;
 
@@ -79,7 +84,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     }),
     refresh: createEffect(store, async (deps, store) => {
         const { httpService, webSocketService, authService } = deps;
-        const { setLoading, setAuthorization, setTag } = store.getState();
+        const { setLoading, setAuthorization, setTag, setError } = store.getState();
 
         setLoading(true);
 
@@ -91,6 +96,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         await webSocketService.connect(env.VITE_WS_URL, wsToken)
 
         setLoading(false);
+        setError(error);
 
         if (error) return;
 
@@ -134,5 +140,6 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 // selectors 
 export const selectIsAuthorized = (state: AuthState) => state.isAuthorized;
 export const selectIsLoading = (state: AuthState) => state.isLoading;
+export const selectError = (state: AuthState) => state.error;
 export const selectTag = (state: AuthState) => state.tag;
 export const selectIsWSConnected = (state: AuthState) => state.isWSConnected;

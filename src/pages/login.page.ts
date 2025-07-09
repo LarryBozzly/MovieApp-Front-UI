@@ -3,12 +3,13 @@ import { customElement } from 'lit/decorators.js';
 import { watch, watchWithSelector } from 'zustand-lit';
 import '../components/trending-movies.component';
 import { tailwindStyles } from '../utils/app.constants';
-import { authStore, selectIsLoading, type AuthState } from '../store/auth-store';
+import { authStore, selectError, selectIsLoading, type AuthState } from '../store/auth-store';
 
 @customElement('login-page')
 export class LoginPage extends LitElement {
   @watch(authStore) authState!: AuthState;
   @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectError }) readonly error!: Error | null;
 
   static styles = css`
     ${tailwindStyles}
@@ -23,40 +24,57 @@ export class LoginPage extends LitElement {
     await this.authState.login({ email, password, remember: true });
   }
 
+  private clearError() {
+    if (this.error) {
+      this.authState.setError(null);
+    }
+  }
+
   render() {
     return html`
-      <div class="min-h-screen flex items-center justify-center bg-gray-100">
-        <div class="card w-full max-w-md bg-white shadow-xl">
-          <div class="card-body">
-            <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
-            <form @submit="${this.handleSubmit}" class="flex flex-col gap-4">
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                required
-                autocomplete="username"
-                class="input input-bordered w-full"
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                required
-                autocomplete="current-password"
-                class="input input-bordered w-full"
-              />
-              <button
-                ?disabled=${this.isLoading}
-                type="submit"
-                class="btn btn-primary w-full"
-              >
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+      <div class="card w-full max-w-md bg-white shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
+
+          ${this.error
+        ? html`
+                <div class="alert alert-error text-sm">
+                  <span>${this.error.message}</span>
+                </div>
+              `
+        : null}
+
+          <form @submit=${this.handleSubmit} class="flex flex-col gap-4">
+            <input
+              @input=${this.clearError}
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              autocomplete="username"
+              class="input input-bordered w-full"
+            />
+            <input
+              @input=${this.clearError}
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              autocomplete="current-password"
+              class="input input-bordered w-full"
+            />
+            <button
+              ?disabled=${this.isLoading}
+              type="submit"
+              class="btn btn-primary w-full"
+            >
                 ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
-              </button>
-            </form>
-          </div>
+            </button>
+          </form>
         </div>
       </div>
-    `;
+    </div>
+  `;
   }
 }
