@@ -36,11 +36,15 @@ export class NavbarComponent extends LitElement {
     Router.go('/profile');
   }
 
+  private redirectToHome() {
+    Router.go('/');
+  }
+
   render() {
     return html`
     <div class="navbar bg-base-100 shadow-sm sticky top-0 left-0 w-full z-50">
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl">Movviator</a>
+        <a @click="${this.redirectToHome}" class="btn btn-ghost text-xl text-primary">Movviator</a>
       </div>
         ${this.isAuthorized ? html`
         <div class="flex-none">
@@ -56,13 +60,13 @@ export class NavbarComponent extends LitElement {
               tabindex="0"
               class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
               <li>
-                <a @click="${this.redirectToProfile}" class="justify-between">
+                <a @click="${this.redirectToProfile}" class="justify-between text-primary font-semibold">
                   Profile
                 </a>
               </li>
-              <li><a @click="${this.copyTagToClipboard}">Tag: ${this.tag}</a></li>
-              <li><a @click="${this.sendInvitationRequest}">Send Invite</a></li>
-              <li><a @click="${this.logout}" >Logout</a></li>
+              <li><a class="text-primary font-semibold" @click="${this.copyTagToClipboard}">Tag: ${this.tag}</a></li>
+              <li><a class="text-primary font-semibold" @click="${this.sendInvitationRequest}">Send Invite</a></li>
+              <li><a class="text-primary font-semibold" @click="${this.logout}" >Logout</a></li>
             </ul>
           </div>
         </div>
