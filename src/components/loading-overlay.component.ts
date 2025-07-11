@@ -24,7 +24,6 @@ export class LoadingOverlayComponent extends LitElement {
   }
 
   get overLayLoading() {
-    return true;
     return this.isLoading || (this.isAuthorized && !this.isWSConnected)
   }
 
