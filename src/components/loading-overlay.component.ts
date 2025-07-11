@@ -10,7 +10,7 @@ export class LoadingOverlayComponent extends LitElement {
   @watchWithSelector({ store: authStore, selector: selectIsWSConnected }) readonly isWSConnected!: boolean;
   @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
 
-  
+
   static styles = css`
     ${tailwindStyles}
   `;
@@ -24,19 +24,20 @@ export class LoadingOverlayComponent extends LitElement {
   }
 
   get overLayLoading() {
+    return true;
     return this.isLoading || (this.isAuthorized && !this.isWSConnected)
   }
 
   render() {
     return html`
-      ${this.overLayLoading
+    ${this.overLayLoading
         ? html`
-            <div style="z-index:999;" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 pointer-events-none">
-              <span class="loading loading-spinner text-white w-16 h-16"></span>
-            </div>
-          `
+          <div style="z-index:999;" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65">
+            <span class="loading loading-spinner text-white w-16 h-16"></span>
+          </div>
+        `
         : null}
-    `;
+  `;
   }
 }
 
