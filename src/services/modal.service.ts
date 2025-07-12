@@ -95,7 +95,7 @@ export default class ModalService {
         }
 
         this.contentContainer.appendChild(element);
-        this.modal.showModal();
+        this.modal.show();
     }
 
     close(): void {

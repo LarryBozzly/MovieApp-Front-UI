@@ -29,14 +29,14 @@ export class LoadingOverlayComponent extends LitElement {
 
   render() {
     return html`
-    ${this.overLayLoading
+      ${this.overLayLoading
         ? html`
-          <div style="z-index:999;" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65">
-            <span class="loading loading-spinner text-white w-16 h-16"></span>
-          </div>
-        `
+            <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-[9999]">
+              <span class="loading loading-spinner text-white w-16 h-16"></span>
+            </div>
+          `
         : null}
-  `;
+    `;
   }
 }
 
