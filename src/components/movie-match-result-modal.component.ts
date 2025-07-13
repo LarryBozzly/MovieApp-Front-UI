@@ -27,7 +27,7 @@ export class MovieMatchResultModal extends LitElement {
             <img
               src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
               alt="${this.movie.title}"
-              class="w-full h-80 object-cover rounded-lg shadow-md"
+              class="w-full h-80 object-contain rounded-lg shadow-md"
             />
 
             <h3 class="text-2xl font-semibold truncate">${this.movie.title}</h3>

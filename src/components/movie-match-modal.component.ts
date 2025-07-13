@@ -66,7 +66,7 @@ export class MovieMatchModalComponent extends LitElement {
         <img
           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
           alt="${movie.title}"
-          class="w-full h-72 object-cover"
+          class="w-full h-72 object-contain"
         />
 
         <div class="p-4 space-y-2">
