@@ -53,6 +53,7 @@ export default class WebSocketService {
                     console.error('❌ WebSocket error:', error);
                     this.isConnected = false;
                     await authStore.getState().setWSConnected(false);
+                    await appStore.getState().closeModal();
                     reject(error);
                 };
 
@@ -60,6 +61,7 @@ export default class WebSocketService {
                     console.warn('🔌 WebSocket disconnected');
                     this.isConnected = false;
                     await authStore.getState().setWSConnected(false);
+                    await appStore.getState().closeModal();
                     this.startReconnectPolling();
                 };
 
@@ -128,6 +130,7 @@ export default class WebSocketService {
         this.socket?.close();
         this.isConnected = false;
         authStore.getState().setWSConnected(false);
+        appStore.getState().closeModal();
 
         if (this.reconnectIntervalId) {
             clearInterval(this.reconnectIntervalId);
