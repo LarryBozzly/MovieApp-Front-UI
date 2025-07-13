@@ -32,7 +32,6 @@ export default class ModalService {
             modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
             modalBox.style.paddingRight = 'env(safe-area-inset-right)';
             modalBox.style.boxSizing = 'border-box';
-            modalBox.style.maxHeight = '100dvh';
             modalBox.style.overflowY = 'auto';
 
             const closeForm = document.createElement('form');
