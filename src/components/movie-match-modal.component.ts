@@ -14,15 +14,27 @@ export class MovieMatchModalComponent extends LitElement {
   `;
 
   @property({ type: Array }) movies: Movie[] = [];
+
   @state() private currentIndex = 0;
   @state() private showFullOverview = false;
 
+  private get currentMovie(): Movie | undefined {
+    return this.movies[this.currentIndex];
+  }
+
+  private get needsReadMore(): boolean {
+    return (this.currentMovie?.overview?.length || 0) > 130;
+  }
+
+  private toggleOverview() {
+    this.showFullOverview = !this.showFullOverview;
+  }
+
   private async swipe(direction: MovieMatchDirection) {
-    const movie = this.movies[this.currentIndex];
+    const movie = this.currentMovie;
     if (!movie) return;
 
     this.showFullOverview = false;
-
     this.currentIndex++;
 
     if (direction === MovieMatchDirection.Like) {
@@ -30,22 +42,8 @@ export class MovieMatchModalComponent extends LitElement {
     }
 
     if (this.currentIndex === this.movies.length) {
-      // here send message to server that user has finished reviewing movies
+      // All movies reviewed – trigger completion event or notify server
     }
-  }
-
-  private toggleOverview() {
-    this.showFullOverview = !this.showFullOverview;
-  }
-
-  private get currentMovie(): Movie | undefined {
-    return this.movies[this.currentIndex];
-  }
-
-  private get needsReadMore(): boolean {
-    if (!this.currentMovie) return false;
-
-    return (this.currentMovie.overview?.length || 0) > 130;
   }
 
   render() {
@@ -61,52 +59,58 @@ export class MovieMatchModalComponent extends LitElement {
     }
 
     return html`
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Do you like this movie?</h2>
-        <div class="rounded-xl overflow-hidden shadow-lg bg-white border border-gray-100">
-          <img
-            src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
-            alt="${movie.title}"
-            class="w-full h-72 object-cover"
-          />
-          <div class="p-4 space-y-2">
-            <h3 class="text-xl font-bold text-gray-900 truncate">${movie.title}</h3>
-            <div class="flex items-center gap-3">
-              <span class="text-yellow-500 text-lg">★</span>
-              <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
-              <span class="badge badge-outline text-sm bg-gray-100 text-gray-600 border-gray-200">
-                Popularity: ${movie.popularity.toFixed(0)}
-              </span>
-            </div>
-            
-            <div 
-              class="relative text-sm text-gray-600 leading-relaxed transition-[max-height] duration-300 ease-out 
-                     ${this.showFullOverview ? 'max-h-[15em] overflow-y-auto' : 'max-h-[4.5em] overflow-hidden'}"
-            >
-              <p>${movie.overview || 'No description available.'}</p>
-            </div>
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Do you like this movie?</h2>
 
-            ${this.needsReadMore ? html` <button @click=${this.toggleOverview} class="text-sm font-medium text-primary mt-2">
-                                             ${this.showFullOverview ? 'Show Less' : 'Read More'}
-                                          </button>
-                    `
-        : ''}
+      <div class="rounded-xl overflow-hidden shadow-lg bg-white border border-gray-100">
+        <img
+          src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
+          alt="${movie.title}"
+          class="w-full h-72 object-cover"
+        />
+
+        <div class="p-4 space-y-2">
+          <h3 class="text-xl font-bold text-gray-900 truncate">${movie.title}</h3>
+
+          <div class="flex items-center gap-3">
+            <span class="text-yellow-500 text-lg">★</span>
+            <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
+            <span class="badge badge-outline text-sm bg-gray-100 text-gray-600 border-gray-200">
+                Popularity: ${movie.percentage_popularity}
+            </span>
           </div>
-        </div>
 
-        <div class="flex justify-between gap-4 pt-4">
-          <button
-            @click=${() => this.swipe(MovieMatchDirection.Dislike)}
-            class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
+          <div
+            class="relative text-sm text-gray-600 leading-relaxed transition-[max-height] duration-300 ease-out 
+                   ${this.showFullOverview ? 'max-h-[15em] overflow-y-auto' : 'max-h-[4.5em] overflow-hidden'}"
           >
-            👎 Dislike
-          </button>
-          <button
-            @click=${() => this.swipe(MovieMatchDirection.Like)}
-            class="btn btn-primary flex-1 text-base font-semibold py-3"
-          >
-            👍 Like
-          </button>
+            <p>${movie.overview || 'No description available.'}</p>
+          </div>
+
+          ${this.needsReadMore
+        ? html`
+                <button @click=${this.toggleOverview} class="text-sm font-medium text-primary mt-2">
+                  ${this.showFullOverview ? 'Show Less' : 'Read More'}
+                </button>
+              `
+        : ''}
         </div>
+      </div>
+
+      <div class="flex justify-between gap-4 pt-4">
+        <button
+          @click=${() => this.swipe(MovieMatchDirection.Dislike)}
+          class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
+        >
+          👎 Dislike
+        </button>
+
+        <button
+          @click=${() => this.swipe(MovieMatchDirection.Like)}
+          class="btn btn-primary flex-1 text-base font-semibold py-3"
+        >
+          👍 Like
+        </button>
+      </div>
     `;
   }
 }
