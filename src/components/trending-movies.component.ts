@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
+import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
 
 @customElement('trending-movies-component')
 export class TrendingMoviesComponent extends LitElement {
@@ -41,7 +42,7 @@ export class TrendingMoviesComponent extends LitElement {
               <div class="flex items-center gap-3 mt-auto">
                 <span class="text-yellow-500 text-lg">★</span>
                 <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
-                <span class="badge badge-outline text-xs bg-gray-100 text-gray-600 border-gray-200">
+                <span class="badge badge-outline text-xs ${getPopularityClasses(movie.percentage_popularity)}">
                   Popularity: ${movie.percentage_popularity}
                 </span>
               </div>

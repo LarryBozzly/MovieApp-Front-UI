@@ -4,6 +4,7 @@ import { MovieMatchDirection, type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
+import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
 
 @customElement('movie-match-modal-component')
 export class MovieMatchModalComponent extends LitElement {
@@ -74,7 +75,7 @@ export class MovieMatchModalComponent extends LitElement {
           <div class="flex items-center gap-3">
             <span class="text-yellow-500 text-lg">★</span>
             <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
-            <span class="badge badge-outline text-sm bg-gray-100 text-gray-600 border-gray-200">
+            <span class="badge badge-outline text-sm ${getPopularityClasses(movie.percentage_popularity)}">
                 Popularity: ${movie.percentage_popularity}
             </span>
           </div>
