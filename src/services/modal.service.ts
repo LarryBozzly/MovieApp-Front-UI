@@ -26,6 +26,15 @@ export default class ModalService {
             modalBox.className = 'modal-box';
             modalBox.id = 'modal-content';
 
+            // ✅ Apply safe-area padding and scrolling support
+            modalBox.style.paddingTop = 'env(safe-area-inset-top)';
+            modalBox.style.paddingBottom = 'env(safe-area-inset-bottom)';
+            modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
+            modalBox.style.paddingRight = 'env(safe-area-inset-right)';
+            modalBox.style.boxSizing = 'border-box';
+            modalBox.style.maxHeight = '100dvh';
+            modalBox.style.overflowY = 'auto';
+
             const closeForm = document.createElement('form');
             closeForm.method = 'dialog';
 
