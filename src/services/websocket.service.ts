@@ -14,6 +14,7 @@ export default class WebSocketService {
     private isConnecting = false;
     private reconnectIntervalId: NodeJS.Timeout | null = null;
     private readonly pollInterval = 3000;
+    private manualDisconnect = false;
 
     async connect(baseUrl: string, wsToken: string | null): Promise<void> {
         if (this.isConnected || this.isConnecting) return;
@@ -62,6 +63,7 @@ export default class WebSocketService {
                     this.isConnected = false;
                     await authStore.getState().setWSConnected(false);
                     await appStore.getState().closeModal();
+                    if (this.manualDisconnect) return this.manualDisconnect = false;
                     this.startReconnectPolling();
                 };
 
@@ -126,7 +128,8 @@ export default class WebSocketService {
         this.send({ movieSelection: { movie } });
     }
 
-    close() {
+    close(manual = false) {
+        this.manualDisconnect = manual;
         this.socket?.close();
         this.isConnected = false;
         authStore.getState().setWSConnected(false);

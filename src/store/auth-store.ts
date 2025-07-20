@@ -73,18 +73,20 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         }
     }),
     logout: createEffect(store, async (deps, store) => {
-        const { httpService } = deps;
+        const { httpService, webSocketService } = deps;
         const { setLoading, setAuthorization } = store.getState();
 
         setLoading(true);
         await tryCatch(httpService.get('/logout'));
         setLoading(false);
         setAuthorization(false);
+        webSocketService.close(true);
+
         Router.go('/login');
     }),
     refresh: createEffect(store, async (deps, store) => {
         const { httpService, webSocketService, authService } = deps;
-        const { setLoading, setAuthorization, setTag, setError } = store.getState();
+        const { setLoading, setAuthorization, setTag, setError, logout } = store.getState();
 
         setLoading(true);
 
@@ -93,8 +95,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         );
 
         const wsToken = await authService.getWsToken();
-        await webSocketService.connect(env.VITE_WS_URL, wsToken)
+        if (!wsToken) await logout();
 
+        await webSocketService.connect(env.VITE_WS_URL, wsToken)
         setLoading(false);
         setError(error);
 
