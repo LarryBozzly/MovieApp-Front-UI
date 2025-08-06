@@ -76,7 +76,7 @@ export class MovieMatchModalComponent extends LitElement {
             <span class="text-yellow-500 text-lg">★</span>
             <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
             <span class="badge badge-outline text-sm ${getPopularityClasses(movie.percentage_popularity)}">
-                Popularity: ${movie.percentage_popularity}
+                Popularity: ${movie.percentage_popularity}$
             </span>
           </div>
 
@@ -94,23 +94,23 @@ export class MovieMatchModalComponent extends LitElement {
                 </button>
               `
         : ''}
+
+         <div class="flex justify-between gap-4 pt-4">
+            <button
+              @click=${() => this.swipe(MovieMatchDirection.Dislike)}
+              class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
+            >
+              👎 Dislike
+            </button>
+
+            <button
+              @click=${() => this.swipe(MovieMatchDirection.Like)}
+              class="btn btn-primary flex-1 text-base font-semibold py-3"
+            >
+              👍 Like
+            </button>
+         </div>
         </div>
-      </div>
-
-      <div class="flex justify-between gap-4 pt-4">
-        <button
-          @click=${() => this.swipe(MovieMatchDirection.Dislike)}
-          class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
-        >
-          👎 Dislike
-        </button>
-
-        <button
-          @click=${() => this.swipe(MovieMatchDirection.Like)}
-          class="btn btn-primary flex-1 text-base font-semibold py-3"
-        >
-          👍 Like
-        </button>
       </div>
     `;
   }

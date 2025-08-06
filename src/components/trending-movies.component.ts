@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
+import { FilledHeartIcon, OutlineHeartIcon } from './icons/icons.ts';
 
 @customElement('trending-movies-component')
 export class TrendingMoviesComponent extends LitElement {
@@ -12,14 +13,31 @@ export class TrendingMoviesComponent extends LitElement {
 
   @property() movies: Movie[] = [];
   @property() isLoading!: boolean;
+  @property({ type: Object }) favorites: Set<number> = new Set();
 
   private formatDate(dateString: string): string {
-    if (!dateString) return 'N/A'; // Handle cases where dateString might be empty
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-GB', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  private handleHeartClick(movie: Movie) {
+    if (this.favorites.has(movie.id)) {
+      this.favorites.delete(movie.id);
+      console.log('Removed from favorites:', movie);
+    } else {
+      this.favorites.add(movie.id);
+      console.log('Added to favorites:', movie);
+    }
+    this.favorites = new Set(this.favorites);
+  }
+
+  private renderHeartIcon(movie: Movie) {
+    const isFavorited = this.favorites.has(movie.id);
+    return isFavorited ? FilledHeartIcon() : OutlineHeartIcon();
   }
 
   render() {
@@ -43,8 +61,15 @@ export class TrendingMoviesComponent extends LitElement {
                 <span class="text-yellow-500 text-lg">★</span>
                 <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
                 <span class="badge badge-outline text-xs ${getPopularityClasses(movie.percentage_popularity)}">
-                  Popularity: ${movie.percentage_popularity}
+                  Popularity: ${movie.percentage_popularity}%
                 </span>
+                <button
+                  @click=${this.handleHeartClick.bind(this, movie)}
+                  class="ml-auto focus:outline-none"
+                  title="Toggle Favorite"
+                >
+                  ${this.renderHeartIcon(movie)}
+                </button>
               </div>
             </div>
           </div>
