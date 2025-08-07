@@ -164,7 +164,6 @@ export default class WebSocketService {
                 await authStore.getState().refresh(); // Triggers WebSocket reconnect if authorized
             } catch {
                 console.warn('📡 Still offline or network error');
-                this.retryAttempts--;
             }
         }, this.pollInterval);
     }
