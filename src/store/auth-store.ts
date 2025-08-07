@@ -90,25 +90,23 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
         setLoading(true);
 
-        const { data, error } = await tryCatch(httpService.get<LoginResponse>('/refresh'));
-
-        if (error) {
-            await logout();
-            return;
-        }
+        const { data, error } = await tryCatch(
+            httpService.get<LoginResponse>('/refresh')
+        );
 
         const wsToken = await authService.getWsToken();
-        if (!wsToken) {
-            await logout();
-            return;
-        }
+        if (!wsToken) await logout();
 
-        await webSocketService.connect(env.VITE_WS_URL, wsToken);
-
+        await webSocketService.connect(env.VITE_WS_URL, wsToken)
         setLoading(false);
-        setAuthorization(true);
-        setTag(data.data.tag);
-        setError(null);
+        setError(error);
+
+        if (error) return;
+
+        if (data) {
+            setAuthorization(true);
+            setTag(data.data.tag);
+        }
     }),
     sendInvitationRequest: createEffect(store, async (deps, _store, toTag: string) => {
         const { webSocketService } = deps;
