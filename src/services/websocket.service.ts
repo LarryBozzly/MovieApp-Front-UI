@@ -15,6 +15,8 @@ export default class WebSocketService {
     private reconnectIntervalId: NodeJS.Timeout | null = null;
     private readonly pollInterval = 3000;
     private manualDisconnect = false;
+    private readonly maxRetries = 3;
+    private retryAttempts = this.maxRetries;
 
     async connect(baseUrl: string, wsToken: string | null): Promise<void> {
         if (this.isConnected || this.isConnecting) return;
@@ -39,6 +41,7 @@ export default class WebSocketService {
                 this.socket.onopen = async () => {
                     console.log('✅ WebSocket connected');
                     this.isConnected = true;
+                    this.retryAttempts = this.maxRetries;
                     await authStore.getState().setWSConnected(true);
 
                     if (this.reconnectIntervalId) {
@@ -147,14 +150,21 @@ export default class WebSocketService {
         console.warn('🔁 Starting reconnect polling...');
 
         this.reconnectIntervalId = setInterval(async () => {
+            if (this.retryAttempts <= 0) {
+                clearInterval(this.reconnectIntervalId!);
+                this.reconnectIntervalId = null;
+                authStore.getState().logout();
+                return;
+            }
+
             try {
-                // Google generate_204 returns 204 with no content, great for online check
                 await fetch('https://www.google.com/generate_204', { mode: 'no-cors' });
 
-                console.log('🌐 Internet available, attempting reconnect...');
-                await authStore.getState().refresh(); // This should re-initiate WebSocket connection
+                this.retryAttempts--;
+                await authStore.getState().refresh(); // Triggers WebSocket reconnect if authorized
             } catch {
                 console.warn('📡 Still offline or network error');
+                this.retryAttempts--;
             }
         }, this.pollInterval);
     }

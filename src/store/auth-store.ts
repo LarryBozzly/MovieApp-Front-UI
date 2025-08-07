@@ -68,12 +68,13 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         await webSocketService.connect(env.VITE_WS_URL, wsToken);
 
         if (isAuthorized) {
+            setError(null);
             setTag(data.data.tag);
             Router.go('/');
         }
     }),
     logout: createEffect(store, async (deps, store) => {
-        const { httpService, webSocketService } = deps;
+        const { httpService, webSocketService, authService } = deps;
         const { setLoading, setAuthorization } = store.getState();
 
         setLoading(true);
@@ -81,6 +82,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         setLoading(false);
         setAuthorization(false);
         webSocketService.close(true);
+        authService.clearAllCookies();
 
         Router.go('/login');
     }),
