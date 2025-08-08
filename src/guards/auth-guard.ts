@@ -19,7 +19,7 @@ export async function authGuard(context: RouteContext, commands: Commands) {
 
     // If still unauthorized and not on /login, redirect login
     if (!isAuthorized && context.pathname !== '/login') {
-        await authStore.getState().logout();
+        return commands.redirect('/login');
     }
 
     return undefined;

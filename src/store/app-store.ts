@@ -4,7 +4,6 @@ import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
 import { tryCatch } from '../utils/try-catch';
-import { Router } from '@vaadin/router';
 import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
 import '../components/send-invite-modal.component';
