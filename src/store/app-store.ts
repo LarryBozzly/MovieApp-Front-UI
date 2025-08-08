@@ -60,10 +60,10 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         setLoading(false);
 
         if (error) {
-            const isAuthorized = await authService.isAuthorized();
+            const isAuthorized = authService.isAuthorized();
             authStore.getState().setAuthorization(isAuthorized);
             if (!isAuthorized) {
-                Router.go('/login');
+                window.location.reload();
             }
             return;
         }
