@@ -64,8 +64,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
         if (error) return;
 
-        const wsToken = await authService.getWsToken();
-        await webSocketService.connect(env.VITE_WS_URL, wsToken);
+        const token = await authService.getToken();
+        await webSocketService.connect(env.VITE_WS_URL, token);
 
         if (isAuthorized) {
             setError(null);
@@ -96,10 +96,10 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
             httpService.get<LoginResponse>('/refresh')
         );
 
-        const wsToken = await authService.getWsToken();
-        if (!wsToken) await logout();
+        const token = await authService.getToken();
+        if (!token) await logout();
 
-        await webSocketService.connect(env.VITE_WS_URL, wsToken)
+        await webSocketService.connect(env.VITE_WS_URL, token)
         setLoading(false);
         setError(error);
 

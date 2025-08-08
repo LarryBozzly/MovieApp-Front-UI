@@ -1,18 +1,13 @@
 class AuthService {
-    private readonly authStatusKey = 'AuthStatus';
-    private readonly wsTokenKey = 'wsToken';  // The cookie name for your websocket token
+    private readonly authStatusKey = 'Authorization';
 
     public isAuthorized(): Promise<boolean> {
-        const status = this.getToken();
-        return Promise.resolve(status === "1");
+        const token = this.getToken();
+        return Promise.resolve(!!token);
     }
 
     getToken(): string | null {
         return this.getCookie(this.authStatusKey);
-    }
-
-    getWsToken(): string | null {
-        return this.getCookie(this.wsTokenKey);
     }
 
     private getCookie(name: string): string | null {
