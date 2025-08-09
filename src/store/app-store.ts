@@ -45,27 +45,18 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
     // effects
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
-        const { httpService, authService, authStore } = deps;
+        const { httpService } = deps;
         const { setPage, setLoading, setMovies } = store.getState();
         setPage(page);
         setLoading(true);
 
         const params = { language: 'en-US', page };
 
-        const { data, error } = await tryCatch(
+        const { data } = await tryCatch(
             httpService.get<MoviesResponse>('/movie/now_playing', params)
         );
 
         setLoading(false);
-
-        if (error) {
-            const isAuthorized = authService.isAuthorized();
-            authStore.getState().setAuthorization(isAuthorized);
-            if (!isAuthorized) {
-                window.location.reload();
-            }
-            return;
-        }
         const movies = data?.results ?? [];
         setMovies(movies);
     }),

@@ -10,6 +10,7 @@ import AuthService from './services/auth.service';
 import { authStore } from './store/auth-store';
 import WebSocketService from './services/websocket.service';
 import ModalService from './services/modal.service';
+import DeviceInfoService from './services/device-info.service';
 import './components/loading-overlay.component';
 
 @customElement('app-root')
@@ -33,7 +34,7 @@ export class AppRoot extends LitElement {
   private initAppStore() {
     appStore.getInitialState().storeInit({
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
-      authService: new AuthService(),
+      authService: AuthService.getInstance(),
       authStore,
       modalService: new ModalService(),
     });
@@ -42,8 +43,9 @@ export class AppRoot extends LitElement {
   private initAuthStore() {
     authStore.getInitialState().storeInit({
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
-      authService: new AuthService(),
+      authService: AuthService.getInstance(),
       webSocketService: new WebSocketService(),
+      deviceInfoService: new DeviceInfoService(),
     });
   }
 
@@ -51,6 +53,8 @@ export class AppRoot extends LitElement {
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
+
+    authStore.getState().initDeviceVisibilityListener();
   }
 
   render() {

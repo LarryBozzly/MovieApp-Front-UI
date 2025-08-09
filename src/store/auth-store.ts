@@ -6,6 +6,7 @@ import { tryCatch } from '../utils/try-catch';
 import { Router } from '@vaadin/router';
 import { createEffect } from '../utils/create-effect.functions';
 import type WebSocketService from '../services/websocket.service';
+import type DeviceInfoService from '../services/device-info.service';
 import { env } from '../config';
 
 export interface AuthState {
@@ -13,6 +14,7 @@ export interface AuthState {
         httpService: HttpService;
         authService: AuthService;
         webSocketService: WebSocketService;
+        deviceInfoService: DeviceInfoService;
     };
     isAuthorized: boolean;
     isLoading: boolean;
@@ -31,6 +33,7 @@ export interface AuthState {
     sendInvitationRequest: (toTag: string) => Promise<void>;
     sendInvitationResponse: (toTag: string, fromTag: string) => Promise<void>;
     sendMovieSelection: (movie: Movie) => Promise<void>;
+    initDeviceVisibilityListener: () => Promise<void>;
 }
 
 export const authStore = createStore<AuthState>((set, _get, store) => ({
@@ -68,6 +71,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         await webSocketService.connect(env.VITE_WS_URL, token);
 
         if (isAuthorized) {
+            authService.startRefreshTimer();
             setError(null);
             setTag(data.data.tag);
             Router.go('/');
@@ -82,6 +86,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         setLoading(false);
         setAuthorization(false);
         webSocketService.close(true);
+        authService.stopRefreshTimer();
         authService.clearAllCookies();
 
         Router.go('/login');
@@ -106,6 +111,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         if (error) return;
 
         if (data) {
+            authService.startRefreshTimer();
             setAuthorization(true);
             setTag(data.data.tag);
         }
@@ -139,6 +145,17 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         }
 
         webSocketService.sendMovieSelection(movie);
+    }),
+    initDeviceVisibilityListener: createEffect(store, async (deps, store) => {
+        const { deviceInfoService, webSocketService, authService } = deps;
+        const { refresh } = store.getState();
+
+        deviceInfoService.onVisibilityChange((isForeground) => {
+            const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
+            const isWSConnected = store.getState().isWSConnected;
+            if (hasRefreshTokenFlag && isWSConnected && !isForeground) webSocketService.close(true);
+            if (hasRefreshTokenFlag && isForeground) refresh();
+        });
     }),
 }));
 
