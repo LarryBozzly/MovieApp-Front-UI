@@ -53,13 +53,13 @@ export class TrendingMoviesComponent extends LitElement {
               />
             </figure>
             <div class="card-body p-4 flex flex-col flex-grow">
-              <h2 class="card-title text-xl font-bold text-gray-900 mb-1 leading-tight line-clamp-2">
+              <h2 class="card-title text-xl font-bold text-base-content mb-1 leading-tight line-clamp-2">
                 ${movie.title}
               </h2>
-              <p class="text-sm text-gray-600 mb-2">${this.formatDate(movie.release_date)}</p>
+              <p class="text-sm text-base-content/50 mb-2">${this.formatDate(movie.release_date)}</p>
               <div class="flex items-center gap-3 mt-auto">
                 <span class="text-yellow-500 text-lg">★</span>
-                <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
+                <span class="text-base text-base-content/70 font-medium">${movie.vote_average.toFixed(1)}</span>
                 <span class="badge badge-outline text-xs ${getPopularityClasses(movie.percentage_popularity)}">
                   Popularity: ${movie.percentage_popularity}%
                 </span>
