@@ -3,19 +3,23 @@ import AuthService from "../services/auth.service";
 import { authStore } from "../store/auth-store";
 
 export async function authGuard(context: RouteContext, commands: Commands) {
-    const isAuthorized = await AuthService.getInstance().isAuthorized();
+  const authService = await AuthService.getInstance();
 
-    if (isAuthorized && !authStore.getState().isAuthorized) {
-        await authStore.getState().refresh();
+  if (authService.isAuthorized() && !authStore.getState().isAuthorized) {
+    await authStore.getState().refresh();
+  }
+
+  if (!authService.isAuthorized() && authService.hasRefreshTokenFlag()) {
+    await authStore.getState().refresh();
+  }
+
+  if (!authService.isAuthorized()) {
+    if (context.pathname !== "/login") {
+      return commands.redirect("/login");
     }
-
-    if (!isAuthorized) {
-        if (context.pathname !== '/login') {
-            return commands.redirect('/login');
-        }
-        // If already on /login, do nothing (allow navigation)
-        return undefined;
-    }
-
+    // If already on /login, do nothing (allow navigation)
     return undefined;
+  }
+
+  return undefined;
 }
