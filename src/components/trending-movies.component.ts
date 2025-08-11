@@ -42,7 +42,7 @@ export class TrendingMoviesComponent extends LitElement {
 
   render() {
     return html`
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         ${this.movies.map(movie => html`
           <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
             <figure class="flex-shrink-0">
