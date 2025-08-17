@@ -55,6 +55,7 @@ export class AppRoot extends LitElement {
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
+    window.addEventListener("online", () => window.location.reload());
   }
 
   render() {
