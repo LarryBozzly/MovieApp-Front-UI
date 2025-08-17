@@ -55,15 +55,14 @@ export class AppRoot extends LitElement {
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
-    // Trigger window.online reload only once
-    const handleOnline = () => {
-      console.log("Back online! Reloading to hydrate app...");
-      window.removeEventListener("online", handleOnline); // remove listener after first trigger
-      window.location.reload(); // reload app to fully hydrate
-    };
-
-    // Only add listener if we started offline
+    // Only attach the online-reload logic if the app starts offline
     if (!navigator.onLine) {
+      const handleOnline = () => {
+        console.log("Back online! Reloading to hydrate app...");
+        window.removeEventListener("online", handleOnline); // remove listener immediately
+        window.location.reload(); // reload app to fully hydrate
+      };
+
       window.addEventListener("online", handleOnline);
     }
   }
