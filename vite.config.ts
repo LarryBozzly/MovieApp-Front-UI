@@ -21,7 +21,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       workbox: {
-        runtimeCaching: [], // 🚀 no caching at all (pure network)
+        runtimeCaching: [], 
       },
     }),
   ],
