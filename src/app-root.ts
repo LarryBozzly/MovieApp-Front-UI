@@ -1,19 +1,19 @@
-import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { router } from './routes';
-import './components/navbar.component';
-import { tailwindStyles } from './utils/app.constants';
-import { env } from './config';
-import { appStore } from './store/app-store';
-import HttpService from './services/http.service';
-import AuthService from './services/auth.service';
-import { authStore } from './store/auth-store';
-import WebSocketService from './services/websocket.service';
-import ModalService from './services/modal.service';
-import DeviceInfoService from './services/device-info.service';
-import './components/loading-overlay.component';
+import { LitElement, css, html } from "lit";
+import { customElement } from "lit/decorators.js";
+import { router } from "./routes";
+import "./components/navbar.component";
+import { tailwindStyles } from "./utils/app.constants";
+import { env } from "./config";
+import { appStore } from "./store/app-store";
+import HttpService from "./services/http.service";
+import AuthService from "./services/auth.service";
+import { authStore } from "./store/auth-store";
+import WebSocketService from "./services/websocket.service";
+import ModalService from "./services/modal.service";
+import DeviceInfoService from "./services/device-info.service";
+import "./components/loading-overlay.component";
 
-@customElement('app-root')
+@customElement("app-root")
 export class AppRoot extends LitElement {
   static styles = css`
     ${tailwindStyles}
@@ -25,8 +25,8 @@ export class AppRoot extends LitElement {
   `;
 
   private initRouter() {
-    const outlet = document.createElement('div');
-    outlet.id = 'outlet';
+    const outlet = document.createElement("div");
+    outlet.id = "outlet";
     this.shadowRoot!.appendChild(outlet);
     router.setOutlet(outlet);
   }
@@ -55,7 +55,17 @@ export class AppRoot extends LitElement {
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
-    window.addEventListener("online", () => window.location.reload());
+    // Trigger window.online reload only once
+    const handleOnline = () => {
+      console.log("Back online! Reloading to hydrate app...");
+      window.removeEventListener("online", handleOnline); // remove listener after first trigger
+      window.location.reload(); // reload app to fully hydrate
+    };
+
+    // Only add listener if we started offline
+    if (!navigator.onLine) {
+      window.addEventListener("online", handleOnline);
+    }
   }
 
   render() {
@@ -68,6 +78,6 @@ export class AppRoot extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'app-root': AppRoot;
+    "app-root": AppRoot;
   }
 }
