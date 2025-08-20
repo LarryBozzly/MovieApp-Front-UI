@@ -64,7 +64,7 @@ export class AppRoot extends LitElement {
   }
 
   async firstUpdated() {
-    await waitForOnline();
+    await this.waitForOnline();
 
     this.initRouter();
     this.initAuthStore();
