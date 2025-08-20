@@ -2,22 +2,7 @@ import type { Commands, RouteContext } from "@vaadin/router";
 import AuthService from "../services/auth.service";
 import { authStore } from "../store/auth-store";
 
-async function waitForOnlineOnce(): Promise<void> {
-  return new Promise((resolve) => {
-    if (navigator.onLine) {
-      resolve();
-    } else {
-      const handleOnline = () => {
-        window.removeEventListener("online", handleOnline);
-        resolve();
-      };
-      window.addEventListener("online", handleOnline);
-    }
-  });
-}
-
 export async function authGuard(context: RouteContext, commands: Commands) {
-  await waitForOnlineOnce();
   const authService = await AuthService.getInstance();
 
   if (authService.isAuthorized() && !authStore.getState().isAuthorized) {
