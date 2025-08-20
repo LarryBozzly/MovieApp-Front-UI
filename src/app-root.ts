@@ -49,23 +49,7 @@ export class AppRoot extends LitElement {
     });
   }
 
-  private waitForOnline(): Promise<void> {
-    return new Promise((resolve) => {
-      if (navigator.onLine) {
-        resolve(); // already online
-      } else {
-        const handleOnline = () => {
-          window.removeEventListener("online", handleOnline);
-          resolve(); // resolve once network is back
-        };
-        window.addEventListener("online", handleOnline);
-      }
-    });
-  }
-
-  async firstUpdated() {
-    await this.waitForOnline();
-
+  firstUpdated() {
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
