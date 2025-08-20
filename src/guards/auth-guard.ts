@@ -7,12 +7,12 @@ async function waitForOnlineOnce(): Promise<void> {
 
   return new Promise((resolve) => {
     if (navigator.onLine) {
-      setLoading(false);
+      authStore.getState().setLoading(false);
       resolve();
     } else {
       const handleOnline = () => {
         window.removeEventListener("online", handleOnline);
-        setLoading(false);
+        authStore.getState().setLoading(false);
         resolve();
       };
       window.addEventListener("online", handleOnline);
