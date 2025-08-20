@@ -49,22 +49,28 @@ export class AppRoot extends LitElement {
     });
   }
 
-  firstUpdated() {
+  private waitForOnline(): Promise<void> {
+    return new Promise((resolve) => {
+      if (navigator.onLine) {
+        resolve(); // already online
+      } else {
+        const handleOnline = () => {
+          window.removeEventListener("online", handleOnline);
+          resolve(); // resolve once network is back
+        };
+        window.addEventListener("online", handleOnline);
+      }
+    });
+  }
+
+  async firstUpdated() {
+    await waitForOnline();
+
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
-    // Only attach the online-reload logic if the app starts offline
-    if (!navigator.onLine) {
-      const handleOnline = () => {
-        console.log("Back online! Reloading to hydrate app...");
-        window.removeEventListener("online", handleOnline); // remove listener immediately
-        window.location.reload(); // reload app to fully hydrate
-      };
-
-      window.addEventListener("online", handleOnline);
-    }
   }
 
   render() {
