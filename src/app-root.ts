@@ -55,9 +55,6 @@ export class AppRoot extends LitElement {
 
       const handleOnline = () => {
         window.removeEventListener("online", handleOnline);
-        authStore.getState().setLoading(false);
-
-        console.log("Back online! Navigating to home to hydrate app...");
         window.location.href = '/'; // hardcoded to home
       };
 
