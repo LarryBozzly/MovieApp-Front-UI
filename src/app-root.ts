@@ -57,8 +57,8 @@ export class AppRoot extends LitElement {
         window.removeEventListener("online", handleOnline);
         authStore.getState().setLoading(false);
 
-        console.log("Back online! Reloading to hydrate app...");
-        window.location.reload(); // reload app to fully hydrate
+        console.log("Back online! Navigating to home to hydrate app...");
+        window.location.href = '/'; // hardcoded to home
       };
 
       window.addEventListener("online", handleOnline);
