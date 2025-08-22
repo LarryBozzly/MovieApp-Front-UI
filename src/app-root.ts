@@ -50,31 +50,27 @@ export class AppRoot extends LitElement {
   }
 
   firstUpdated() {
-    const startApp = () => {
-      this.initRouter();
-      this.initAuthStore();
-      this.initAppStore();
-      authStore.getState().initDeviceVisibilityListener();
-    };
+    if (!navigator.onLine) {
+      authStore.getState().setLoading(true);
 
-    // If online, just start app normally
-    if (navigator.onLine) {
-      startApp();
-      return;
+      const handleOnline = () => {
+        window.removeEventListener("online", handleOnline);
+        authStore.getState().setLoading(false);
+
+        console.log("Back online! Reloading to hydrate app...");
+        window.location.reload(); // reload app to fully hydrate
+      };
+
+      window.addEventListener("online", handleOnline);
+
+      return; // stop app initialization until we are online
     }
 
-    // If offline on first load, go into "waiting for network" mode
-    authStore.getState().setLoading(true);
+    this.initRouter();
+    this.initAuthStore();
+    this.initAppStore();
 
-    const handleOnline = () => {
-      window.removeEventListener("online", handleOnline);
-      authStore.getState().setLoading(false);
-
-      // Reload to fully hydrate cached code
-      window.location.reload();
-    };
-
-    window.addEventListener("online", handleOnline);
+    authStore.getState().initDeviceVisibilityListener();
   }
 
   render() {
