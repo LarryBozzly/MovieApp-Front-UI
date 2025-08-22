@@ -24,6 +24,23 @@ export class AppRoot extends LitElement {
     }
   `;
 
+  private static waitedOnce = false; // <-- flag to only wait once per app lifecycle
+
+  private async waitForOnlineOnce(): Promise<void> {
+    if (AppRoot.waitedOnce) return; // skip if already done
+    AppRoot.waitedOnce = true;
+
+    if (navigator.onLine) return;
+
+    return new Promise((resolve) => {
+      const handleOnline = () => {
+        window.removeEventListener("online", handleOnline);
+        resolve();
+      };
+      window.addEventListener("online", handleOnline);
+    });
+  }
+
   private initRouter() {
     const outlet = document.createElement("div");
     outlet.id = "outlet";
@@ -49,7 +66,11 @@ export class AppRoot extends LitElement {
     });
   }
 
-  firstUpdated() {
+  async firstUpdated() {
+    // wait for online only once
+    await this.waitForOnlineOnce();
+
+    // then init the app
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
