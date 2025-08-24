@@ -40,6 +40,21 @@ export class AppRoot extends LitElement {
     });
   }
 
+  private waitForOnline(path = "/") {
+    if (!navigator.onLine) {
+      authStore.getState().setLoading(true);
+      window.addEventListener(
+        "online",
+        () => {
+          window.location.href = path;
+        },
+        { once: true }
+      );
+      return true;
+    }
+    return false;
+  }
+
   private initAuthStore() {
     authStore.getInitialState().storeInit({
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
@@ -50,18 +65,7 @@ export class AppRoot extends LitElement {
   }
 
   firstUpdated() {
-    if (!navigator.onLine) {
-      authStore.getState().setLoading(true);
-
-      const handleOnline = () => {
-        window.removeEventListener("online", handleOnline);
-        window.location.href = '/'; // hardcoded to home
-      };
-
-      window.addEventListener("online", handleOnline);
-
-      return; // stop app initialization until we are online
-    }
+    if (this.waitForOnline("/")) return;
 
     this.initRouter();
     this.initAuthStore();
