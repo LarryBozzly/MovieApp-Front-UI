@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import type { Movie, MoviesResponse } from '../models/models';
+import type { FavoriteMoviesIdsResponse, FavoriteMoviesResponse, Movie, MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -20,12 +20,17 @@ export interface AppState {
     };
     page: number;
     movies: Movie[];
+    favoritesIds: Record<number, boolean>;
     isLoading: boolean;
     storeInit: (deps: Required<AppState>['deps']) => void;
     setLoading: (loading: boolean) => void;
     setPage: (value: number) => void;
     setMovies: (movies: Movie[]) => void;
+    setFavoritesIds: (ids: Record<number, boolean>) => void;
     fetchTrendingMovies: (page: number) => Promise<void>;
+    fetchFavoritesIds: () => Promise<void>;
+    addToFavorites: (movie: Movie) => Promise<void>;
+    removeFromFavorites: (movie: Movie) => Promise<void>;
     openSendInvitationModal: () => Promise<void>;
     openReceivedInvitationModal: (fromTag: string) => Promise<void>;
     openStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
@@ -36,6 +41,7 @@ export interface AppState {
 export const appStore = createStore<AppState>((set, _get, store) => ({
     page: 1,
     movies: [],
+    favoritesIds: {},
     isLoading: false,
     deps: undefined,
     // reducers
@@ -43,7 +49,9 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
-    // effects
+    setFavoritesIds: (ids: Record<number, boolean>) => set(() => ({
+        favoritesIds: { ...ids },
+    })),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
         const { setPage, setLoading, setMovies } = store.getState();
@@ -59,6 +67,57 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         setLoading(false);
         const movies = data?.results ?? [];
         setMovies(movies);
+    }),
+    fetchFavoritesIds: createEffect(store, async (deps, store) => {
+        const { httpService } = deps;
+        const { setLoading, setFavoritesIds } = store.getState();
+        setLoading(true);
+
+        const { data } = await tryCatch(
+            httpService.get<FavoriteMoviesIdsResponse>('/movie/favorites/ids')
+        );
+
+        setLoading(false);
+        if (data?.mediaIds.length) {
+            const idsRecord = Object.fromEntries(
+                data.mediaIds.map(id => [id, true])
+            );
+            setFavoritesIds(idsRecord);
+        }
+    }),
+    addToFavorites: createEffect(store, async (deps, store, movie: Movie) => {
+        const { httpService } = deps;
+        const { setLoading, setFavoritesIds } = store.getState();
+        setLoading(true);
+
+        const body = { mediaId: movie.id };
+
+        const { data } = await tryCatch(
+            httpService.post<FavoriteMoviesResponse>('/movie/favorites', body)
+        );
+
+        setLoading(false);
+        if (data && data.success) {
+            const currentFavorites = selectFavoriteIds(store.getState());
+            setFavoritesIds({ ...currentFavorites, [movie.id]: true });
+        }
+    }),
+    removeFromFavorites: createEffect(store, async (deps, store, movie: Movie) => {
+        const { httpService } = deps;
+        const { setLoading, setFavoritesIds } = store.getState(); // get current state
+        setLoading(true);
+
+        const { data } = await tryCatch(
+            httpService.delete<FavoriteMoviesResponse>(`/movie/favorites/${movie.id}`)
+        );
+
+        setLoading(false);
+
+        if (data && data.success) {
+            const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
+            delete currentFavorites[movie.id];
+            setFavoritesIds(currentFavorites);
+        }
     }),
     openSendInvitationModal: createEffect(store, async (deps, _store) => {
         const { modalService } = deps;
@@ -94,4 +153,5 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 // selectors 
 export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectMovies = (state: AppState) => state.movies;
+export const selectFavoriteIds = (state: AppState) => state.favoritesIds;
 export const selectPage = (state: AppState) => state.page;

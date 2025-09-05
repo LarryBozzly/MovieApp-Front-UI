@@ -4,16 +4,18 @@ import type { Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
 import { FilledHeartIcon, OutlineHeartIcon } from './icons/icons.ts';
+import { appStore, selectFavoriteIds } from '../store/app-store.ts';
+import { watchWithSelector } from 'zustand-lit';
 
 @customElement('trending-movies-component')
 export class TrendingMoviesComponent extends LitElement {
+  @watchWithSelector({ store: appStore, selector: selectFavoriteIds }) readonly favoritesIds!: Record<number, boolean>;
   static styles = css`
     ${tailwindStyles}
   `;
 
   @property() movies: Movie[] = [];
   @property() isLoading!: boolean;
-  @property({ type: Object }) favorites: Set<number> = new Set();
 
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
@@ -24,19 +26,15 @@ export class TrendingMoviesComponent extends LitElement {
     });
   }
 
-  private handleHeartClick(movie: Movie) {
-    if (this.favorites.has(movie.id)) {
-      this.favorites.delete(movie.id);
-      console.log('Removed from favorites:', movie);
-    } else {
-      this.favorites.add(movie.id);
-      console.log('Added to favorites:', movie);
-    }
-    this.favorites = new Set(this.favorites);
+  private async handleHeartClick(movie: Movie): Promise<void> {
+    const { addToFavorites, removeFromFavorites } = appStore.getState();
+    const isFavorited = !!this.favoritesIds[movie.id];
+
+    await (isFavorited ? removeFromFavorites(movie) : addToFavorites(movie));
   }
 
   private renderHeartIcon(movie: Movie) {
-    const isFavorited = this.favorites.has(movie.id);
+    const isFavorited = Boolean(this.favoritesIds[movie.id]);
     return isFavorited ? FilledHeartIcon() : OutlineHeartIcon();
   }
 

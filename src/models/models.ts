@@ -61,3 +61,16 @@ export interface LoginResponse {
 export interface CheckLoginResponse {
   message: string;
 }
+
+export interface FavoriteMoviesResponse {
+  success: boolean;
+  status_code: number;
+  status_message: string;
+  list_id: number;
+  errors?: string[];
+}
+
+export interface FavoriteMoviesIdsResponse {
+  mediaIds: number[];
+}
+
