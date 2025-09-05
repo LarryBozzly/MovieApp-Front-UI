@@ -74,3 +74,7 @@ export interface FavoriteMoviesIdsResponse {
   mediaIds: number[];
 }
 
+export interface FavoriteState {
+  isFavorite: boolean;
+  isLoading: boolean;
+}

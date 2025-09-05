@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import type { FavoriteMoviesIdsResponse, FavoriteMoviesResponse, Movie, MoviesResponse } from '../models/models';
+import type { FavoriteMoviesIdsResponse, FavoriteMoviesResponse, FavoriteState, Movie, MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -20,13 +20,13 @@ export interface AppState {
     };
     page: number;
     movies: Movie[];
-    favoritesIds: Record<number, boolean>;
+    favoritesIds: Record<number, FavoriteState>;
     isLoading: boolean;
     storeInit: (deps: Required<AppState>['deps']) => void;
     setLoading: (loading: boolean) => void;
     setPage: (value: number) => void;
     setMovies: (movies: Movie[]) => void;
-    setFavoritesIds: (ids: Record<number, boolean>) => void;
+    setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
     fetchTrendingMovies: (page: number) => Promise<void>;
     fetchFavoritesIds: () => Promise<void>;
     addToFavorites: (movie: Movie) => Promise<void>;
@@ -49,8 +49,11 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
-    setFavoritesIds: (ids: Record<number, boolean>) => set(() => ({
-        favoritesIds: { ...ids },
+    setFavoritesIds: (ids: Record<number, FavoriteState>) => set((state) => ({
+        favoritesIds: {
+            ...state.favoritesIds,
+            ...ids,
+        },
     })),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
@@ -79,45 +82,58 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         setLoading(false);
         if (data?.mediaIds.length) {
-            const idsRecord = Object.fromEntries(
-                data.mediaIds.map(id => [id, true])
-            );
+            const idsRecord: Record<number, FavoriteState> = {};
+            data.mediaIds.forEach((id) => {
+                idsRecord[id] = { isFavorite: true, isLoading: false };
+            });
+
             setFavoritesIds(idsRecord);
         }
     }),
     addToFavorites: createEffect(store, async (deps, store, movie: Movie) => {
         const { httpService } = deps;
         const { setLoading, setFavoritesIds } = store.getState();
+
+        const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
+        const prev = currentFavorites[movie.id];
+
         setLoading(true);
+        setFavoritesIds({
+            [movie.id]: { isFavorite: prev?.isFavorite ?? false, isLoading: true },
+        });
 
         const body = { mediaId: movie.id };
-
         const { data } = await tryCatch(
             httpService.post<FavoriteMoviesResponse>('/movie/favorites', body)
         );
 
         setLoading(false);
-        if (data && data.success) {
-            const currentFavorites = selectFavoriteIds(store.getState());
-            setFavoritesIds({ ...currentFavorites, [movie.id]: true });
-        }
+        setFavoritesIds({
+            [movie.id]: { isFavorite: data?.success ?? false, isLoading: false },
+        });
+
     }),
     removeFromFavorites: createEffect(store, async (deps, store, movie: Movie) => {
         const { httpService } = deps;
-        const { setLoading, setFavoritesIds } = store.getState(); // get current state
+        const { setLoading, setFavoritesIds } = store.getState();
+
+        const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
+        const prev = currentFavorites[movie.id];
+
         setLoading(true);
+        setFavoritesIds({
+            [movie.id]: { isFavorite: prev?.isFavorite ?? true, isLoading: true },
+        });
+
 
         const { data } = await tryCatch(
             httpService.delete<FavoriteMoviesResponse>(`/movie/favorites/${movie.id}`)
         );
 
         setLoading(false);
-
-        if (data && data.success) {
-            const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
-            delete currentFavorites[movie.id];
-            setFavoritesIds(currentFavorites);
-        }
+        setFavoritesIds({
+            [movie.id]: { isFavorite: data?.success ? false : true, isLoading: false },
+        });
     }),
     openSendInvitationModal: createEffect(store, async (deps, _store) => {
         const { modalService } = deps;

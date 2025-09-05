@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { Movie } from '../models/models';
+import type { FavoriteState, Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
 import { FilledHeartIcon, OutlineHeartIcon } from './icons/icons.ts';
@@ -9,7 +9,7 @@ import { watchWithSelector } from 'zustand-lit';
 
 @customElement('trending-movies-component')
 export class TrendingMoviesComponent extends LitElement {
-  @watchWithSelector({ store: appStore, selector: selectFavoriteIds }) readonly favoritesIds!: Record<number, boolean>;
+  @watchWithSelector({ store: appStore, selector: selectFavoriteIds }) readonly favoritesIds!: Record<number, FavoriteState>
   static styles = css`
     ${tailwindStyles}
   `;
@@ -28,13 +28,15 @@ export class TrendingMoviesComponent extends LitElement {
 
   private async handleHeartClick(movie: Movie): Promise<void> {
     const { addToFavorites, removeFromFavorites } = appStore.getState();
-    const isFavorited = !!this.favoritesIds[movie.id];
+    const isFavorited = Boolean(this.favoritesIds[movie.id]?.isFavorite);
 
     await (isFavorited ? removeFromFavorites(movie) : addToFavorites(movie));
   }
 
   private renderHeartIcon(movie: Movie) {
-    const isFavorited = Boolean(this.favoritesIds[movie.id]);
+    const favoriteListItem = this.favoritesIds[movie.id];
+    if (favoriteListItem?.isLoading) return html`<span class="loading loading-spinner w-5 h-5 text-primary"></span>`;
+    const isFavorited = Boolean(favoriteListItem?.isFavorite);
     return isFavorited ? FilledHeartIcon() : OutlineHeartIcon();
   }
 
