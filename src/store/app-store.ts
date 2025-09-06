@@ -27,6 +27,7 @@ export interface AppState {
     setPage: (value: number) => void;
     setMovies: (movies: Movie[]) => void;
     setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
+    onInit: () => Promise<void>;
     fetchTrendingMovies: (page: number) => Promise<void>;
     fetchFavoritesIds: () => Promise<void>;
     addToFavorites: (movie: Movie) => Promise<void>;
@@ -55,6 +56,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
             ...ids,
         },
     })),
+    onInit: createEffect(store, async (_deps, store) => {
+        const { setLoading, fetchFavoritesIds, fetchTrendingMovies, page } = store.getState();
+        setLoading(true);
+        await fetchFavoritesIds();
+        setLoading(true);
+        await fetchTrendingMovies(page);
+        setLoading(false);
+    }),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
         const { setPage, setLoading, setMovies } = store.getState();

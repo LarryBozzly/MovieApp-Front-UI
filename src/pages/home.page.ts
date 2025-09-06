@@ -33,10 +33,7 @@ export class HomePage extends LitElement {
 
   async firstUpdated() {
     if (!this.movies.length) {
-      await Promise.all([
-        this.appState.fetchFavoritesIds(),
-        this.appState.fetchTrendingMovies(this.page),
-      ]);
+      this.appState.onInit();
     }
     this.setupInfiniteScroll();
   }
