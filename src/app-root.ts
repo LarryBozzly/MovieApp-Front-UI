@@ -40,19 +40,31 @@ export class AppRoot extends LitElement {
     });
   }
 
-  private waitForOnline(path = "/") {
+  // private waitForOnline(path = "/") {
+  //   if (!navigator.onLine) {
+  //     authStore.getState().setLoading(true);
+  //     window.addEventListener(
+  //       "online",
+  //       () => {
+  //         window.location.href = path;
+  //       },
+  //       { once: true }
+  //     );
+  //     return true;
+  //   }
+  //   return false;
+  // }
+  private waitForOnline(path = "/"): boolean {
     if (!navigator.onLine) {
-      authStore.getState().setLoading(true);
-      window.addEventListener(
-        "online",
-        () => {
-          window.location.href = path;
-        },
-        { once: true }
-      );
-      return true;
+      authStore.getState().setLoading(true); // optional loading state
+      const onOnline = () => {
+        window.removeEventListener("online", onOnline);
+        window.location.href = path; // reload app
+      };
+      window.addEventListener("online", onOnline, { once: true });
+      return true; // tell firstUpdated to stop initialization
     }
-    return false;
+    return false; // online, proceed
   }
 
   private initAuthStore() {
