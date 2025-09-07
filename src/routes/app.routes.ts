@@ -5,6 +5,7 @@ import { authGuard } from "../guards/auth-guard";
 import { loginGuard } from "../guards/login-guard";
 import { onlineGuard } from "../guards/online-guard";
 import "../pages/login.page";
+import { composeGuards } from "../utils/compose-guards";
 
 const children: Route[] = [...homeViews, ...profileViews];
 
@@ -12,11 +13,11 @@ export const routes: Route[] = [
   {
     path: "",
     children,
-    action: [onlineGuard, authGuard],
+    action: composeGuards(onlineGuard, authGuard),
   },
   {
     path: "/login",
     component: "login-page",
-    action: [onlineGuard, loginGuard],
+    action: composeGuards(onlineGuard, loginGuard),
   },
 ];
