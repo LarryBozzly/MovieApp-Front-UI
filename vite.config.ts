@@ -24,7 +24,17 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true,
         globDirectory: "dist/",
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,md}"]
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,md}"],
+        runtimeCaching: [
+          {
+            // Catch-all: match any request that is NOT a local asset
+            urlPattern: ({ url }) => {
+              return !url.pathname.match(/\.(js|css|html|ico|png|svg)$/);
+            },
+            handler: "NetworkOnly", // never cache API calls
+            method: "GET",
+          },
+        ],
       },
     }),
   ],
