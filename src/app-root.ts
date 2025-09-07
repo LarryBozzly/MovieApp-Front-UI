@@ -40,20 +40,20 @@ export class AppRoot extends LitElement {
     });
   }
 
-  private waitForOnline(path = "/") {
-    if (!navigator.onLine) {
-      authStore.getState().setLoading(true);
-      window.addEventListener(
-        "online",
-        () => {
-          window.location.href = path;
-        },
-        { once: true }
-      );
-      return true;
-    }
-    return false;
-  }
+  // private waitForOnline(path = "/") {
+  //   if (!navigator.onLine) {
+  //     authStore.getState().setLoading(true);
+  //     window.addEventListener(
+  //       "online",
+  //       () => {
+  //         window.location.href = path;
+  //       },
+  //       { once: true }
+  //     );
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   private initAuthStore() {
     authStore.getInitialState().storeInit({
@@ -65,7 +65,7 @@ export class AppRoot extends LitElement {
   }
 
   firstUpdated() {
-    if (this.waitForOnline("/")) return;
+    // if (this.waitForOnline("/")) return;
 
     this.initRouter();
     this.initAuthStore();
