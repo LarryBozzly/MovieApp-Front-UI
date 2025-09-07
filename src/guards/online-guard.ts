@@ -1,25 +1,17 @@
-import type { Commands, RouteContext } from "@vaadin/router";
-import { Router } from "@vaadin/router";
+import type { Commands, RouteContext, PreventResult } from "@vaadin/router";
 
-export function onlineGuard(context: RouteContext, commands: Commands) {
-  if (!navigator.onLine) {
-    // Wait for online event
-    window.addEventListener(
-      "online",
-      () => {
-        // Once online, retry the navigation to the same path
-        Router.go(context.pathname);
-      },
-      { once: true }
-    );
+export function onlineGuard(context: RouteContext, commands: Commands): PreventResult | undefined {
+  if (navigator.onLine) return undefined; // online, allow navigation
 
-    // Optionally show a message overlay
-    alert("You are offline. The app will reload when back online.");
+  alert("You are offline. The app will resume when back online.");
 
-    // Prevent the current navigation until online
-    return commands.prevent();
-  }
+  const resumeRoute = () => {
+    window.removeEventListener("online", resumeRoute);
+    // reload the page to the same path
+    window.location.href = context.pathname;
+  };
 
-  // Allow navigation if online
-  return undefined;
+  window.addEventListener("online", resumeRoute);
+
+  return commands.prevent(); // stop navigation for now
 }
