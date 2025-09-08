@@ -1,4 +1,3 @@
-// vite.config.ts
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -22,9 +21,10 @@ export default defineConfig({
       registerType: "autoUpdate",
       injectRegister: "auto",
       workbox: {
-        cleanupOutdatedCaches: true,
-        globDirectory: "dist/",
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,md}"]
+        runtimeCaching: [],          // no caching
+        navigateFallback: "/index.html",
+        skipWaiting: true,           // activate new SW immediately
+        clientsClaim: true,          // take control of all pages
       },
     }),
   ],
