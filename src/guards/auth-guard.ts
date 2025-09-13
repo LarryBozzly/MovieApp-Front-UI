@@ -3,32 +3,9 @@ import AuthService from "../services/auth.service";
 import { authStore } from "../store/auth-store";
 
 export async function authGuard(context: RouteContext, commands: Commands) {
-  // 1️⃣ Check if offline first
-  if (!navigator.onLine) {
-    // Enter loading state
-    authStore.getState().setLoading(true);
-
-    // Wait for internet to come back before retrying auth
-    window.addEventListener(
-      "online",
-      async () => {
-        authStore.getState().setLoading(false);
-        // Retry refresh when back online
-        const authService = await AuthService.getInstance();
-        if (!authService.isAuthorized() && authService.hasRefreshTokenFlag()) {
-          await authStore.getState().refresh();
-        }
-      },
-      { once: true }
-    );
-
-    // Stay on current route, do not redirect
-    return undefined;
-  }
-
-  // 2️⃣ Normal auth flow (online)
   const authService = await AuthService.getInstance();
 
+  // Refresh store if needed
   if (authService.isAuthorized() && !authStore.getState().isAuthorized) {
     await authStore.getState().refresh();
   }
@@ -37,12 +14,20 @@ export async function authGuard(context: RouteContext, commands: Commands) {
     await authStore.getState().refresh();
   }
 
+  // Only redirect to login if user is NOT authorized
   if (!authService.isAuthorized()) {
-    if (context.pathname !== "/login") {
-      return commands.redirect("/login");
+    // ✅ Only redirect if online
+    if (navigator.onLine) {
+      if (context.pathname !== "/login") {
+        return commands.redirect("/login");
+      }
+    } else {
+      // Offline: optionally set a loading state
+      authStore.getState().setLoading(true);
+      // Stay on current page and wait for network
+      return undefined;
     }
-    return undefined; // already on login, allow
   }
 
-  return undefined; // authorized, allow navigation
+  return undefined; // Authorized or offline → allow navigation
 }
