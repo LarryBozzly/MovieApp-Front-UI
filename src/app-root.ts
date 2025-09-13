@@ -64,7 +64,7 @@ export class AppRoot extends LitElement {
     });
   }
 
-  firstUpdated() {
+  private bootstrapApp() {
     if (this.waitForOnline("/")) return;
 
     this.initRouter();
@@ -72,6 +72,26 @@ export class AppRoot extends LitElement {
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
+  }
+
+  async firstUpdated() {
+    // 🔑 Service Worker readiness check
+    if ("serviceWorker" in navigator) {
+      if (navigator.onLine) {
+        this.bootstrapApp(); // online → go immediately
+      } else {
+        // offline → wait until SW is ready
+        const registration = await navigator.serviceWorker.ready;
+        if (registration.active) {
+          this.bootstrapApp();
+        } else {
+          // fallback if no SW is active
+          this.bootstrapApp();
+        }
+      }
+    } else {
+      this.bootstrapApp(); // no SW support
+    }
   }
 
   render() {

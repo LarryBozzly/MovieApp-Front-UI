@@ -20,7 +20,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      injectRegister: "auto",
+      injectRegister: "script",
       workbox: {
         cleanupOutdatedCaches: true,
         globDirectory: "dist/",
