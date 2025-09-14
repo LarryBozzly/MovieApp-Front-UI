@@ -7,8 +7,8 @@ import { Router } from '@vaadin/router';
 import { createEffect } from '../utils/create-effect.functions';
 import type WebSocketService from '../services/websocket.service';
 import type DeviceInfoService from '../services/device-info.service';
+import type ConnectivityService from '../services/connectivity.service';
 import { env } from '../config';
-import { waitForInternet } from '../utils/network';
 
 export interface AuthState {
     deps?: {
@@ -16,6 +16,7 @@ export interface AuthState {
         authService: AuthService;
         webSocketService: WebSocketService;
         deviceInfoService: DeviceInfoService;
+        connectivityService: ConnectivityService;
     };
     isAuthorized: boolean;
     isLoading: boolean;
@@ -148,14 +149,14 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         webSocketService.sendMovieSelection(movie);
     }),
     initDeviceVisibilityListener: createEffect(store, async (deps, store) => {
-        const { deviceInfoService, webSocketService, authService } = deps;
+        const { deviceInfoService, webSocketService, authService, connectivityService } = deps;
         const { refresh } = store.getState();
 
         deviceInfoService.onVisibilityChange(async (isForeground) => {
             const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
             const isWSConnected = store.getState().isWSConnected;
             if (hasRefreshTokenFlag && isWSConnected && !isForeground) webSocketService.close(true);
-            if (hasRefreshTokenFlag && isForeground && await waitForInternet()) refresh();
+            if (hasRefreshTokenFlag && isForeground && await connectivityService.waitForInternet()) refresh();
         });
     }),
 }));

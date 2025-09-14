@@ -11,6 +11,7 @@ import { authStore } from "./store/auth-store";
 import WebSocketService from "./services/websocket.service";
 import ModalService from "./services/modal.service";
 import DeviceInfoService from "./services/device-info.service";
+import ConnectivityService from "./services/connectivity.service";
 import "./components/loading-overlay.component";
 
 @customElement("app-root")
@@ -61,6 +62,7 @@ export class AppRoot extends LitElement {
       authService: AuthService.getInstance(),
       webSocketService: new WebSocketService(),
       deviceInfoService: new DeviceInfoService(),
+      connectivityService: ConnectivityService.getInstance(),
     });
   }
 
