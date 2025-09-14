@@ -8,6 +8,7 @@ import { createEffect } from '../utils/create-effect.functions';
 import type WebSocketService from '../services/websocket.service';
 import type DeviceInfoService from '../services/device-info.service';
 import { env } from '../config';
+import { hasInternet } from '../utils/has-internet';
 
 export interface AuthState {
     deps?: {
@@ -150,11 +151,11 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const { deviceInfoService, webSocketService, authService } = deps;
         const { refresh } = store.getState();
 
-        deviceInfoService.onVisibilityChange((isForeground) => {
+        deviceInfoService.onVisibilityChange(async (isForeground) => {
             const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
             const isWSConnected = store.getState().isWSConnected;
             if (hasRefreshTokenFlag && isWSConnected && !isForeground) webSocketService.close(true);
-            if (hasRefreshTokenFlag && isForeground) refresh();
+            if (hasRefreshTokenFlag && isForeground && await hasInternet()) refresh();
         });
     }),
 }));
