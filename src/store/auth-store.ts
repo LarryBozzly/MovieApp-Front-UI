@@ -95,8 +95,6 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const { httpService, webSocketService, authService } = deps;
         const { setLoading, setAuthorization, setTag, setError, logout } = store.getState();
 
-        if (!navigator.onLine) return;
-
         setLoading(true);
 
         const { data, error } = await tryCatch(
@@ -106,7 +104,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const token = await authService.getToken();
         if (!token) await logout();
 
-        await webSocketService.connect(env.VITE_WS_URL, token);
+        await webSocketService.connect(env.VITE_WS_URL, token)
         setLoading(false);
         setError(error);
 
