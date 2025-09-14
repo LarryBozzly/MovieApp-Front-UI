@@ -5,6 +5,7 @@ import { authStore } from "../store/auth-store";
 export async function authGuard(context: RouteContext, commands: Commands) {
   const authService = await AuthService.getInstance();
 
+  // Refresh store if needed
   if (authService.isAuthorized() && !authStore.getState().isAuthorized) {
     await authStore.getState().refresh();
   }
@@ -13,13 +14,23 @@ export async function authGuard(context: RouteContext, commands: Commands) {
     await authStore.getState().refresh();
   }
 
+  // ❌ Not authorized
   if (!authService.isAuthorized()) {
+    // 🛑 If offline → skip redirect, let user stay on current page
+    if (!navigator.onLine) {
+      console.log("[AuthGuard] Offline → skipping redirect to login");
+      return undefined;
+    }
+
+    // ✅ Online → normal redirect
     if (context.pathname !== "/login") {
       return commands.redirect("/login");
     }
-    // If already on /login, do nothing (allow navigation)
+
+    // Already on /login → allow
     return undefined;
   }
 
+  // Authorized → allow navigation
   return undefined;
 }
