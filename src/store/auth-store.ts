@@ -154,7 +154,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
             const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
             const isWSConnected = store.getState().isWSConnected;
             if (hasRefreshTokenFlag && isWSConnected && !isForeground) webSocketService.close(true);
-            if (hasRefreshTokenFlag && isForeground) refresh();
+            if (hasRefreshTokenFlag && isForeground && navigator.onLine) refresh();
         });
     }),
 }));
