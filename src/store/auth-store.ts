@@ -150,6 +150,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const { deviceInfoService, webSocketService, authService } = deps;
         const { refresh } = store.getState();
 
+        if (!navigator.onLine) return;
+
         deviceInfoService.onVisibilityChange((isForeground) => {
             const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
             const isWSConnected = store.getState().isWSConnected;
