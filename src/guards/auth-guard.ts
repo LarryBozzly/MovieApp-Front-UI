@@ -2,6 +2,19 @@ import type { Commands, RouteContext } from "@vaadin/router";
 import AuthService from "../services/auth.service";
 import { authStore } from "../store/auth-store";
 
+// Helper: wait until online
+async function waitForOnline(): Promise<void> {
+  if (navigator.onLine) return;
+
+  await new Promise<void>((resolve) => {
+    window.addEventListener(
+      "online",
+      () => resolve(),
+      { once: true }
+    );
+  });
+}
+
 export async function authGuard(context: RouteContext, commands: Commands) {
   const authService = await AuthService.getInstance();
 
@@ -16,19 +29,24 @@ export async function authGuard(context: RouteContext, commands: Commands) {
 
   // ❌ Not authorized
   if (!authService.isAuthorized()) {
-    // 🛑 If offline → skip redirect, let user stay on current page
     if (!navigator.onLine) {
-      console.log("[AuthGuard] Offline → skipping redirect to login");
+      console.log("[AuthGuard] Offline → waiting to come online");
+      await waitForOnline();
+      console.log("[AuthGuard] Back online → updating state");
+
+      // ✅ Once back online, trigger refresh
+      await authStore.getState().refresh();
+
+      // Let user stay on current route
       return undefined;
     }
 
-    // ✅ Online → normal redirect
+    // ✅ Online → normal redirect to login
     if (context.pathname !== "/login") {
       return commands.redirect("/login");
     }
 
-    // Already on /login → allow
-    return undefined;
+    return undefined; // Already on /login
   }
 
   // Authorized → allow navigation

@@ -95,8 +95,6 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const { httpService, webSocketService, authService } = deps;
         const { setLoading, setAuthorization, setTag, setError, logout } = store.getState();
 
-        if (!navigator.onLine) return;
-
         setLoading(true);
 
         const { data, error } = await tryCatch(
@@ -153,8 +151,6 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const { refresh } = store.getState();
 
         deviceInfoService.onVisibilityChange((isForeground) => {
-            if (!navigator.onLine) return;
-
             const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
             const isWSConnected = store.getState().isWSConnected;
             if (hasRefreshTokenFlag && isWSConnected && !isForeground) webSocketService.close(true);
