@@ -95,6 +95,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         const { httpService, webSocketService, authService } = deps;
         const { setLoading, setAuthorization, setTag, setError, logout } = store.getState();
 
+        if (!navigator.onLine) return;
+
         setLoading(true);
 
         const { data, error } = await tryCatch(
