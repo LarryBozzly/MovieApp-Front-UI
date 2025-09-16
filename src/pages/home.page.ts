@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import { appStore, selectIsLoading, selectMovies, selectPage, type AppState } from '../store/app-store';
 import '../components/trending-movies.component';
+import '../components/categories.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
 import type { Movie } from '../models/models';
@@ -65,6 +66,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
+      <categories-component></categories-component>
       <trending-movies-component .isLoading=${this.isLoading} .movies="${this.movies}"></trending-movies-component>
       <div id="sentinel" class="w-full"></div>
     `;

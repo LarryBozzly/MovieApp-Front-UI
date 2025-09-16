@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import type { FavoriteMoviesIdsResponse, FavoriteMoviesResponse, FavoriteState, Movie, MoviesResponse } from '../models/models';
+import { MovieCategory, type FavoriteMoviesIdsResponse, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -18,6 +18,7 @@ export interface AppState {
         authStore: StoreApi<AuthState>;
         modalService: ModalService;
     };
+    category: MovieCategory;
     page: number;
     movies: Movie[];
     favoritesIds: Record<number, FavoriteState>;
@@ -45,6 +46,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     favoritesIds: {},
     isLoading: false,
     deps: undefined,
+    category: MovieCategory.TRENDING,
     // reducers
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),

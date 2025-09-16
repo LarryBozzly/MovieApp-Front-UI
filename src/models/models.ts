@@ -78,3 +78,10 @@ export interface FavoriteState {
   isFavorite: boolean;
   isLoading: boolean;
 }
+
+export const MovieCategory = {
+  TRENDING: 'trending',
+  FAVORITES: 'favorites',
+  TOP_RATED: 'top-rated'
+} as const;
+export type MovieCategory = typeof MovieCategory[keyof typeof MovieCategory];
