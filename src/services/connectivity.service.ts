@@ -14,12 +14,22 @@ class ConnectivityService {
     }
 
     /** Check once if internet is reachable */
-    private async check(): Promise<boolean> {
+    private async check(timeoutMs = 5000): Promise<boolean> {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeoutMs);
+
         try {
-            await fetch("https://www.google.com/generate_204", { mode: "no-cors" });
+            // Add cache buster + force no caching
+            await fetch(`https://www.google.com/generate_204?ts=${Date.now()}`, {
+                mode: "no-cors",
+                cache: "no-store",
+                signal: controller.signal,
+            });
             return true;
         } catch {
             return false;
+        } finally {
+            clearTimeout(id);
         }
     }
 
