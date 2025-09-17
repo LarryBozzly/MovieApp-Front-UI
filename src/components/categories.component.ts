@@ -6,6 +6,14 @@ import { tailwindStyles } from '../utils/app.constants';
 export class CategoriesComponent extends LitElement {
   static styles = css`
     ${tailwindStyles}
+    /* Hide scrollbar but keep scroll functionality */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none; 
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */ 
+    }
   `;
 
   // Default categories, but you can pass in others if needed
@@ -30,20 +38,19 @@ export class CategoriesComponent extends LitElement {
 
   render() {
     return html`
-      <div class="flex gap-4 p-4 justify-center">
-        ${this.categories.map(
-          (cat) => html`
+      <div class="flex overflow-x-auto gap-2 sm:gap-4 p-2 sm:p-4 scrollbar-hide">
+        ${this.categories.map((cat) => html`
             <button
-              class="px-4 py-2 rounded-xl font-medium transition
+              class="flex-shrink-0 px-3 py-1 sm:px-4 sm:py-2 rounded-xl font-medium transition text-sm sm:text-base
                 ${this.selectedCategory === cat
-                  ? 'bg-primary text-primary-content shadow'
-                  : 'bg-base-200 hover:bg-base-300 text-base-content'}"
+        ? 'bg-primary text-primary-content shadow'
+        : 'bg-base-200 hover:bg-base-300 text-base-content'}"
               @click=${() => this.handleCategoryClick(cat)}
             >
               ${cat}
             </button>
           `
-        )}
+    )}
       </div>
     `;
   }
