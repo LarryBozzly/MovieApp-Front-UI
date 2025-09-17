@@ -3,7 +3,7 @@ import { env } from "../config";
 class ConnectivityService {
     private static instance: ConnectivityService;
     private internetPromise: Promise<boolean> | null = null;
-    private healthCheckUrl = env.MOVIEDB_API_BASE_URL;
+    private baseUrl = env.MOVIEDB_API_BASE_URL;
 
     // private constructor so it can’t be instantiated directly
     private constructor() { }
@@ -23,7 +23,7 @@ class ConnectivityService {
 
         try {
             // Add cache buster + force no caching
-            await fetch(`${this.healthCheckUrl}?ts=${Date.now()}`, {
+            await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
                 mode: "no-cors",
                 cache: "no-store",
                 signal: controller.signal,

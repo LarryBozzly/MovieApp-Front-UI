@@ -14,11 +14,12 @@ export default class WebSocketService {
     private isConnected = false;
     private isConnecting = false;
     private reconnectIntervalId: NodeJS.Timeout | null = null;
+    private reconnectAbortController: AbortController | null = null;
     private readonly pollInterval = 3000;
     private manualDisconnect = false;
     private readonly maxRetries = 3;
     private retryAttempts = this.maxRetries;
-    private healthCheckUrl = env.MOVIEDB_API_BASE_URL;
+    private baseUrl = env.MOVIEDB_API_BASE_URL;
 
     async connect(baseUrl: string, wsToken: string | null): Promise<void> {
         if (this.isConnected || this.isConnecting) return;
@@ -46,12 +47,7 @@ export default class WebSocketService {
                     this.retryAttempts = this.maxRetries;
                     await authStore.getState().setWSConnected(true);
 
-                    if (this.reconnectIntervalId) {
-                        clearInterval(this.reconnectIntervalId);
-                        this.reconnectIntervalId = null;
-                        console.log('🛑 Stopped reconnect polling');
-                    }
-
+                    this.stopReconnectPolling();
                     resolve();
                 };
 
@@ -140,10 +136,7 @@ export default class WebSocketService {
         authStore.getState().setWSConnected(false);
         appStore.getState().closeModal();
 
-        if (this.reconnectIntervalId) {
-            clearInterval(this.reconnectIntervalId);
-            this.reconnectIntervalId = null;
-        }
+        this.stopReconnectPolling();
     }
 
     private startReconnectPolling() {
@@ -153,14 +146,23 @@ export default class WebSocketService {
 
         this.reconnectIntervalId = setInterval(async () => {
             if (this.retryAttempts <= 0) {
-                clearInterval(this.reconnectIntervalId!);
-                this.reconnectIntervalId = null;
+                this.stopReconnectPolling();
                 authStore.getState().logout();
                 return;
             }
 
+            // cancel any previous in-flight fetch
+            if (this.reconnectAbortController) {
+                this.reconnectAbortController.abort();
+            }
+            this.reconnectAbortController = new AbortController();
+
             try {
-                await fetch(this.healthCheckUrl, { mode: 'no-cors' });
+                await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
+                    mode: 'no-cors',
+                    cache: 'no-store',
+                    signal: this.reconnectAbortController.signal,
+                });
 
                 this.retryAttempts--;
                 await authStore.getState().refresh(); // Triggers WebSocket reconnect if authorized
@@ -168,5 +170,17 @@ export default class WebSocketService {
                 console.warn('📡 Still offline or network error');
             }
         }, this.pollInterval);
+    }
+
+    private stopReconnectPolling() {
+        if (this.reconnectIntervalId) {
+            clearInterval(this.reconnectIntervalId);
+            this.reconnectIntervalId = null;
+            console.log('🛑 Stopped reconnect polling');
+        }
+        if (this.reconnectAbortController) {
+            this.reconnectAbortController.abort();
+            this.reconnectAbortController = null;
+        }
     }
 }
