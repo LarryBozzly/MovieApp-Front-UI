@@ -2,6 +2,7 @@ import protobuf from 'protobufjs';
 import { appStore } from '../store/app-store';
 import type { Movie } from '../models/models';
 import { authStore } from '../store/auth-store';
+import { env } from "../config";
 
 type EventCallback = (data: any) => void;
 
@@ -17,6 +18,7 @@ export default class WebSocketService {
     private manualDisconnect = false;
     private readonly maxRetries = 3;
     private retryAttempts = this.maxRetries;
+    private healthCheckUrl = env.MOVIEDB_API_BASE_URL;
 
     async connect(baseUrl: string, wsToken: string | null): Promise<void> {
         if (this.isConnected || this.isConnecting) return;
@@ -158,7 +160,7 @@ export default class WebSocketService {
             }
 
             try {
-                await fetch('https://www.google.com/generate_204', { mode: 'no-cors' });
+                await fetch(this.healthCheckUrl, { mode: 'no-cors' });
 
                 this.retryAttempts--;
                 await authStore.getState().refresh(); // Triggers WebSocket reconnect if authorized
