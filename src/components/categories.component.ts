@@ -1,14 +1,11 @@
 import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { MovieCategory, MovieCategoryMap } from '../models/models';
-import { watchWithSelector } from 'zustand-lit';
-import { appStore, selectedCategory } from '../store/app-store';
+import { appStore } from '../store/app-store';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {
-  @watchWithSelector({ store: appStore, selector: selectedCategory })
-  readonly selectedCategory!: MovieCategory;
 
   static styles = css`
     ${tailwindStyles}
@@ -21,6 +18,8 @@ export class CategoriesComponent extends LitElement {
       scrollbar-width: none; /* Firefox */ 
     }
   `;
+
+  @property() selectedCategory!: MovieCategory;
 
   private readonly categoriesMap: Record<MovieCategory, string> = MovieCategoryMap;
 

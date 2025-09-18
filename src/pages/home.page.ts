@@ -1,11 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
-import { appStore, selectIsLoading, selectMovies, selectPage, type AppState } from '../store/app-store';
+import { appStore, selectedCategory, selectIsLoading, selectMovies, selectPage, type AppState } from '../store/app-store';
 import '../components/trending-movies.component';
 import '../components/categories.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import type { Movie } from '../models/models';
+import { MovieCategory, type Movie } from '../models/models';
 
 @customElement('home-page')
 export class HomePage extends LitElement {
@@ -13,6 +13,7 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectIsLoading }) readonly isLoading!: boolean;
   @watchWithSelector({ store: appStore, selector: selectMovies }) readonly movies!: Movie[];
   @watchWithSelector({ store: appStore, selector: selectPage }) readonly page!: number;
+  @watchWithSelector({ store: appStore, selector: selectedCategory }) readonly selectedCategory!: MovieCategory;
 
   static styles = css`
    ${tailwindStyles}
@@ -59,6 +60,35 @@ export class HomePage extends LitElement {
     }
   }
 
+  private renderCategoryComponent() {
+    switch (this.selectedCategory) {
+      case MovieCategory.TRENDING:
+        return html`
+          <trending-movies-component
+            .isLoading=${this.isLoading}
+            .movies=${this.movies}>
+          </trending-movies-component>
+        `;
+      case MovieCategory.TOP_RATED:
+        return html`
+          <top-rated-movies-component
+            .isLoading=${this.isLoading}
+            .movies=${this.movies}>
+          </top-rated-movies-component>
+        `;
+      case MovieCategory.FAVORITES:
+        return html`
+          <favorites-movies-component
+            .isLoading=${this.isLoading}
+            .movies=${this.movies}>
+          </favorites-movies-component>
+        `;
+      default:
+        return null;
+    }
+  }
+
+
   disconnectedCallback() {
     super.disconnectedCallback();
     this.observer?.disconnect();
@@ -66,8 +96,8 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <categories-component></categories-component>
-      <trending-movies-component .isLoading=${this.isLoading} .movies="${this.movies}"></trending-movies-component>
+      <categories-component .selectedCategory=${this.selectedCategory}></categories-component>
+      ${this.renderCategoryComponent()}
       <div id="sentinel" class="w-full"></div>
     `;
   }
