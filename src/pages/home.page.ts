@@ -66,6 +66,7 @@ export class HomePage extends LitElement {
         return html`
           <trending-movies-component
             .isLoading=${this.isLoading}
+            .hasHeartIcon=${true}
             .movies=${this.movies}>
           </trending-movies-component>
         `;

@@ -16,6 +16,7 @@ export class TrendingMoviesComponent extends LitElement {
 
   @property() movies: Movie[] = [];
   @property() isLoading!: boolean;
+  @property() hasHeartIcon = true;
 
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
@@ -63,22 +64,26 @@ export class TrendingMoviesComponent extends LitElement {
                 <span class="badge badge-outline text-xs ${getPopularityClasses(movie.percentage_popularity)}">
                   Popularity: ${movie.percentage_popularity}%
                 </span>
-                <button
-                  @click=${this.handleHeartClick.bind(this, movie)}
-                  class="ml-auto focus:outline-none"
-                  title="Toggle Favorite"
-                >
-                  ${this.renderHeartIcon(movie)}
-                </button>
+
+                ${this.hasHeartIcon ? html`
+                  <button
+                    @click=${this.handleHeartClick.bind(this, movie)}
+                    class="ml-auto focus:outline-none"
+                    title="Toggle Favorite"
+                  >
+                    ${this.renderHeartIcon(movie)}
+                  </button>
+                ` : null}
               </div>
             </div>
           </div>
         `)}
+
         ${this.isLoading ? html`
           <div class="col-span-full flex justify-center items-center ${this.movies.length ? 'min-h-[10vh]' : 'min-h-[calc(100vh-theme(spacing.16))]'}">
             <span class="loading loading-dots w-14 text-primary"></span>
           </div>
-        ` : ''}
+        ` : null}
       </div>
     `;
   }
