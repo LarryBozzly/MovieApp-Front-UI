@@ -26,6 +26,7 @@ export interface AppState {
     storeInit: (deps: Required<AppState>['deps']) => void;
     setLoading: (loading: boolean) => void;
     setPage: (value: number) => void;
+    setCategory: (category: MovieCategory) => void;
     setMovies: (movies: Movie[]) => void;
     setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
     onInit: () => Promise<void>;
@@ -51,6 +52,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
+    setCategory: (category: MovieCategory) => set((state) => ({ ...state, category })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
     setFavoritesIds: (ids: Record<number, FavoriteState>) => set((state) => ({
         favoritesIds: {
@@ -182,3 +184,4 @@ export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectMovies = (state: AppState) => state.movies;
 export const selectFavoriteIds = (state: AppState) => state.favoritesIds;
 export const selectPage = (state: AppState) => state.page;
+export const selectedCategory = (state: AppState) => state.category;

@@ -1,9 +1,15 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
+import { MovieCategory, MovieCategoryMap } from '../models/models';
+import { watchWithSelector } from 'zustand-lit';
+import { appStore, selectedCategory } from '../store/app-store';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {
+  @watchWithSelector({ store: appStore, selector: selectedCategory })
+  readonly selectedCategory!: MovieCategory;
+
   static styles = css`
     ${tailwindStyles}
     /* Hide scrollbar but keep scroll functionality */
@@ -16,38 +22,26 @@ export class CategoriesComponent extends LitElement {
     }
   `;
 
-  // Default categories, but you can pass in others if needed
-  @property({ type: Array })
-  categories: string[] = ['Popular', 'Top Rated', 'Upcoming'];
+  private readonly categoriesMap: Record<MovieCategory, string> = MovieCategoryMap;
 
-  @state()
-  private selectedCategory: string = this.categories[0];
-
-  private handleCategoryClick(category: string) {
-    this.selectedCategory = category;
-
-    // Emit event to parent with the selected category
-    this.dispatchEvent(
-      new CustomEvent('category-selected', {
-        detail: { category },
-        bubbles: true,
-        composed: true,
-      })
-    );
+  private handleCategoryClick(category: MovieCategory) {
+    if (category === this.selectedCategory) return;
+    appStore.getState().setCategory(category);
   }
 
   render() {
     return html`
       <div class="flex overflow-x-auto gap-2 sm:gap-4 p-2 sm:p-4 scrollbar-hide">
-        ${this.categories.map((cat) => html`
+        ${Object.entries(this.categoriesMap).map(
+      ([category, label]) => html`
             <button
               class="flex-shrink-0 px-3 py-1 sm:px-4 sm:py-2 rounded-xl font-medium transition text-sm sm:text-base
-                ${this.selectedCategory === cat
-        ? 'bg-primary text-primary-content shadow'
-        : 'bg-base-200 hover:bg-base-300 text-base-content'}"
-              @click=${() => this.handleCategoryClick(cat)}
+                ${this.selectedCategory === category
+          ? 'bg-primary text-primary-content shadow'
+          : 'bg-base-200 hover:bg-base-300 text-base-content'}"
+              @click=${() => this.handleCategoryClick(category as MovieCategory)}
             >
-              ${cat}
+              ${label}
             </button>
           `
     )}

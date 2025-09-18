@@ -85,3 +85,9 @@ export const MovieCategory = {
   TOP_RATED: 'top-rated'
 } as const;
 export type MovieCategory = typeof MovieCategory[keyof typeof MovieCategory];
+
+export const MovieCategoryMap: Record<MovieCategory, string> = {
+  [MovieCategory.TRENDING]: 'Trending',
+  [MovieCategory.TOP_RATED]: 'Top Rated',
+  [MovieCategory.FAVORITES]: 'Favorites',
+};
