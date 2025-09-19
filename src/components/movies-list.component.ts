@@ -1,13 +1,13 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { FavoriteState, Movie } from '../models/models';
-import { tailwindStyles } from '../utils/app.constants';
-import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
+import type { FavoriteState, Movie } from '../models/models.ts';
+import { tailwindStyles } from '../utils/app.constants.ts';
+import { getPopularityClasses } from '../utils/popularity-ui-classes.functions.ts';
 import { FilledHeartIcon, OutlineHeartIcon } from './icons/icons.ts';
 import { appStore, selectFavoriteIds } from '../store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
-@customElement('trending-movies-component')
+@customElement('movies-list-component')
 export class TrendingMoviesComponent extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectFavoriteIds }) readonly favoritesIds!: Record<number, FavoriteState>
   static styles = css`
@@ -91,6 +91,6 @@ export class TrendingMoviesComponent extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'trending-movies-component': TrendingMoviesComponent;
+    'movies-list-component': TrendingMoviesComponent;
   }
 }

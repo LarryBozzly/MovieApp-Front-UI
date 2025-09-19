@@ -1,7 +1,15 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
-import { appStore, selectedCategory, selectIsLoading, selectMovies, selectPage, type AppState } from '../store/app-store';
-import '../components/trending-movies.component';
+import {
+  appStore,
+  selectedCategory,
+  selectIsLoading,
+  selectMovies,
+  selectPage,
+  type AppState
+} from '../store/app-store';
+
+import '../components/movies-list.component';
 import '../components/categories.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
@@ -26,12 +34,12 @@ export class HomePage extends LitElement {
     }
   `;
 
+  get showHeart(): boolean {
+    return this.selectedCategory !== MovieCategory.FAVORITES;
+  }
+
   private observer!: IntersectionObserver;
   @query('#sentinel') private sentinel!: HTMLElement;
-
-  constructor() {
-    super();
-  }
 
   async firstUpdated() {
     if (!this.movies.length) {
@@ -40,12 +48,19 @@ export class HomePage extends LitElement {
     this.setupInfiniteScroll();
   }
 
+  private onCategoryChanged(e: CustomEvent<{ category: MovieCategory }>) {
+    const category = e.detail.category;
+    appStore.getState().setCategory(category);
+    appStore.getState().clearMovies();
+    this.appState.fetchCategoryMovies(category, 1);
+  }
+
   private setupInfiniteScroll() {
     this.observer = new IntersectionObserver(
       async (entries) => {
         const [target] = entries;
         if (target.isIntersecting && !this.isLoading) {
-          await this.appState.fetchTrendingMovies(this.page + 1);
+          await this.appState.fetchCategoryMovies(this.selectedCategory, this.page + 1);
         }
       },
       {
@@ -60,36 +75,6 @@ export class HomePage extends LitElement {
     }
   }
 
-  private renderCategoryComponent() {
-    switch (this.selectedCategory) {
-      case MovieCategory.TRENDING:
-        return html`
-          <trending-movies-component
-            .isLoading=${this.isLoading}
-            .hasHeartIcon=${true}
-            .movies=${this.movies}>
-          </trending-movies-component>
-        `;
-      case MovieCategory.TOP_RATED:
-        return html`
-          <top-rated-movies-component
-            .isLoading=${this.isLoading}
-            .movies=${this.movies}>
-          </top-rated-movies-component>
-        `;
-      case MovieCategory.FAVORITES:
-        return html`
-          <favorites-movies-component
-            .isLoading=${this.isLoading}
-            .movies=${this.movies}>
-          </favorites-movies-component>
-        `;
-      default:
-        return null;
-    }
-  }
-
-
   disconnectedCallback() {
     super.disconnectedCallback();
     this.observer?.disconnect();
@@ -97,9 +82,24 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <categories-component .selectedCategory=${this.selectedCategory}></categories-component>
-      ${this.renderCategoryComponent()}
+      <categories-component 
+        .selectedCategory=${this.selectedCategory}
+        @onCategoryChanged=${this.onCategoryChanged}>
+      </categories-component>
+
+      <movies-list-component
+        .isLoading=${this.isLoading}
+        .hasHeartIcon=${this.showHeart}
+        .movies=${this.movies}>
+      </movies-list-component>
+
       <div id="sentinel" class="w-full"></div>
     `;
+  }
+} 
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'home-page': HomePage;
   }
 }

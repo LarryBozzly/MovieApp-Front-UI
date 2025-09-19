@@ -2,7 +2,6 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { MovieCategory, MovieCategoryMap } from '../models/models';
-import { appStore } from '../store/app-store';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {
@@ -25,7 +24,14 @@ export class CategoriesComponent extends LitElement {
 
   private handleCategoryClick(category: MovieCategory) {
     if (category === this.selectedCategory) return;
-    appStore.getState().setCategory(category);
+
+    this.dispatchEvent(
+      new CustomEvent('onCategoryChanged', {
+        detail: { category },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   render() {

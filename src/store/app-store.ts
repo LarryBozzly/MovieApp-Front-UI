@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import { MovieCategory, type FavoriteMoviesIdsResponse, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MoviesResponse } from '../models/models';
+import { MovieCategory, type FavoriteMoviesIdsResponse, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -28,9 +28,12 @@ export interface AppState {
     setPage: (value: number) => void;
     setCategory: (category: MovieCategory) => void;
     setMovies: (movies: Movie[]) => void;
+    clearMovies: () => void;
     setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
     onInit: () => Promise<void>;
     fetchTrendingMovies: (page: number) => Promise<void>;
+    fetchFavoriteMovies: (page: number) => Promise<void>;
+    fetchCategoryMovies: (category: MovieCategory, page: number) => Promise<void>;
     fetchFavoritesIds: () => Promise<void>;
     addToFavorites: (movie: Movie) => Promise<void>;
     removeFromFavorites: (movie: Movie) => Promise<void>;
@@ -54,6 +57,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
     setCategory: (category: MovieCategory) => set((state) => ({ ...state, category })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
+    clearMovies: () => set({ movies: [] }),
     setFavoritesIds: (ids: Record<number, FavoriteState>) => set((state) => ({
         favoritesIds: {
             ...state.favoritesIds,
@@ -61,12 +65,22 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         },
     })),
     onInit: createEffect(store, async (_deps, store) => {
-        const { setLoading, fetchFavoritesIds, fetchTrendingMovies, page } = store.getState();
+        const { setLoading, fetchFavoritesIds, fetchCategoryMovies, page, category } = store.getState();
         setLoading(true);
         await fetchFavoritesIds();
         setLoading(true);
-        await fetchTrendingMovies(page);
+        await fetchCategoryMovies(category, page);
         setLoading(false);
+    }),
+    fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory, page: number) => {
+        const { fetchTrendingMovies, fetchFavoriteMovies } = store.getState();
+        if (category === MovieCategory.TRENDING) {
+            await fetchTrendingMovies(page);
+        } else if (category === MovieCategory.TOP_RATED) {
+            // await this.appState.fetchTopRatedMovies(page);
+        } else if (category === MovieCategory.FAVORITES) {
+            await fetchFavoriteMovies(page);
+        }
     }),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
@@ -82,6 +96,22 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         setLoading(false);
         const movies = data?.results ?? [];
+        setMovies(movies);
+    }),
+    fetchFavoriteMovies: createEffect(store, async (deps, store, page: number) => {
+        const { httpService } = deps;
+        const { setPage, setLoading, setMovies } = store.getState();
+        setPage(page);
+        setLoading(true);
+
+        const params = { language: 'en-US', page };
+
+        const { data } = await tryCatch(
+            httpService.get<MovieListResponse>('/movie/favorites', params)
+        );
+
+        setLoading(false);
+        const movies = data?.items ?? [];
         setMovies(movies);
     }),
     fetchFavoritesIds: createEffect(store, async (deps, store) => {
