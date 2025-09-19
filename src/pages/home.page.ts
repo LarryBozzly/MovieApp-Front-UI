@@ -4,6 +4,7 @@ import {
   appStore,
   selectedCategory,
   selectIsLoading,
+  selectIsOnInitLoaded,
   selectMovies,
   selectPage,
   type AppState
@@ -22,6 +23,7 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectMovies }) readonly movies!: Movie[];
   @watchWithSelector({ store: appStore, selector: selectPage }) readonly page!: number;
   @watchWithSelector({ store: appStore, selector: selectedCategory }) readonly selectedCategory!: MovieCategory;
+  @watchWithSelector({ store: appStore, selector: selectIsOnInitLoaded }) readonly selectIsOnInitLoaded!: boolean;
 
   static styles = css`
    ${tailwindStyles}
@@ -82,6 +84,7 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <categories-component 
+        .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
         .selectedCategory=${this.selectedCategory}
         @onCategoryChanged=${this.onCategoryChanged}>
       </categories-component>

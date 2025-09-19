@@ -19,6 +19,8 @@ export class CategoriesComponent extends LitElement {
   `;
 
   @property() selectedCategory!: MovieCategory;
+  @property() selectIsOnInitLoaded!: boolean;
+
 
   private readonly categoriesMap: Record<MovieCategory, string> = MovieCategoryMap;
 
@@ -35,6 +37,7 @@ export class CategoriesComponent extends LitElement {
   }
 
   render() {
+    if (!this.selectIsOnInitLoaded) return html``;
     return html`
     <div class="flex overflow-x-auto gap-2 sm:gap-4 p-2 sm:p-4 scrollbar-hide">
       ${Object.entries(this.categoriesMap).map(

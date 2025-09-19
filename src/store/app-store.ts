@@ -19,12 +19,14 @@ export interface AppState {
         modalService: ModalService;
     };
     category: MovieCategory;
+    onInitLoaded: boolean;
     page: number;
     movies: Movie[];
     favoritesIds: Record<number, FavoriteState>;
     isLoading: boolean;
     storeInit: (deps: Required<AppState>['deps']) => void;
     setLoading: (loading: boolean) => void;
+    setOnInitLoaded: (onInitLoaded: boolean) => void;
     setPage: (value: number) => void;
     setCategory: (category: MovieCategory) => void;
     setMovies: (movies: Movie[]) => void;
@@ -51,9 +53,11 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     isLoading: false,
     deps: undefined,
     category: MovieCategory.TRENDING,
+    onInitLoaded: false,
     // reducers
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),
+    setOnInitLoaded: (onInitLoaded: boolean) => set({ onInitLoaded }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
     setCategory: (category: MovieCategory) => set((state) => ({ ...state, category })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
@@ -65,12 +69,13 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         },
     })),
     onInit: createEffect(store, async (_deps, store) => {
-        const { setLoading, fetchFavoritesIds, fetchCategoryMovies, page, category } = store.getState();
+        const { setLoading, fetchFavoritesIds, fetchCategoryMovies, setOnInitLoaded, page, category } = store.getState();
         setLoading(true);
         await fetchFavoritesIds();
         setLoading(true);
         await fetchCategoryMovies(category, page);
         setLoading(false);
+        setOnInitLoaded(true);
     }),
     fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory, page: number) => {
         const { fetchTrendingMovies, fetchFavoriteMovies } = store.getState();
@@ -210,6 +215,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 }));
 
 // selectors 
+export const selectIsOnInitLoaded = (state: AppState) => state.onInitLoaded;
 export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectMovies = (state: AppState) => state.movies;
 export const selectFavoriteIds = (state: AppState) => state.favoritesIds;

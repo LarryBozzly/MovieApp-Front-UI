@@ -5,13 +5,18 @@ class HttpService {
         this.baseUrl = baseUrl;
     }
 
-    // Generic GET request
-    async get<T>(endpoint: string, params?: Record<string, string | number>): Promise<T> {
+    // Generic GET request with optional abort signal
+    async get<T>(
+        endpoint: string,
+        params?: Record<string, string | number>,
+        options?: { signal?: AbortSignal }
+    ): Promise<T> {
         const url = this.buildUrl(endpoint, params);
         const response = await fetch(url, {
             method: 'GET',
             headers: this.getHeaders(),
             credentials: 'include',
+            signal: options?.signal,
         });
         if (!response.ok) {
             const error = await response.json();
@@ -20,13 +25,18 @@ class HttpService {
         return response.json();
     }
 
-    // Generic POST request
-    async post<T>(endpoint: string, body: unknown): Promise<T> {
+    // Generic POST request with optional abort signal
+    async post<T>(
+        endpoint: string,
+        body: unknown,
+        options?: { signal?: AbortSignal }
+    ): Promise<T> {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: 'POST',
             headers: this.getHeaders(),
             credentials: 'include',
             body: JSON.stringify(body),
+            signal: options?.signal,
         });
         if (!response.ok) {
             const error = await response.json();
@@ -35,13 +45,17 @@ class HttpService {
         return response.json();
     }
 
-    // Generic PUT request
-    async put<T>(endpoint: string, body: unknown): Promise<T> {
+    async put<T>(
+        endpoint: string,
+        body: unknown,
+        options?: { signal?: AbortSignal }
+    ): Promise<T> {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: 'PUT',
             headers: this.getHeaders(),
             credentials: 'include',
             body: JSON.stringify(body),
+            signal: options?.signal,
         });
         if (!response.ok) {
             const error = await response.json();
@@ -50,12 +64,15 @@ class HttpService {
         return response.json();
     }
 
-    // Generic DELETE request
-    async delete<T>(endpoint: string): Promise<T> {
+    async delete<T>(
+        endpoint: string,
+        options?: { signal?: AbortSignal }
+    ): Promise<T> {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: 'DELETE',
             headers: this.getHeaders(),
             credentials: 'include',
+            signal: options?.signal,
         });
         if (!response.ok) {
             const error = await response.json();
@@ -64,7 +81,6 @@ class HttpService {
         return response.json();
     }
 
-    // Helper method to get headers
     private getHeaders(): HeadersInit {
         const headers: HeadersInit = {
             'Content-Type': 'application/json',
