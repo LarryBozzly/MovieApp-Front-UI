@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import { MovieCategory, type FavoriteMoviesIdsResponse, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
+import { ERROR_NAMES, MovieCategory, type FavoriteMoviesIdsResponse, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -18,9 +18,11 @@ export interface AppState {
         authStore: StoreApi<AuthState>;
         modalService: ModalService;
     };
+    globalAbortController: AbortController;
     category: MovieCategory;
     onInitLoaded: boolean;
     page: number;
+    maxPage: number;
     movies: Movie[];
     favoritesIds: Record<number, FavoriteState>;
     isLoading: boolean;
@@ -28,9 +30,11 @@ export interface AppState {
     setLoading: (loading: boolean) => void;
     setOnInitLoaded: (onInitLoaded: boolean) => void;
     setPage: (value: number) => void;
+    setMaxPage: (maxPage: number) => void;
     setCategory: (category: MovieCategory) => void;
     setMovies: (movies: Movie[]) => void;
     clearMovies: () => void;
+    triggerAbort: () => Promise<void>
     setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
     onInit: () => Promise<void>;
     fetchTrendingMovies: (page: number) => Promise<void>;
@@ -48,10 +52,12 @@ export interface AppState {
 
 export const appStore = createStore<AppState>((set, _get, store) => ({
     page: 1,
+    maxPage: 0,
     movies: [],
     favoritesIds: {},
     isLoading: false,
     deps: undefined,
+    globalAbortController: new AbortController(),
     category: MovieCategory.TRENDING,
     onInitLoaded: false,
     // reducers
@@ -59,6 +65,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setOnInitLoaded: (onInitLoaded: boolean) => set({ onInitLoaded }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
+    setMaxPage: (maxPage: number) => set((state) => ({ ...state, maxPage })),
     setCategory: (category: MovieCategory) => set((state) => ({ ...state, category })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
     clearMovies: () => set({ movies: [] }),
@@ -77,8 +84,16 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         setLoading(false);
         setOnInitLoaded(true);
     }),
+    triggerAbort: createEffect(store, async (_deps, store) => {
+        const { globalAbortController } = store.getState();
+        globalAbortController.abort();
+        set({ globalAbortController: new AbortController() });
+    }),
     fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory, page: number) => {
-        const { fetchTrendingMovies, fetchFavoriteMovies } = store.getState();
+        const { fetchTrendingMovies, fetchFavoriteMovies, setCategory, clearMovies, triggerAbort } = store.getState();
+        triggerAbort();
+        setCategory(category);
+        clearMovies();
         if (category === MovieCategory.TRENDING) {
             await fetchTrendingMovies(page);
         } else if (category === MovieCategory.TOP_RATED) {
@@ -89,15 +104,16 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     }),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
-        const { setPage, setLoading, setMovies } = store.getState();
+        const { setPage, setLoading, setMovies, globalAbortController } = store.getState();
         setPage(page);
         setLoading(true);
 
         const params = { language: 'en-US', page };
 
-        const { data } = await tryCatch(
-            httpService.get<MoviesResponse>('/movie/now_playing', params)
+        const { data, error } = await tryCatch(
+            httpService.get<MoviesResponse>('/movie/now_playing', params, { signal: globalAbortController.signal })
         );
+        if (error?.name === ERROR_NAMES.ABORT) return;
 
         setLoading(false);
         const movies = data?.results ?? [];
@@ -105,15 +121,17 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     }),
     fetchFavoriteMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
-        const { setPage, setLoading, setMovies } = store.getState();
+        const { setPage, setLoading, setMovies, globalAbortController } = store.getState();
         setPage(page);
         setLoading(true);
 
         const params = { language: 'en-US', page };
 
-        const { data } = await tryCatch(
-            httpService.get<MovieListResponse>('/movie/favorites', params)
+        const { data, error } = await tryCatch(
+            httpService.get<MovieListResponse>('/movie/favorites', params, { signal: globalAbortController.signal })
         );
+
+        if (error?.name === ERROR_NAMES.ABORT) return;
 
         setLoading(false);
         const movies = data?.items ?? [];

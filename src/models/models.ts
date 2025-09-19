@@ -92,6 +92,12 @@ export const MovieCategoryMap: Record<MovieCategory, string> = {
   [MovieCategory.FAVORITES]: 'Favorites',
 };
 
+export const ERROR_NAMES = {
+  ABORT: 'AbortError' as const,
+  TIMEOUT: 'TimeoutError' as const,
+};
+export type ErrorName = typeof ERROR_NAMES[keyof typeof ERROR_NAMES];
+
 export interface MovieListResponse {
   created_by?: string;
   description?: string;

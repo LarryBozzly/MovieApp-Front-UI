@@ -51,8 +51,6 @@ export class HomePage extends LitElement {
 
   private onCategoryChanged(e: CustomEvent<{ category: MovieCategory }>) {
     const category = e.detail.category;
-    appStore.getState().setCategory(category);
-    appStore.getState().clearMovies();
     this.appState.fetchCategoryMovies(category, 1);
   }
 
