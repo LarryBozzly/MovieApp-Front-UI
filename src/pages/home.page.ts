@@ -54,13 +54,23 @@ export class HomePage extends LitElement {
     this.appState.fetchCategoryMovies(category, 1);
   }
 
+  private async loadNextPage() {
+    const nextPage = this.page + 1;
+
+    if (this.selectedCategory === MovieCategory.TRENDING) {
+      await this.appState.fetchTrendingMovies(nextPage);
+    } else if (this.selectedCategory === MovieCategory.TOP_RATED) {
+      // await this.appState.fetchTopRatedMovies(nextPage);
+    } else if (this.selectedCategory === MovieCategory.FAVORITES) {
+      await this.appState.fetchFavoriteMovies(nextPage);
+    }
+  }
+
   private setupInfiniteScroll() {
     this.observer = new IntersectionObserver(
-      async (entries) => {
-        const [target] = entries;
-        if (target.isIntersecting && !this.isLoading) {
-          await this.appState.fetchCategoryMovies(this.selectedCategory, this.page + 1);
-        }
+      async ([entry]) => {
+        if (!entry.isIntersecting || this.isLoading) return;
+        await this.loadNextPage();
       },
       {
         root: null,
@@ -95,7 +105,7 @@ export class HomePage extends LitElement {
       <div id="sentinel" class="w-full"></div>
     `;
   }
-} 
+}
 
 declare global {
   interface HTMLElementTagNameMap {
