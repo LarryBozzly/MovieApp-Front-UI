@@ -38,6 +38,7 @@ export interface AppState {
     setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
     onInit: () => Promise<void>;
     fetchTrendingMovies: (page: number) => Promise<void>;
+    fetchTopRatedMovies: (page: number) => Promise<void>;
     fetchFavoriteMovies: (page: number) => Promise<void>;
     fetchCategoryMovies: (category: MovieCategory, page: number) => Promise<void>;
     fetchFavoritesIds: () => Promise<void>;
@@ -90,14 +91,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         set({ globalAbortController: new AbortController() });
     }),
     fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory, page: number) => {
-        const { fetchTrendingMovies, fetchFavoriteMovies, setCategory, clearMovies, triggerAbort } = store.getState();
+        const { fetchTopRatedMovies, fetchTrendingMovies, fetchFavoriteMovies, setCategory, clearMovies, triggerAbort } = store.getState();
         triggerAbort();
         setCategory(category);
         clearMovies();
         if (category === MovieCategory.TRENDING) {
             await fetchTrendingMovies(page);
         } else if (category === MovieCategory.TOP_RATED) {
-            // await this.appState.fetchTopRatedMovies(page);
+            await fetchTopRatedMovies(page);
         } else if (category === MovieCategory.FAVORITES) {
             await fetchFavoriteMovies(page);
         }
@@ -112,6 +113,23 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         const { data, error } = await tryCatch(
             httpService.get<MoviesResponse>('/movie/now_playing', params, { signal: globalAbortController.signal })
+        );
+        if (error?.name === ERROR_NAMES.ABORT) return;
+
+        setLoading(false);
+        const movies = data?.results ?? [];
+        setMovies(movies);
+    }),
+    fetchTopRatedMovies: createEffect(store, async (deps, store, page: number) => {
+        const { httpService } = deps;
+        const { setPage, setLoading, setMovies, globalAbortController } = store.getState();
+        setPage(page);
+        setLoading(true);
+
+        const params = { language: 'en-US', page };
+
+        const { data, error } = await tryCatch(
+            httpService.get<MoviesResponse>('/movie/top_rated', params, { signal: globalAbortController.signal })
         );
         if (error?.name === ERROR_NAMES.ABORT) return;
 

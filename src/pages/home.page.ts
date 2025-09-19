@@ -60,7 +60,7 @@ export class HomePage extends LitElement {
     if (this.selectedCategory === MovieCategory.TRENDING) {
       await this.appState.fetchTrendingMovies(nextPage);
     } else if (this.selectedCategory === MovieCategory.TOP_RATED) {
-      // await this.appState.fetchTopRatedMovies(nextPage);
+      await this.appState.fetchTopRatedMovies(nextPage);
     } else if (this.selectedCategory === MovieCategory.FAVORITES) {
       await this.appState.fetchFavoriteMovies(nextPage);
     }
