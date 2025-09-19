@@ -32,12 +32,12 @@ export class LoginPage extends LitElement {
 
   render() {
     return html`
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
-      <div class="card w-full max-w-md bg-white shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
+      <div class="min-h-screen flex items-center justify-center bg-base-200">
+        <div class="card w-full max-w-md bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
 
-          ${this.error
+            ${this.error
         ? html`
                 <div class="alert alert-error text-sm">
                   <span>${this.error.message}</span>
@@ -45,36 +45,36 @@ export class LoginPage extends LitElement {
               `
         : null}
 
-          <form @submit=${this.handleSubmit} class="flex flex-col gap-4">
-            <input
-              @input=${this.clearError}
-              type="email"
-              name="email"
-              placeholder="Email"
-              required
-              autocomplete="username"
-              class="input input-bordered w-full"
-            />
-            <input
-              @input=${this.clearError}
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              autocomplete="current-password"
-              class="input input-bordered w-full"
-            />
-            <button
-              ?disabled=${this.isLoading}
-              type="submit"
-              class="btn btn-primary w-full"
-            >
+            <form @submit=${this.handleSubmit} class="flex flex-col gap-4">
+              <input
+                @input=${this.clearError}
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+                autocomplete="username"
+                class="input input-bordered w-full bg-base-200"
+              />
+              <input
+                @input=${this.clearError}
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+                autocomplete="current-password"
+                class="input input-bordered w-full bg-base-200"
+              />
+              <button
+                ?disabled=${this.isLoading}
+                type="submit"
+                class="btn btn-primary w-full"
+              >
                 ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
-            </button>
-          </form>
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
   }
 }
