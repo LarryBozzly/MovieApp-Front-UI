@@ -22,6 +22,7 @@ export class AppRoot extends LitElement {
       width: 100%;
       display: block;
       min-height: 100vh;
+      background-color: var(--color-base-300); 
     }
   `;
 

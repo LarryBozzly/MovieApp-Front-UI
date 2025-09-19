@@ -8,7 +8,7 @@ import { appStore, selectFavoriteIds } from '../store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
 @customElement('movies-list-component')
-export class TrendingMoviesComponent extends LitElement {
+export class MoviesListComponent extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectFavoriteIds }) readonly favoritesIds!: Record<number, FavoriteState>
   static styles = css`
     ${tailwindStyles}
@@ -16,7 +16,6 @@ export class TrendingMoviesComponent extends LitElement {
 
   @property() movies: Movie[] = [];
   @property() isLoading!: boolean;
-  @property() hasHeartIcon = true;
 
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
@@ -65,15 +64,13 @@ export class TrendingMoviesComponent extends LitElement {
                   Popularity: ${movie.percentage_popularity}%
                 </span>
 
-                ${this.hasHeartIcon ? html`
-                  <button
-                    @click=${this.handleHeartClick.bind(this, movie)}
-                    class="ml-auto focus:outline-none"
-                    title="Toggle Favorite"
-                  >
-                    ${this.renderHeartIcon(movie)}
-                  </button>
-                ` : null}
+                <button
+                  @click=${this.handleHeartClick.bind(this, movie)}
+                  class="ml-auto focus:outline-none"
+                  title="Toggle Favorite"
+                >
+                  ${this.renderHeartIcon(movie)}
+                </button>
               </div>
             </div>
           </div>
@@ -91,6 +88,6 @@ export class TrendingMoviesComponent extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'movies-list-component': TrendingMoviesComponent;
+    'movies-list-component': MoviesListComponent;
   }
 }

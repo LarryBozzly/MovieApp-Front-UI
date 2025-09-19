@@ -29,7 +29,6 @@ export class HomePage extends LitElement {
       width: 100%;
       display: block;
       min-height: 100vh;
-      background: #f0f0f0;
       font-family: system-ui, sans-serif;
     }
   `;
@@ -89,7 +88,6 @@ export class HomePage extends LitElement {
 
       <movies-list-component
         .isLoading=${this.isLoading}
-        .hasHeartIcon=${this.showHeart}
         .movies=${this.movies}>
       </movies-list-component>
 
