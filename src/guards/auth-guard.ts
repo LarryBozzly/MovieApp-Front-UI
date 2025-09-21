@@ -5,6 +5,11 @@ import { authStore } from "../store/auth-store";
 export async function authGuard(context: RouteContext, commands: Commands) {
   const authService = await AuthService.getInstance();
 
+  if (!navigator.onLine) {
+    authStore.getState().setLoading(true);
+    return undefined; 
+  }
+
   if (authService.isAuthorized() && !authStore.getState().isAuthorized) {
     await authStore.getState().refresh();
   }
