@@ -5,9 +5,27 @@ import { authStore } from "../store/auth-store";
 export async function authGuard(context: RouteContext, commands: Commands) {
   const authService = await AuthService.getInstance();
 
+  // --------------------------
+  // Pause app if offline
+  // --------------------------
   if (!navigator.onLine) {
+    // Show spinner
     authStore.getState().setLoading(true);
-    return undefined; 
+
+    // Remove app-root from DOM
+    const appRoot = document.querySelector('app-root');
+    if (appRoot) appRoot.remove();
+
+    // Add a one-time listener to reload when back online
+    window.addEventListener(
+      "online",
+      () => {
+        window.location.reload();
+      },
+      { once: true }
+    );
+
+    return; // stop guard until internet returns
   }
 
   if (authService.isAuthorized() && !authStore.getState().isAuthorized) {
