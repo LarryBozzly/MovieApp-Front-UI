@@ -10,17 +10,30 @@ export async function authGuard(context: RouteContext, commands: Commands) {
   // --------------------------
   if (!navigator.onLine) {
     // Show spinner
-    authStore.getState().setLoading(true);
 
-    // Remove app-root from DOM
+    // Remove app-root to "freeze" the app
     const appRoot = document.querySelector('app-root');
     if (appRoot) appRoot.remove();
 
-    // Add a one-time listener to reload when back online
+    // Inject offline spinner
+    let spinner = document.getElementById('offline-spinner');
+    if (!spinner) {
+      spinner = document.createElement('div');
+      spinner.id = 'offline-spinner';
+      spinner.innerHTML = `
+        <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-[9999]">
+          <span class="loading loading-spinner text-white w-16 h-16"></span>
+        </div>
+      `;
+      document.body.appendChild(spinner);
+    }
+
+    // Reload once online
     window.addEventListener(
-      "online",
+      'online',
       () => {
-        window.location.reload();
+        spinner?.remove();         // remove spinner
+        window.location.reload();  // reload app
       },
       { once: true }
     );
