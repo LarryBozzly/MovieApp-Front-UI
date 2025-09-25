@@ -15,6 +15,8 @@ export async function authGuard(context: RouteContext, commands: Commands) {
     const appRoot = document.querySelector('app-root');
     if (appRoot) appRoot.remove();
 
+    authService.stopRefreshTimer();
+
     // Inject offline spinner
     let spinner = document.getElementById('offline-spinner');
     if (!spinner) {
