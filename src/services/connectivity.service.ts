@@ -26,13 +26,15 @@ class ConnectivityService {
         const timeoutId = setTimeout(() => signal.dispatchEvent(new Event('abort')), timeoutMs);
 
         try {
-            await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
+            const response = await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
                 cache: 'no-store',
                 signal,
             });
             clearTimeout(timeoutId);
-            // Check for successful connection
-            return true;
+
+            // Return true only if the HTTP status is successful (200-299)
+            return response.ok;
+
         } catch (error) {
             clearTimeout(timeoutId);
 
@@ -41,7 +43,7 @@ class ConnectivityService {
                 return false;
             }
 
-            // Other network errors (e.g., DNS failure, no connection) also mean false.
+            // Other network errors (e.g., DNS failure, connection refused) also mean false.
             return false;
         }
     }
