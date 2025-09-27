@@ -155,6 +155,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         deviceInfoService.onVisibilityChange(async (isForeground) => {
             const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
             const isWSConnected = store.getState().isWSConnected;
+            connectivityService.abortPrevious();
+            
             if (hasRefreshTokenFlag && isWSConnected && !isForeground) {
                 webSocketService.close(true);
                 authService.stopRefreshTimer();
