@@ -17,8 +17,6 @@ export default class WebSocketService {
     private reconnectAbortController: AbortController | null = null;
     private readonly pollInterval = 1000;
     private manualDisconnect = false;
-    private readonly maxRetries = 3;
-    private retryAttempts = this.maxRetries;
     private baseUrl = env.MOVIEDB_API_BASE_URL;
 
     async connect(baseUrl: string, wsToken: string | null): Promise<void> {
@@ -44,7 +42,6 @@ export default class WebSocketService {
                 this.socket.onopen = async () => {
                     console.log('✅ WebSocket connected');
                     this.isConnected = true;
-                    this.retryAttempts = this.maxRetries;
                     await authStore.getState().setWSConnected(true);
 
                     this.stopReconnectPolling();
@@ -145,12 +142,6 @@ export default class WebSocketService {
         console.warn('🔁 Starting reconnect polling...');
 
         this.reconnectIntervalId = setInterval(async () => {
-            if (this.retryAttempts <= 0) {
-                this.stopReconnectPolling();
-                authStore.getState().logout();
-                return;
-            }
-
             // cancel any previous in-flight fetch
             if (this.reconnectAbortController) {
                 this.reconnectAbortController.abort();
@@ -163,7 +154,6 @@ export default class WebSocketService {
                     signal: this.reconnectAbortController.signal,
                 });
 
-                this.retryAttempts--;
                 await authStore.getState().refresh(); // Triggers WebSocket reconnect if authorized
             } catch {
                 console.warn('📡 Still offline or network error');
