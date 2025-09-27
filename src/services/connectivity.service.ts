@@ -18,12 +18,11 @@ class ConnectivityService {
     }
 
     /**
-       * Check if the internet is reachable with a timeout (5000ms).
-          * @param signal - An AbortSignal to cancel the fetch request.
-             */
+     * Check if the internet is reachable with a timeout (5000ms).
+     * @param signal - An AbortSignal to cancel the fetch request.
+     */
     private async check(signal: AbortSignal): Promise<boolean> {
         const timeoutMs = 5000;
-        // Use an event listener to handle abort/timeout events gracefully.
         const timeoutId = setTimeout(() => signal.dispatchEvent(new Event('abort')), timeoutMs);
 
         try {
@@ -32,7 +31,7 @@ class ConnectivityService {
                 signal,
             });
             clearTimeout(timeoutId);
-            // Status codes other than 2xx will still throw a fetch error, but a successful connection means true.
+            // Check for successful connection
             return true;
         } catch (error) {
             clearTimeout(timeoutId);
@@ -47,12 +46,27 @@ class ConnectivityService {
         }
     }
 
+    // 💡 NEW PUBLIC METHOD FOR IMMEDIATE CHECK
     /**
-       * Waits until the internet is available.
-          * - If a wait is already in progress, it returns the existing Promise.
-             * - If offline, it retries at a specified interval using recursive setTimeout.
-                * @param intervalMs - The interval between retry attempts in milliseconds.
-                   */
+     * Performs a single, immediate check to see if the network is reachable.
+     * This check does NOT use the shared currentAbortController/currentPromise state.
+     * @returns A Promise that resolves to true if online, false otherwise.
+     */
+    public async checkNow(): Promise<boolean> {
+        // Create a dedicated AbortController for this single, immediate check.
+        const controller = new AbortController();
+        // Since we don't return the promise, we don't store it.
+        return this.check(controller.signal);
+        // Note: The controller/signal will be garbage collected after the check resolves/rejects.
+    }
+    // ----------------------------------------
+
+    /**
+     * Waits until the internet is available.
+     * - If a wait is already in progress, it returns the existing Promise.
+     * - If offline, it retries at a specified interval using recursive setTimeout.
+     * @param intervalMs - The interval between retry attempts in milliseconds.
+     */
     public async waitForInternet(intervalMs = 1000): Promise<boolean> {
         // Return the existing promise if a wait is already in progress (deduplication/caching).
         if (this.currentPromise) {
@@ -101,9 +115,8 @@ class ConnectivityService {
     }
 
     /**
-       * Aborts any pending network connectivity check.
-          * This cancels the active fetch request and stops the recursive timeout loop.
-             */
+     * Aborts any pending network connectivity check (the one initiated by waitForInternet).
+     */
     public abort(): void {
         if (this.currentAbortController) {
             // Calling abort() sets signal.aborted to true, which stops the recursive loop.
