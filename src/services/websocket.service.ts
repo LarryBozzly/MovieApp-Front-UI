@@ -159,7 +159,6 @@ export default class WebSocketService {
 
             try {
                 await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
-                    mode: 'no-cors',
                     cache: 'no-store',
                     signal: this.reconnectAbortController.signal,
                 });

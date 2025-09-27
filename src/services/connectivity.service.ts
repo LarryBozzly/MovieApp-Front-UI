@@ -24,7 +24,6 @@ class ConnectivityService {
         try {
             // Add cache buster + force no caching
             await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
-                mode: "no-cors",
                 cache: "no-store",
                 signal: controller.signal,
             });
