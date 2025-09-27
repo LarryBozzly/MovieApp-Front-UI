@@ -1,10 +1,10 @@
-import { env } from "../config";
+import { env } from '../config';
 
 class ConnectivityService {
     private static instance: ConnectivityService;
-    private internetPromise: Promise<boolean> | null = null;
-    private abortController: AbortController | null = null; // new
-    private baseUrl = env.MOVIEDB_API_BASE_URL;
+    private currentPromise: Promise<boolean> | null = null;
+    private currentAbortController: AbortController | null = null;
+    private readonly baseUrl = env.MOVIEDB_API_BASE_URL;
 
     private constructor() { }
 
@@ -15,63 +15,68 @@ class ConnectivityService {
         return ConnectivityService.instance;
     }
 
-    /** Check once if internet is reachable */
-    private async check(signal?: AbortSignal): Promise<boolean> {
+    /**
+       * Check if the internet is reachable with a timeout.
+          */
+    private async check(signal: AbortSignal): Promise<boolean> {
         const timeoutMs = 5000;
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeoutMs);
-
-        if (signal) signal.addEventListener("abort", () => controller.abort());
+        const timeoutId = setTimeout(() => signal.dispatchEvent(new Event('abort')), timeoutMs);
 
         try {
             await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
-                cache: "no-store",
-                signal: controller.signal,
+                cache: 'no-store',
+                signal,
             });
+            clearTimeout(timeoutId);
             return true;
-        } catch {
+        } catch (error) {
+            clearTimeout(timeoutId);
+            if (error instanceof DOMException && error.name === 'AbortError') {
+                // The fetch was aborted on purpose (by timeout or manual abort)
+                return false;
+            }
+            // Other network errors
             return false;
-        } finally {
-            clearTimeout(id);
         }
     }
 
     /**
-     * Wait until internet is available.
-     * - If online, resolves immediately.
-     * - If offline, keeps retrying at interval until it succeeds.
-     */
+       * Waits until the internet is available.
+          * If offline, it retries at a specified interval.
+             */
     public async waitForInternet(intervalMs = 1000): Promise<boolean> {
-        // abort previous pending check
-        this.abortPrevious();
+        this.abort();
 
-        this.abortController = new AbortController();
-        const signal = this.abortController.signal;
+        this.currentAbortController = new AbortController();
+        const { signal } = this.currentAbortController;
 
-        if (await this.check(signal)) return true;
-
-        if (this.internetPromise) return this.internetPromise;
-
-        this.internetPromise = new Promise((resolve) => {
-            const interval = setInterval(async () => {
-                if (await this.check(signal)) {
-                    clearInterval(interval);
-                    this.internetPromise = null;
-                    this.abortController = null;
-                    resolve(true);
+        const promise = new Promise<boolean>((resolve) => {
+            const attemptCheck = async () => {
+                const isOnline = await this.check(signal);
+                if (signal.aborted) {
+                    return resolve(false); // Aborted before resolution
                 }
-            }, intervalMs);
+                if (isOnline) {
+                    resolve(true);
+                } else {
+                    setTimeout(attemptCheck, intervalMs);
+                }
+            };
+            attemptCheck();
         });
 
-        return this.internetPromise;
+        this.currentPromise = promise;
+        return promise;
     }
 
-    /** Cancel any pending wait */
-    public abortPrevious() {
-        if (this.abortController) {
-            this.abortController.abort();
-            this.abortController = null;
-            this.internetPromise = null;
+    /**
+       * Aborts any pending network connectivity check.
+          */
+    public abort(): void {
+        if (this.currentAbortController) {
+            this.currentAbortController.abort();
+            this.currentAbortController = null;
+            this.currentPromise = null;
         }
     }
 }
