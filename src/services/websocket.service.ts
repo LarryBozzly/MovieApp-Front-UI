@@ -2,7 +2,7 @@ import protobuf from 'protobufjs';
 import { appStore } from '../store/app-store';
 import type { Movie } from '../models/models';
 import { authStore } from '../store/auth-store';
-import { env } from "../config";
+import ConnectivityService from './connectivity.service'
 
 type EventCallback = (data: any) => void;
 
@@ -13,11 +13,10 @@ export default class WebSocketService {
     private listeners: EventCallback[] = [];
     private isConnected = false;
     private isConnecting = false;
-    private reconnectIntervalId: NodeJS.Timeout | null = null;
-    private reconnectAbortController: AbortController | null = null;
-    private readonly pollInterval = 1000;
+    private reconnectPromise: Promise<void> | null = null;
     private manualDisconnect = false;
-    private baseUrl = env.MOVIEDB_API_BASE_URL;
+
+    private connectivityService = ConnectivityService.getInstance();
 
     async connect(baseUrl: string, wsToken: string | null): Promise<void> {
         if (this.isConnected || this.isConnecting) return;
@@ -136,40 +135,33 @@ export default class WebSocketService {
         this.stopReconnectPolling();
     }
 
-    private startReconnectPolling() {
-        if (this.reconnectIntervalId) return;
+    private startReconnectPolling(): void {
+        if (this.reconnectPromise) return;
 
-        console.warn('🔁 Starting reconnect polling...');
+        console.warn('🔁 Starting passive reconnect wait...');
 
-        this.reconnectIntervalId = setInterval(async () => {
-            // cancel any previous in-flight fetch
-            if (this.reconnectAbortController) {
-                this.reconnectAbortController.abort();
-            }
-            this.reconnectAbortController = new AbortController();
+        const promise = this.connectivityService.waitForInternet()
+            .then(async (isOnline) => {
+                if (isOnline) {
+                    console.log('✅ Network back online. Attempting re-authentication.');
+                    await authStore.getState().refresh();
+                } else {
+                    console.log('🛑 Reconnect wait aborted.');
+                }
+            })
+            .catch(() => {
+                console.error('❌ Reconnect wait failed unexpectedly.');
+            })
+            .finally(() => {
+                this.reconnectPromise = null;
+            });
 
-            try {
-                await fetch(`${this.baseUrl}/ping?ts=${Date.now()}`, {
-                    cache: 'no-store',
-                    signal: this.reconnectAbortController.signal,
-                });
-
-                await authStore.getState().refresh(); // Triggers WebSocket reconnect if authorized
-            } catch {
-                console.warn('📡 Still offline or network error');
-            }
-        }, this.pollInterval);
+        this.reconnectPromise = promise;
     }
 
     private stopReconnectPolling() {
-        if (this.reconnectIntervalId) {
-            clearInterval(this.reconnectIntervalId);
-            this.reconnectIntervalId = null;
-            console.log('🛑 Stopped reconnect polling');
-        }
-        if (this.reconnectAbortController) {
-            this.reconnectAbortController.abort();
-            this.reconnectAbortController = null;
-        }
+        this.connectivityService.abort();
+        this.reconnectPromise = null;
+        console.log('🛑 Stopped reconnect polling');
     }
 }
