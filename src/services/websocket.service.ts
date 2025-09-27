@@ -15,7 +15,7 @@ export default class WebSocketService {
     private isConnecting = false;
     private reconnectIntervalId: NodeJS.Timeout | null = null;
     private reconnectAbortController: AbortController | null = null;
-    private readonly pollInterval = 3000;
+    private readonly pollInterval = 1000;
     private manualDisconnect = false;
     private readonly maxRetries = 3;
     private retryAttempts = this.maxRetries;
