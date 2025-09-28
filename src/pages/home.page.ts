@@ -57,8 +57,8 @@ export class HomePage extends LitElement {
   }
 
   private async loadNextPage() {
+    if (this.maxPage && this.page >= this.maxPage) return;
     const nextPage = this.page + 1;
-    if (this.maxPage && nextPage > this.maxPage) return;
 
     if (this.selectedCategory === MovieCategory.TRENDING) {
       await this.appState.fetchTrendingMovies(nextPage);
