@@ -43,7 +43,7 @@ export class CategoriesComponent extends LitElement {
       ${Object.entries(this.categoriesMap).map(
       ([category, label]) => html`
           <button
-            class="flex-shrink-0 btn btn-sm rounded-full
+            class="flex-shrink-0 btn btn-sm rounded-md
               ${this.selectedCategory === category ? 'btn-primary' : 'btn-neutral-content'}"
             @click=${() => this.handleCategoryClick(category as MovieCategory)}
           >
