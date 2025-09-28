@@ -5,6 +5,7 @@ import {
   selectedCategory,
   selectIsLoading,
   selectIsOnInitLoaded,
+  selectMaxPage,
   selectMovies,
   selectPage,
   type AppState
@@ -22,6 +23,7 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectIsLoading }) readonly isLoading!: boolean;
   @watchWithSelector({ store: appStore, selector: selectMovies }) readonly movies!: Movie[];
   @watchWithSelector({ store: appStore, selector: selectPage }) readonly page!: number;
+  @watchWithSelector({ store: appStore, selector: selectMaxPage }) readonly maxPage!: number;
   @watchWithSelector({ store: appStore, selector: selectedCategory }) readonly selectedCategory!: MovieCategory;
   @watchWithSelector({ store: appStore, selector: selectIsOnInitLoaded }) readonly selectIsOnInitLoaded!: boolean;
 
@@ -56,6 +58,7 @@ export class HomePage extends LitElement {
 
   private async loadNextPage() {
     const nextPage = this.page + 1;
+    if (this.maxPage && nextPage > this.maxPage) return;
 
     if (this.selectedCategory === MovieCategory.TRENDING) {
       await this.appState.fetchTrendingMovies(nextPage);

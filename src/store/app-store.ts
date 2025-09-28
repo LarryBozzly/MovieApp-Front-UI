@@ -53,7 +53,7 @@ export interface AppState {
 
 export const appStore = createStore<AppState>((set, _get, store) => ({
     page: 1,
-    maxPage: 0,
+    maxPage: 1,
     movies: [],
     favoritesIds: {},
     isLoading: false,
@@ -105,7 +105,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     }),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
-        const { setPage, setLoading, setMovies, globalAbortController } = store.getState();
+        const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
         setPage(page);
         setLoading(true);
 
@@ -117,12 +117,13 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         if (error?.name === ERROR_NAMES.ABORT) return;
 
         setLoading(false);
+        setMaxPage(data?.total_pages ?? 1);
         const movies = data?.results ?? [];
         setMovies(movies);
     }),
     fetchTopRatedMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
-        const { setPage, setLoading, setMovies, globalAbortController } = store.getState();
+        const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
         setPage(page);
         setLoading(true);
 
@@ -134,12 +135,13 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         if (error?.name === ERROR_NAMES.ABORT) return;
 
         setLoading(false);
+        setMaxPage(data?.total_pages ?? 1);
         const movies = data?.results ?? [];
         setMovies(movies);
     }),
     fetchFavoriteMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
-        const { setPage, setLoading, setMovies, globalAbortController } = store.getState();
+        const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
         setPage(page);
         setLoading(true);
 
@@ -152,6 +154,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         if (error?.name === ERROR_NAMES.ABORT) return;
 
         setLoading(false);
+        setMaxPage(data?.total_pages ?? 1);
         const movies = data?.items ?? [];
         setMovies(movies);
     }),
@@ -256,4 +259,5 @@ export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectMovies = (state: AppState) => state.movies;
 export const selectFavoriteIds = (state: AppState) => state.favoritesIds;
 export const selectPage = (state: AppState) => state.page;
+export const selectMaxPage = (state: AppState) => state.maxPage;
 export const selectedCategory = (state: AppState) => state.category;
