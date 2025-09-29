@@ -1,4 +1,5 @@
 import ConnectivityService from "../services/connectivity.service";
+import { authStore } from "../store/auth-store";
 import { pauseAppUntilOnline } from "./pause-app-until-online";
 
 /**
@@ -8,7 +9,7 @@ import { pauseAppUntilOnline } from "./pause-app-until-online";
  */
 export async function safeRefresh(refreshFn: () => Promise<void>) {
     const connectivityService = ConnectivityService.getInstance();
-
+    authStore.getState().setLoading(true);
     // 1. Check connectivity immediately
     const isOnlineAndConnected = await connectivityService.checkNow();
 
