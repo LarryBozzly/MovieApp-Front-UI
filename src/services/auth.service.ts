@@ -1,4 +1,5 @@
 import { authStore } from '../store/auth-store';
+import { safeRefresh } from '../utils/safe-refresh';
 
 class AuthService {
     private static instance: AuthService;
@@ -9,8 +10,9 @@ class AuthService {
     // Default token expiration duration in seconds (30 minutes)
     private readonly defaultExpiresIn = 30 * 60;
 
-    private refreshInterval: ReturnType<typeof setInterval> | null = null;
-    private timerStartTime: number | null = null; // when the timer started
+    // Change to use Timeout for better control
+    private refreshTimeout: ReturnType<typeof setTimeout> | null = null;
+    private timerStartTime: number | null = null;
 
     // Private constructor to prevent direct instantiation
     private constructor() { }
@@ -81,7 +83,7 @@ class AuthService {
 
         this.timerStartTime = Date.now();
 
-        this.refreshInterval = setInterval(async () => {
+        const attemptRefresh = async () => {
             if (!this.isAuthorized()) {
                 this.stopRefreshTimer();
                 return;
@@ -89,19 +91,22 @@ class AuthService {
 
             const timeLeft = this.getTimeUntilExpiration();
 
-            // Trigger refresh when timer has expired (timeLeft <= 0)
             if (timeLeft !== null && timeLeft <= 0) {
-                // Call refresh once, then reset timerStartTime so it doesn't keep refreshing repeatedly
-                this.timerStartTime = Date.now(); // reset timer for next cycle
-                await authStore.getState().refresh();
+                this.timerStartTime = Date.now();
+                await safeRefresh(authStore.getState().refresh);
             }
-        }, 2000);
+
+            const nextCheckInMs = 2000;
+            this.refreshTimeout = setTimeout(attemptRefresh, nextCheckInMs);
+        };
+
+        this.refreshTimeout = setTimeout(attemptRefresh, 0);
     }
 
     public stopRefreshTimer() {
-        if (this.refreshInterval) {
-            clearInterval(this.refreshInterval);
-            this.refreshInterval = null;
+        if (this.refreshTimeout) {
+            clearTimeout(this.refreshTimeout);
+            this.refreshTimeout = null;
         }
         this.timerStartTime = null;
     }
