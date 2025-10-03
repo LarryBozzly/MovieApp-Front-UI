@@ -74,7 +74,7 @@ export class MovieMatchModalComponent extends LitElement {
 
           <div class="flex items-center gap-3">
             <span class="text-yellow-500 text-lg">★</span>
-            <span class="text-base text-gray-700 font-medium">${movie.vote_average.toFixed(1)}</span>
+            <span class="text-base text-gray-700 font-medium">${movie.vote_average?.toFixed(1)}</span>
             <span class="badge badge-outline text-sm ${getPopularityClasses(movie.percentage_popularity)}">
                 Popularity: ${movie.percentage_popularity}%
             </span>

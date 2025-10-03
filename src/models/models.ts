@@ -24,7 +24,7 @@ export interface Movie {
   release_date: string;
   title: string;
   video: boolean;
-  vote_average: number;
+  vote_average: number | null;
   vote_count: number;
   percentage_popularity: number;
 }

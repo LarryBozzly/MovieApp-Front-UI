@@ -59,7 +59,7 @@ export class MoviesListComponent extends LitElement {
               <p class="text-sm text-base-content/50 mb-2">${this.formatDate(movie.release_date)}</p>
               <div class="flex items-center gap-3 mt-auto">
                 <span class="text-yellow-500 text-lg">★</span>
-                <span class="text-base text-base-content/70 font-medium">${movie.vote_average.toFixed(1)}</span>
+                <span class="text-base text-base-content/70 font-medium">${movie.vote_average?.toFixed(1)}</span>
                 <span class="badge badge-outline text-xs ${getPopularityClasses(movie.percentage_popularity)}">
                   Popularity: ${movie.percentage_popularity}%
                 </span>
