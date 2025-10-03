@@ -1,13 +1,16 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { tailwindStyles } from '../utils/app.constants';
+import { watch, watchWithSelector } from 'zustand-lit';
+import { appStore, selectQuery, type AppState } from '../store/app-store';
+import { MovieCategory } from '../models/models';
 
 @customElement('search-component')
 export class SearchComponent extends LitElement {
+    @watch(appStore) appState!: AppState;
+    @watchWithSelector({ store: appStore, selector: selectQuery }) readonly query!: string;
 
-    @property({ type: String })
-    searchTerm = '';
 
     static styles = css`
         ${tailwindStyles}
@@ -21,16 +24,31 @@ export class SearchComponent extends LitElement {
 
     private handleInput(event: Event) {
         const input = event.target as HTMLInputElement;
-        this.searchTerm = input.value;
+
+        this.dispatchEvent(
+            new CustomEvent('onSearchInput', {
+                detail: {
+                    query: input.value,
+                },
+                bubbles: true,
+                composed: true,
+            })
+        );
     }
 
     private clearSearch() {
-        this.searchTerm = '';
+        this.dispatchEvent(
+            new CustomEvent('onCategoryChanged', {
+                detail: { category: MovieCategory.TRENDING },
+                bubbles: true,
+                composed: true,
+            })
+        );
         this.renderRoot.querySelector('input')?.focus();
     }
 
     render() {
-        const hasText = this.searchTerm.length > 0;
+        const hasText = this.query.length > 0;
         return html`
             <label class="w-full input input-bordered input-primary flex items-center gap-2 focus:outline-primary">
                 
@@ -51,7 +69,7 @@ export class SearchComponent extends LitElement {
                     type="text" 
                     class="grow" 
                     placeholder="Search" 
-                    .value=${this.searchTerm}
+                    .value=${this.query}
                     @input=${this.handleInput}
                 />
                 

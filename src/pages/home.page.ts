@@ -8,6 +8,7 @@ import {
   selectMaxPage,
   selectMovies,
   selectPage,
+  selectQuery,
   type AppState
 } from '../store/app-store';
 
@@ -23,6 +24,7 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectIsLoading }) readonly isLoading!: boolean;
   @watchWithSelector({ store: appStore, selector: selectMovies }) readonly movies!: Movie[];
   @watchWithSelector({ store: appStore, selector: selectPage }) readonly page!: number;
+  @watchWithSelector({ store: appStore, selector: selectQuery }) readonly query!: string;
   @watchWithSelector({ store: appStore, selector: selectMaxPage }) readonly maxPage!: number;
   @watchWithSelector({ store: appStore, selector: selectedCategory }) readonly selectedCategory!: MovieCategory;
   @watchWithSelector({ store: appStore, selector: selectIsOnInitLoaded }) readonly selectIsOnInitLoaded!: boolean;
@@ -56,6 +58,11 @@ export class HomePage extends LitElement {
     this.appState.fetchCategoryMovies(category, 1);
   }
 
+  private onSearchInput(e: CustomEvent<{ query: string }>) {
+    const query = e.detail.query;
+    this.appState.fetchCategoryMovies(undefined, 1, query);
+  }
+
   private async loadNextPage() {
     if (this.page >= this.maxPage) return;
     const nextPage = this.page + 1;
@@ -66,6 +73,8 @@ export class HomePage extends LitElement {
       await this.appState.fetchTopRatedMovies(nextPage);
     } else if (this.selectedCategory === MovieCategory.FAVORITES) {
       await this.appState.fetchFavoriteMovies(nextPage);
+    } else {
+      await this.appState.fetchFindMovie(nextPage, this.query);
     }
   }
 
@@ -97,7 +106,9 @@ export class HomePage extends LitElement {
       <categories-component 
         .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
         .selectedCategory=${this.selectedCategory}
-        @onCategoryChanged=${this.onCategoryChanged}>
+        @onCategoryChanged=${this.onCategoryChanged}
+        @onSearchInput=${this.onSearchInput}
+        >
       </categories-component>
 
       <movies-list-component

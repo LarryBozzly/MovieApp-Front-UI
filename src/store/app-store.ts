@@ -19,19 +19,21 @@ export interface AppState {
         modalService: ModalService;
     };
     globalAbortController: AbortController;
-    category: MovieCategory;
+    category: MovieCategory | undefined;
     onInitLoaded: boolean;
     page: number;
     maxPage: number;
     movies: Movie[];
     favoritesIds: Record<number, FavoriteState>;
+    query: string;
     isLoading: boolean;
     storeInit: (deps: Required<AppState>['deps']) => void;
     setLoading: (loading: boolean) => void;
     setOnInitLoaded: (onInitLoaded: boolean) => void;
     setPage: (value: number) => void;
+    setQuery: (query: string) => void;
     setMaxPage: (maxPage: number) => void;
-    setCategory: (category: MovieCategory) => void;
+    setCategory: (category: MovieCategory | undefined) => void;
     setMovies: (movies: Movie[]) => void;
     clearMovies: () => void;
     triggerAbort: () => Promise<void>
@@ -40,7 +42,8 @@ export interface AppState {
     fetchTrendingMovies: (page: number) => Promise<void>;
     fetchTopRatedMovies: (page: number) => Promise<void>;
     fetchFavoriteMovies: (page: number) => Promise<void>;
-    fetchCategoryMovies: (category: MovieCategory, page: number) => Promise<void>;
+    fetchFindMovie: (page: number, query: string) => Promise<void>;
+    fetchCategoryMovies: (category: MovieCategory | undefined, page: number, query?: string) => Promise<void>;
     fetchFavoritesIds: () => Promise<void>;
     addToFavorites: (movie: Movie) => Promise<void>;
     removeFromFavorites: (movie: Movie) => Promise<void>;
@@ -56,18 +59,20 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     maxPage: 1,
     movies: [],
     favoritesIds: {},
+    query: '',
     isLoading: false,
     deps: undefined,
     globalAbortController: new AbortController(),
-    category: MovieCategory.TRENDING,
+    category: undefined,
     onInitLoaded: false,
     // reducers
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setOnInitLoaded: (onInitLoaded: boolean) => set({ onInitLoaded }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
+    setQuery: (query: string) => set((state) => ({ ...state, query })),
     setMaxPage: (maxPage: number) => set((state) => ({ ...state, maxPage })),
-    setCategory: (category: MovieCategory) => set((state) => ({ ...state, category })),
+    setCategory: (category: MovieCategory | undefined) => set((state) => ({ ...state, category })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
     clearMovies: () => set({ movies: [] }),
     setFavoritesIds: (ids: Record<number, FavoriteState>) => set((state) => ({
@@ -77,11 +82,11 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         },
     })),
     onInit: createEffect(store, async (_deps, store) => {
-        const { setLoading, fetchFavoritesIds, fetchCategoryMovies, setOnInitLoaded, page, category } = store.getState();
+        const { setLoading, fetchFavoritesIds, fetchCategoryMovies, setOnInitLoaded, page } = store.getState();
         setLoading(true);
         await fetchFavoritesIds();
         setLoading(true);
-        await fetchCategoryMovies(category, page);
+        await fetchCategoryMovies(MovieCategory.TRENDING, page);
         setLoading(false);
         setOnInitLoaded(true);
     }),
@@ -90,17 +95,20 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         globalAbortController.abort();
         set({ globalAbortController: new AbortController() });
     }),
-    fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory, page: number) => {
-        const { fetchTopRatedMovies, fetchTrendingMovies, fetchFavoriteMovies, setCategory, clearMovies, triggerAbort } = store.getState();
+    fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory | undefined, page: number, query?: string) => {
+        const { fetchTopRatedMovies, fetchTrendingMovies, fetchFavoriteMovies, fetchFindMovie, setQuery, setCategory, clearMovies, triggerAbort } = store.getState();
         triggerAbort();
         setCategory(category);
         clearMovies();
+        setQuery('');
         if (category === MovieCategory.TRENDING) {
             await fetchTrendingMovies(page);
         } else if (category === MovieCategory.TOP_RATED) {
             await fetchTopRatedMovies(page);
         } else if (category === MovieCategory.FAVORITES) {
             await fetchFavoriteMovies(page);
+        } else {
+            await fetchFindMovie(page, query ?? '');
         }
     }),
     fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
@@ -131,6 +139,25 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         const { data, error } = await tryCatch(
             httpService.get<MoviesResponse>('/movie/top_rated', params, { signal: globalAbortController.signal })
+        );
+        if (error?.name === ERROR_NAMES.ABORT) return;
+
+        setLoading(false);
+        setMaxPage(data?.total_pages ?? 1);
+        const movies = data?.results ?? [];
+        setMovies(movies);
+    }),
+    fetchFindMovie: createEffect(store, async (deps, store, page: number, query: string) => {
+        const { httpService } = deps;
+        const { setPage, setMaxPage, setLoading, setQuery, setMovies, globalAbortController } = store.getState();
+        setPage(page);
+        setQuery(query);
+        setLoading(true);
+
+        const params = { page, query };
+
+        const { data, error } = await tryCatch(
+            httpService.get<MoviesResponse>('/movie/find', params, { signal: globalAbortController.signal })
         );
         if (error?.name === ERROR_NAMES.ABORT) return;
 
@@ -259,5 +286,6 @@ export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectMovies = (state: AppState) => state.movies;
 export const selectFavoriteIds = (state: AppState) => state.favoritesIds;
 export const selectPage = (state: AppState) => state.page;
+export const selectQuery = (state: AppState) => state.query;
 export const selectMaxPage = (state: AppState) => state.maxPage;
 export const selectedCategory = (state: AppState) => state.category;
