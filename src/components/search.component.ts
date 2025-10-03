@@ -5,6 +5,7 @@ import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, selectQuery, type AppState } from '../store/app-store';
 import { MovieCategory } from '../models/models';
+import { debounce } from '../utils/debounce';
 
 @customElement('search-component')
 export class SearchComponent extends LitElement {
@@ -22,21 +23,24 @@ export class SearchComponent extends LitElement {
         }
     `;
 
-    private handleInput(event: Event) {
-        const input = event.target as HTMLInputElement;
-
+    private debouncedDispatch = debounce((query: string) => {
         this.dispatchEvent(
             new CustomEvent('onSearchInput', {
-                detail: {
-                    query: input.value,
-                },
+                detail: { query },
                 bubbles: true,
                 composed: true,
             })
         );
+    }, 200);
+
+    private handleInput(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        if (input.value === '') return this.clearSearch();
+
+        this.debouncedDispatch(input.value);
     }
 
-    private clearSearch() {
+    private clearSearch(): void {
         this.dispatchEvent(
             new CustomEvent('onCategoryChanged', {
                 detail: { category: MovieCategory.TRENDING },
