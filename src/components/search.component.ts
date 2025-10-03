@@ -54,7 +54,7 @@ export class SearchComponent extends LitElement {
     render() {
         const hasText = this.query.length > 0;
         return html`
-            <label class="w-full input input-bordered input-primary flex items-center gap-2 focus:outline-primary">
+            <label class="w-full input  flex items-center gap-2 ">
                 
                 <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <g
