@@ -77,7 +77,7 @@ export class MoviesListComponent extends LitElement {
         `)}
 
         ${this.isLoading ? html`
-          <div class="col-span-full flex justify-center items-center ${this.movies.length ? 'min-h-[10vh]' : 'min-h-[calc(100vh-theme(spacing.16))]'}">
+          <div class="col-span-full flex justify-center items-center ${this.movies.length ? 'min-h-[10vh]' : 'min-h-[20vh]'}">
             <span class="loading loading-dots w-14 text-primary"></span>
           </div>
         ` : null}
