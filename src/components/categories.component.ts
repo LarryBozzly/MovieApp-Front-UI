@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { MovieCategory, MovieCategoryMap } from '../models/models';
+import '../components/search.component';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {
@@ -39,19 +40,26 @@ export class CategoriesComponent extends LitElement {
   render() {
     if (!this.selectIsOnInitLoaded) return html``;
     return html`
-    <div class="flex overflow-x-auto gap-2 sm:gap-4 p-2 sm:p-4 scrollbar-hide">
-      ${Object.entries(this.categoriesMap).map(
+    <div class="p-2 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+      <div class="flex overflow-x-auto gap-2 sm:gap-4 scrollbar-hide order-2 sm:order-1">
+        ${Object.entries(this.categoriesMap).map(
       ([category, label]) => html`
-          <button
-            class="flex-shrink-0 btn btn-sm rounded-md
-              ${this.selectedCategory === category ? 'btn-primary' : 'btn-neutral-content'}"
-            @click=${() => this.handleCategoryClick(category as MovieCategory)}
-          >
-            ${label}
-          </button>
-        `
+            <button
+              class="flex-shrink-0 btn btn-sm rounded-md
+                ${this.selectedCategory === category ? 'btn-primary' : 'btn-neutral-content'}"
+              @click=${() => this.handleCategoryClick(category as MovieCategory)}
+            >
+              ${label}
+            </button>
+          `
     )}
-    </div>
+      </div>
+
+      <div class="w-full sm:w-80 order-1 sm:order-2">
+        <search-component></search-component>
+      </div>
+  </div>
   `;
   }
 }
