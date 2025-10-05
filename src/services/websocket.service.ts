@@ -1,6 +1,6 @@
 import protobuf from 'protobufjs';
 import { appStore } from '../store/app-store';
-import type { Movie } from '../models/models';
+import type { FavoriteState, Movie } from '../models/models';
 import { authStore } from '../store/auth-store';
 import ConnectivityService from './connectivity.service'
 
@@ -74,6 +74,15 @@ export default class WebSocketService {
                             defaults: false,
                             arrays: true,
                         });
+
+                        if (msg.favoriteMoviesUpdate) {
+                            const mediaIds: number[] = msg.favoriteMoviesUpdate.mediaIds;
+                            const idsRecord: Record<number, FavoriteState> = {};
+                            mediaIds.forEach((id) => {
+                                idsRecord[id] = { isFavorite: true, isLoading: false };
+                            });
+                            appStore.getState().setFavoritesIds(idsRecord);
+                        }
 
                         if (msg.invitationNotification)
                             await appStore.getState().openReceivedInvitationModal(msg.invitationNotification.from);

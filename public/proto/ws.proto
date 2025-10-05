@@ -74,6 +74,11 @@ message MovieMatch {
   Movie movie = 1;
 }
 
+message FavoriteMoviesUpdate {
+  repeated uint32 mediaIds = 1;
+}
+
+
 // ------------------------------
 // Top-Level Envelopes
 // ------------------------------
@@ -95,6 +100,7 @@ message ServerMessage {
     StartMovieMatch startMovieMatch = 3;
     MovieSelection movieSelection = 4;
     NoMovieSelected noMovieSelected = 5;
-    MovieMatch movieMatch = 6;  // <-- new message added here
+    MovieMatch movieMatch = 6;
+    FavoriteMoviesUpdate favoriteMoviesUpdate = 7;
   }
 }

@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import { ERROR_NAMES, MovieCategory, type FavoriteMoviesIdsResponse, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
+import { ERROR_NAMES, MovieCategory, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -44,7 +44,6 @@ export interface AppState {
     fetchFavoriteMovies: (page: number) => Promise<void>;
     fetchFindMovie: (page: number, query: string) => Promise<void>;
     fetchCategoryMovies: (category: MovieCategory | undefined, page: number, query?: string) => Promise<void>;
-    fetchFavoritesIds: () => Promise<void>;
     addToFavorites: (movie: Movie) => Promise<void>;
     removeFromFavorites: (movie: Movie) => Promise<void>;
     openSendInvitationModal: () => Promise<void>;
@@ -82,12 +81,8 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         },
     })),
     onInit: createEffect(store, async (_deps, store) => {
-        const { setLoading, fetchFavoritesIds, fetchCategoryMovies, setOnInitLoaded, page } = store.getState();
-        setLoading(true);
-        await fetchFavoritesIds();
-        setLoading(true);
+        const { fetchCategoryMovies, setOnInitLoaded, page } = store.getState();
         await fetchCategoryMovies(MovieCategory.TRENDING, page);
-        setLoading(false);
         setOnInitLoaded(true);
     }),
     triggerAbort: createEffect(store, async (_deps, store) => {
@@ -184,25 +179,6 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         setMaxPage(data?.total_pages ?? 1);
         const movies = data?.items ?? [];
         setMovies(movies);
-    }),
-    fetchFavoritesIds: createEffect(store, async (deps, store) => {
-        const { httpService } = deps;
-        const { setLoading, setFavoritesIds } = store.getState();
-        setLoading(true);
-
-        const { data } = await tryCatch(
-            httpService.get<FavoriteMoviesIdsResponse>('/movie/favorites/ids')
-        );
-
-        setLoading(false);
-        if (data?.mediaIds.length) {
-            const idsRecord: Record<number, FavoriteState> = {};
-            data.mediaIds.forEach((id) => {
-                idsRecord[id] = { isFavorite: true, isLoading: false };
-            });
-
-            setFavoritesIds(idsRecord);
-        }
     }),
     addToFavorites: createEffect(store, async (deps, store, movie: Movie) => {
         const { httpService } = deps;
