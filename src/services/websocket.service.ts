@@ -81,6 +81,7 @@ export default class WebSocketService {
                             mediaIds.forEach((id) => {
                                 idsRecord[id] = { isFavorite: true, isLoading: false };
                             });
+                            console.log(mediaIds);
                             appStore.getState().setFavoritesIds(idsRecord);
                         }
 
