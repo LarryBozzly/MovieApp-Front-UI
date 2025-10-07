@@ -149,7 +149,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         setQuery(query);
         setLoading(true);
 
-        const params = { page, query: encodeURIComponent(query) };
+        const params = { query: encodeURIComponent(query) };
 
         const { data, error } = await tryCatch(
             httpService.get<MoviesResponse>('/movie/find', params, { signal: globalAbortController.signal })
