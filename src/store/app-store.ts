@@ -192,9 +192,8 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
             [movie.id]: { isFavorite: prev?.isFavorite ?? false, isLoading: true },
         });
 
-        const body = { mediaId: movie.id };
         const { data } = await tryCatch(
-            httpService.post<FavoriteMoviesResponse>('/movie/favorites', body)
+            httpService.post<FavoriteMoviesResponse>('/movie/favorites', { ...movie })
         );
 
         setLoading(false);
