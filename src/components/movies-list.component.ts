@@ -64,13 +64,14 @@ export class MoviesListComponent extends LitElement {
                   Popularity: ${movie.percentage_popularity}%
                 </span>
 
-                <button
-                  @click=${this.handleHeartClick.bind(this, movie)}
-                  class="ml-auto focus:outline-none"
-                  title="Toggle Favorite"
-                >
-                  ${this.renderHeartIcon(movie)}
-                </button>
+              <button
+                @click=${this.handleHeartClick.bind(this, movie)}
+                class="ml-auto focus:outline-none"
+                title="Toggle Favorite"
+                ?disabled=${this.favoritesIds[movie.id]?.isLoading}
+              >
+                ${this.renderHeartIcon(movie)}
+              </button>
               </div>
             </div>
           </div>
