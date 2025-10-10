@@ -196,6 +196,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
             httpService.post<FavoriteMoviesResponse>('/movie/favorites', { ...movie })
         );
 
+        await new Promise(resolve => setTimeout(resolve, 100));
         setLoading(false);
         setFavoritesIds({
             [movie.id]: { isFavorite: data?.success ?? false, isLoading: false },
@@ -219,6 +220,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
             httpService.delete<FavoriteMoviesResponse>(`/movie/favorites/${movie.id}`)
         );
 
+        await new Promise(resolve => setTimeout(resolve, 100));
         setLoading(false);
         setFavoritesIds({
             [movie.id]: { isFavorite: data?.success ? false : true, isLoading: false },
