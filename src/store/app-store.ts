@@ -187,8 +187,6 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
         const prev = currentFavorites[movie.id];
 
-        if (prev?.isLoading) return;
-
         setLoading(true);
         setFavoritesIds({
             [movie.id]: { isFavorite: prev?.isFavorite ?? false, isLoading: true },
@@ -210,8 +208,6 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
         const prev = currentFavorites[movie.id];
-
-        if (prev?.isLoading) return;
 
         setLoading(true);
         setFavoritesIds({
