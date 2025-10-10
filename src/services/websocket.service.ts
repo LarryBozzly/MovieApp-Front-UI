@@ -77,9 +77,12 @@ export default class WebSocketService {
 
                         if (msg.favoriteMoviesUpdate) {
                             const mediaIds: number[] = msg.favoriteMoviesUpdate.mediaIds;
+                            const currentFavorites = appStore.getState().favoritesIds;
                             const idsRecord: Record<number, FavoriteState> = {};
                             mediaIds.forEach((id) => {
-                                idsRecord[id] = { isFavorite: true, isLoading: false };
+                                if (!currentFavorites[id]?.isLoading) {
+                                    idsRecord[id] = { isFavorite: true, isLoading: false };
+                                }
                             });
                             appStore.getState().setFavoritesIds(idsRecord);
                         }
