@@ -35,6 +35,7 @@ export interface AuthState {
     sendInvitationRequest: (toTag: string) => Promise<void>;
     sendInvitationResponse: (toTag: string, fromTag: string) => Promise<void>;
     sendMovieSelection: (movie: Movie) => Promise<void>;
+    sendMovieRejection: (movie: Movie) => Promise<void>;
     initDeviceVisibilityListener: () => Promise<void>;
 }
 
@@ -147,6 +148,16 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         }
 
         webSocketService.sendMovieSelection(movie);
+    }),
+    sendMovieRejection: createEffect(store, async (deps, _store, movie: Movie) => {
+        const { webSocketService } = deps;
+
+        if (!webSocketService) {
+            console.error('WebSocketService not initialized');
+            return;
+        }
+
+        webSocketService.sendMovieRejection(movie);
     }),
     initDeviceVisibilityListener: createEffect(store, async (deps, store) => {
         const { deviceInfoService, webSocketService, authService, connectivityService } = deps;

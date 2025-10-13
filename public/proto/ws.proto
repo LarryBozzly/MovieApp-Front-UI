@@ -58,7 +58,12 @@ message Movie {
 }
 
 message MovieSelection {
-  // Client → Server & Server → Client
+  // Client → Server & Server → Client: Used for LIKES
+  Movie movie = 1;
+}
+
+message MovieRejection {
+  // Client → Server: Used for DISLIKES/REJECTIONS
   Movie movie = 1;
 }
 
@@ -89,7 +94,8 @@ message ClientMessage {
     InvitationRequest invitationRequest = 2;
     InvitationResponse invitationResponse = 3;
     MovieSelection movieSelection = 4;
-    NoMovieSelected noMovieSelected = 5;
+    MovieRejection movieRejection = 5;
+    NoMovieSelected noMovieSelected = 6;
   }
 }
 

@@ -137,6 +137,10 @@ export default class WebSocketService {
         this.send({ movieSelection: { movie } });
     }
 
+    sendMovieRejection(movie: Movie) {
+        this.send({ movieRejection: { movie } });
+    }
+
     close(manual = false) {
         this.manualDisconnect = manual;
         this.socket?.close();

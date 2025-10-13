@@ -42,6 +42,10 @@ export class MovieMatchModalComponent extends LitElement {
       await this.authState.sendMovieSelection(movie);
     }
 
+    if (direction === MovieMatchDirection.Dislike) {
+      await this.authState.sendMovieRejection(movie);
+    }
+
     if (this.currentIndex === this.movies.length) {
       // All movies reviewed – trigger completion event or notify server
     }
