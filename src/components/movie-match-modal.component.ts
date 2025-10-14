@@ -89,7 +89,7 @@ export class MovieMatchModalComponent extends LitElement {
 
           <!-- Scrollable description only -->
           <div
-            class="max-h-[8rem] h-auto relative text-sm text-base-content/70 leading-relaxed rounded-lg border border-base-300 bg-base-200/60 overflow-y-auto">
+            class="h-auto relative text-sm text-base-content/70 leading-relaxed rounded-lg border border-base-300 bg-base-200/60 overflow-y-auto max-h-[18vh]">
             <p class="p-2">${movie.overview || 'No description available.'}</p>
           </div>
 
