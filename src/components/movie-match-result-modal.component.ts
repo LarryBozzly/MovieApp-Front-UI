@@ -30,7 +30,9 @@ export class MovieMatchResultModal extends LitElement {
               class="w-full h-80 object-contain rounded-lg shadow-md"
             />
 
-            <h3 class="text-2xl font-semibold truncate">${this.movie.title}</h3>
+            <h3 class="text-2xl font-semibold truncate">${this.movie.title}
+               <span class="text-gray-500 text-base">(${this.movie.release_date ? new Date(this.movie.release_date).getFullYear() : ''})</span>
+            </h3>
             <p class="text-gray-700">${this.movie.overview || 'No description available.'}</p>
 
             <button

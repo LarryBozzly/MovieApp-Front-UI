@@ -74,8 +74,10 @@ export class MovieMatchModalComponent extends LitElement {
         />
 
         <div class="p-4 space-y-2">
-          <h3 class="text-xl font-bold text-gray-900 truncate">${movie.title}</h3>
-
+          <h3 class="text-xl font-bold text-gray-900 truncate">
+            ${movie.title} 
+            <span class="text-gray-500 text-sm">(${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})</span>
+          </h3>
           <div class="flex items-center gap-3">
             <span class="text-yellow-500 text-lg">★</span>
             <span class="text-base text-gray-700 font-medium">${movie.vote_average?.toFixed(1)}</span>
