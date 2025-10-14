@@ -1,7 +1,3 @@
-import { registerSW } from 'virtual:pwa-register'
-
-registerSW({ immediate: true });
-
 async function bootstrap() {
   // Import your Lit root component only when ready
   await import('./app-root.ts');
