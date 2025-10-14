@@ -1,14 +1,13 @@
 /// <reference types="vite/client" />
 // Declare the virtual module for vite-plugin-pwa
 declare module 'virtual:pwa-register' {
-    type RegisterSWOptions = {
+    interface RegisterSWOptions {
         onNeedRefresh?: () => void;
         onOfflineReady?: () => void;
         immediate?: boolean;
-    };
+    }
 
-    // updateSW() returns a Promise that resolves when the new SW is activated
-    type RegisterSWReturn = () => Promise<void>;
-
+    // Function returned by registerSW — can take an optional options object
+    type RegisterSWReturn = (options?: { immediate?: boolean }) => Promise<void>;
     export function registerSW(options?: RegisterSWOptions): RegisterSWReturn;
 }

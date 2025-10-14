@@ -1,9 +1,10 @@
 // src/main.ts
 import { registerSW } from "virtual:pwa-register";
 
+// 1️⃣ Register the Service Worker
 const updateSW = registerSW({
   onNeedRefresh() {
-    updateSW();
+    updateSW({ immediate: true });
   },
   onOfflineReady() {
   },
