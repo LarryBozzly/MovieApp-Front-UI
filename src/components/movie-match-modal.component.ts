@@ -58,15 +58,15 @@ export class MovieMatchModalComponent extends LitElement {
         Do you like this movie?
       </h2>
 
-      <div class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300">
+      <div class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]">
         <img
           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
           alt="${movie.title}"
-          class="w-full h-72 object-contain bg-base-200"
+          class="w-full h-72 object-contain bg-base-200 flex-shrink-0"
         />
 
-        <div class="p-4 space-y-3">
-          <!-- Title and year -->
+      <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
+        <div>
           <h3 class="text-xl font-bold text-base-content">
             ${movie.title}
             <span class="text-base-content/60 text-sm">
@@ -74,43 +74,36 @@ export class MovieMatchModalComponent extends LitElement {
             </span>
           </h3>
 
-          <!-- Rating and popularity -->
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 mt-1">
             <span class="text-yellow-500 text-lg">★</span>
-            <span class="text-base text-base-content/80 font-medium">
-              ${movie.vote_average?.toFixed(1)}
-            </span>
-            <span
-              class="badge badge-outline text-sm ${getPopularityClasses(movie.percentage_popularity)}"
-            >
+            <span class="text-base text-base-content/80 font-medium">${movie.vote_average?.toFixed(1)}</span>
+            <span class="badge badge-outline text-sm ${getPopularityClasses(movie.percentage_popularity)}">
               Popularity: ${movie.percentage_popularity}%
             </span>
           </div>
+        </div>
 
-          <!-- Scrollable description only -->
-          <div
-            class="h-auto relative text-sm text-base-content/70 leading-relaxed rounded-lg border border-base-300 bg-base-200/60 overflow-y-auto max-h-[18vh]">
-            <p class="p-2">${movie.overview || 'No description available.'}</p>
-          </div>
+        <div class="overflow-y-auto rounded-lg border border-base-300 bg-base-200/60 p-2 flex-1 text-sm text-base-content/70">
+          ${movie.overview || 'No description available.'}
+        </div>
 
-          <!-- Like / Dislike buttons -->
-          <div class="flex justify-between gap-4 pt-4">
-            <button
-              @click=${() => this.swipe(MovieMatchDirection.Dislike)}
-              class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
-            >
-              👎 Dislike
-            </button>
+        <div class="flex justify-between gap-4 pt-2 flex-shrink-0">
+          <button
+            @click=${() => this.swipe(MovieMatchDirection.Dislike)}
+            class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
+          >
+            👎 Dislike
+          </button>
 
-            <button
-              @click=${() => this.swipe(MovieMatchDirection.Like)}
-              class="btn btn-primary flex-1 text-base font-semibold py-3"
-            >
-              👍 Like
-            </button>
-          </div>
+          <button
+            @click=${() => this.swipe(MovieMatchDirection.Like)}
+            class="btn btn-primary flex-1 text-base font-semibold py-3"
+          >
+            👍 Like
+          </button>
         </div>
       </div>
+    </div>
     `;
   }
 }
