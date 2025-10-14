@@ -21,8 +21,6 @@ export class MoviesListComponent extends LitElement {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-GB', {
       year: 'numeric',
-      month: 'long',
-      day: 'numeric'
     });
   }
 
