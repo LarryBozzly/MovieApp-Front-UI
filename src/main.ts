@@ -1,16 +1,7 @@
-// src/main.ts
-import { registerSW } from "virtual:pwa-register";
+import { registerSW } from 'virtual:pwa-register'
 
-// 1️⃣ Register the Service Worker
-const updateSW = registerSW({
-  onNeedRefresh() {
-    updateSW({ immediate: true });
-  },
-  onOfflineReady() {
-  },
-});
+registerSW({ immediate: true });
 
-// 2️⃣ Function to bootstrap your Lit app
 async function bootstrap() {
   // Import your Lit root component only when ready
   await import('./app-root.ts');
