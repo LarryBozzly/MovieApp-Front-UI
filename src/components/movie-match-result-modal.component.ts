@@ -38,9 +38,9 @@ export class MovieMatchResultModal extends LitElement {
             </span>
           </h3>
 
-          <div class="flex flex-wrap gap-2 mt-1">
+          <div class="flex gap-2 mt-1 overflow-x-auto whitespace-nowrap">
             ${this.movie.genre_ids.map((id) => html`
-              <span class="badge badge-outline text-sm border-base-content/40 text-base-content/80">
+              <span class="badge badge-outline text-xs border-base-content/40 text-base-content/80">
                 ${MovieGenreMap.get(id)}
               </span>
             `)}
