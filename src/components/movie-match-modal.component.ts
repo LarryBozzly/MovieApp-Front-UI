@@ -5,6 +5,7 @@ import { tailwindStyles } from '../utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
+import Hammer from 'hammerjs';
 
 @customElement('movie-match-modal-component')
 export class MovieMatchModalComponent extends LitElement {
@@ -41,6 +42,50 @@ export class MovieMatchModalComponent extends LitElement {
     }
   }
 
+  firstUpdated() {
+    // Attach HammerJS to this component
+    const container = this as HTMLElement;
+
+    // Find the parent modal container outside shadow DOM
+    const modalContent = this.closest('.modal-box') as HTMLElement;
+    if (!modalContent) return;
+
+    const manager = new Hammer(container);
+    manager.add(new Hammer.Pan({ threshold: 0 }));
+
+    let currentX = 0;
+
+    manager.on('panmove', (e) => {
+      currentX = e.deltaX;
+      const maxRotate = 15;
+      const rotate = Math.max(-maxRotate, Math.min(maxRotate, currentX / 10));
+
+      modalContent.style.transition = 'none';
+      modalContent.style.transformOrigin = 'bottom center';
+      modalContent.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+    });
+
+    manager.on('panend', (e) => {
+      const threshold = 150;
+      const velocity = Math.abs(e.velocityX);
+      const shouldDismiss = Math.abs(currentX) > threshold || velocity > 0.5;
+
+      if (shouldDismiss) {
+        const direction = currentX > 0 ? 1 : -1;
+        modalContent.style.transition = 'transform 0.4s ease-out';
+        modalContent.style.transform = `translateX(${direction * 1000}px) rotate(${direction * 15}deg)`;
+
+        setTimeout(() => {
+          this.swipe(direction > 0 ? MovieMatchDirection.Like : MovieMatchDirection.Dislike);
+          modalContent.style.transform = '';
+        }, 180);
+      } else {
+        modalContent.style.transition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
+        modalContent.style.transform = 'translateX(0) rotate(0)';
+      }
+    });
+  }
+
   render() {
     const movie = this.currentMovie;
 
@@ -58,7 +103,7 @@ export class MovieMatchModalComponent extends LitElement {
         <img
           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
           alt="${movie.title}"
-          class="w-full h-64 object-contain bg-base-200 flex-shrink-0"
+          class="w-full h-64 object-contain bg-base-200 flex-shrink-0 pointer-events-none"
         />
 
       <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
