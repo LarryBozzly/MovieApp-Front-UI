@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { MovieGenreMap, type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 
@@ -11,6 +11,11 @@ export class MovieMatchResultModal extends LitElement {
 
   @property({ type: Object }) movie!: Movie;
   @property({ type: Function }) onClose!: () => void;
+  @state() private canClose = false;
+
+  firstUpdated() {
+    setTimeout(() => (this.canClose = true), 3000);
+  }
 
   render() {
     return html`
@@ -54,8 +59,9 @@ export class MovieMatchResultModal extends LitElement {
         <button
           @click=${this.onClose}
           class="btn btn-primary w-full flex-shrink-0 mt-4"
+          ?disabled=${!this.canClose}
         >
-          Close
+          ${this.canClose ? 'Close' : 'Please wait...'}
         </button>
       </div>
     `;
