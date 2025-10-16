@@ -18,7 +18,10 @@ export class SendInviteModalComponent extends LitElement {
     this.tag = (e.target as HTMLInputElement).value;
   }
 
-  private async sendInvite() {
+  private async sendInvite(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
     if (!this.tag.trim()) return;
     await this.authState.sendInvitationRequest(this.tag);
   }
@@ -31,25 +34,27 @@ export class SendInviteModalComponent extends LitElement {
           Enter the user tag to send a movie match invitation.
         </p>
 
-        <div class="form-control">
-          <input
-            type="text"
-            class="input input-bordered w-full"
-            placeholder="User Tag"
-            .value=${this.tag}
-            @input=${this.handleInput}
-          />
-        </div>
+        <form @submit=${this.sendInvite}>
+          <div class="form-control">
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="User Tag"
+              .value=${this.tag}
+              @input=${this.handleInput}
+            />
+          </div>
 
-        <div class="pt-2">
-          <button
-            class="btn btn-primary w-full"
-            @click=${this.sendInvite}
-            ?disabled=${!this.tag.trim()}
-          >
-            Send Invite
-          </button>
-        </div>
+          <div class="pt-2">
+            <button
+              type="submit"
+              class="btn btn-primary w-full"
+              ?disabled=${!this.tag.trim()}
+            >
+              Send Invite
+            </button>
+          </div>
+        </form>
       </div>
     `;
   }
