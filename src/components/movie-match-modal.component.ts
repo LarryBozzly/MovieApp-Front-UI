@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieMatchDirection, type Movie } from '../models/models';
+import { MovieGenreMap, MovieMatchDirection, type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
@@ -54,10 +54,6 @@ export class MovieMatchModalComponent extends LitElement {
     }
 
     return html`
-      <h2 class="text-2xl font-bold text-center text-base-content mb-4">
-        Do you like this movie?
-      </h2>
-
       <div class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]">
         <img
           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
@@ -73,7 +69,13 @@ export class MovieMatchModalComponent extends LitElement {
               (${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})
             </span>
           </h3>
-
+          <div class="flex flex-wrap gap-2 mt-1">
+            ${movie.genre_ids.map((id) => html`
+              <span class="badge badge-outline text-sm border-base-content/40 text-base-content/80">
+                ${MovieGenreMap.get(id)}
+              </span>
+            `)}
+          </div>
           <div class="flex items-center gap-3 mt-1">
             <span class="text-yellow-500 text-lg">★</span>
             <span class="text-base text-base-content/80 font-medium">${movie.vote_average?.toFixed(1)}</span>

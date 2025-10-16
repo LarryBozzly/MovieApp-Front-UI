@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { type Movie } from '../models/models';
+import { MovieGenreMap, type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 
 @customElement('movie-match-result-modal')
@@ -37,6 +37,14 @@ export class MovieMatchResultModal extends LitElement {
               (${this.movie.release_date ? new Date(this.movie.release_date).getFullYear() : ''})
             </span>
           </h3>
+
+          <div class="flex flex-wrap gap-2 mt-1">
+            ${this.movie.genre_ids.map((id) => html`
+              <span class="badge badge-outline text-sm border-base-content/40 text-base-content/80">
+                ${MovieGenreMap.get(id)}
+              </span>
+            `)}
+          </div>
 
           <p class="mt-2 flex-1 overflow-y-auto pr-1 text-base-content/80">
             ${this.movie.overview || 'No description available.'}
