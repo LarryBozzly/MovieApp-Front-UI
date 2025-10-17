@@ -13,6 +13,14 @@ export class MovieMatchModalComponent extends LitElement {
 
   static styles = css`
     ${tailwindStyles}
+
+      #scroll-overview {
+      /* CRITICAL: Hides the scrollbar and removes the scroll function */
+      overflow-y: hidden !important; 
+    
+      /* CRITICAL: Prevents the browser from claiming any vertical touch action */
+      touch-action: none !important; 
+    }
   `;
 
   @property({ type: Array }) movies: Movie[] = [];
@@ -44,59 +52,24 @@ export class MovieMatchModalComponent extends LitElement {
 
   firstUpdated() {
     const container = this as HTMLElement;
+
     const modalContent = this.closest('.modal-box') as HTMLElement;
     if (!modalContent) return;
 
-    // 1. Get the scrollable description element (must have id="scroll-overview" in render)
-    const descriptionEl = this.renderRoot.querySelector('#scroll-overview') as HTMLElement;
-
-    // Optional: Reapply touch-action (Rely on JS logic below, but keep this for browser hint)
-    if (descriptionEl) {
-      // Tells the browser to handle vertical movement natively here.
-      descriptionEl.style.touchAction = 'pan-y';
-    }
-
-    // 2. Initialize Hammer Manager (Card only allows horizontal swipe)
-    const mainManager = new Hammer.Manager(container, {
-      inputClass: Hammer.TouchMouseInput,
-      touchAction: 'pan-x', // Global rule for the card container
+    const manager = new Hammer.Manager(container, {
+      inputClass: Hammer.TouchMouseInput, // Recommended for touch/mouse consistency
+      touchAction: 'pan-y',              // Allows browser to scroll vertically if needed
     });
 
     const pan = new Hammer.Pan({
       threshold: 0,
-      direction: Hammer.DIRECTION_HORIZONTAL
+      direction: Hammer.DIRECTION_HORIZONTAL // Only recognize horizontal movement
     });
-    mainManager.add(pan);
+    manager.add(pan);
 
     let currentX = 0;
-    let isScrollIntent = false; // Flag: true if the gesture started as a scroll
 
-    mainManager.on('panstart', (e) => {
-      isScrollIntent = false;
-      const path = e.srcEvent?.composedPath() as EventTarget[] | undefined;
-
-      // 🛑 CRITICAL CHECK: If touch started inside the scroll area, assume scroll intent.
-      if (descriptionEl && path?.includes(descriptionEl)) {
-        // Since touch-action: pan-y is set on descriptionEl, 
-        // the browser should handle it, but we use an explicit JS check as a fail-safe.
-        // We look for vertical dominance in the *initial* move.
-        const isVerticalDominant = Math.abs(e.deltaY) > Math.abs(e.deltaX) * 1.5;
-        if (isVerticalDominant) {
-          isScrollIntent = true;
-          return; // Stop processing this gesture as a swipe
-        }
-      }
-
-      modalContent.style.transition = 'none';
-    });
-
-    mainManager.on('panmove', (e) => {
-      // 🛑 FIX: If we determined this was a scroll, DO NOT update the card position.
-      if (isScrollIntent) {
-        return;
-      }
-
-      // Card Swipe Movement Logic
+    manager.on('panmove', (e) => {
       currentX = e.deltaX;
       const maxRotate = 15;
       const rotate = Math.max(-maxRotate, Math.min(maxRotate, currentX / 10));
@@ -105,24 +78,15 @@ export class MovieMatchModalComponent extends LitElement {
       modalContent.style.transformOrigin = 'bottom center';
       modalContent.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
 
-      // Prevents page scrolling/default interaction when actively swiping
       if (e.srcEvent?.cancelable) {
         e.srcEvent.preventDefault();
       }
     });
 
-    mainManager.on('panend', (e) => {
+    manager.on('panend', (e) => {
       const tempCurrentX = currentX;
-      currentX = 0; // Reset for next gesture
+      currentX = 0;
 
-      // 🛑 FIX: If this was a scroll, reset the card position immediately and exit.
-      if (isScrollIntent) {
-        modalContent.style.transition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
-        modalContent.style.transform = 'translateX(0) rotate(0)';
-        return;
-      }
-
-      // Card Swipe Dismissal Logic
       const threshold = 150;
       const velocity = Math.abs(e.velocityX);
       const shouldDismiss = Math.abs(tempCurrentX) > threshold || velocity > 0.5;
@@ -137,7 +101,6 @@ export class MovieMatchModalComponent extends LitElement {
           modalContent.style.transform = '';
         }, 180);
       } else {
-        // Return to center
         modalContent.style.transition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
         modalContent.style.transform = 'translateX(0) rotate(0)';
       }
