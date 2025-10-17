@@ -1,10 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieGenreMap, MovieMatchDirection, type Movie } from '../models/models';
+import { MovieMatchDirection, type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
+import './genre-badges.component';
 import Hammer from 'hammerjs';
 
 @customElement('movie-match-modal-component')
@@ -243,12 +244,8 @@ export class MovieMatchModalComponent extends LitElement {
               (${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})
             </span>
           </h3>
-          <div class="flex gap-2 mt-1 overflow-x-auto whitespace-nowrap flex-shrink-0">
-            ${movie.genre_ids.map((id) => html`
-              <span class="badge badge-outline text-xs border-base-content/40 text-base-content/80">
-                ${MovieGenreMap.get(id)}
-              </span>
-            `)}
+          <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
+            <genre-badges .genreIds=${movie.genre_ids} .limit=${4}></genre-badges>
           </div>
           <div class="flex items-center gap-3 mt-1">
             <span class="text-yellow-500 text-lg">★</span>
