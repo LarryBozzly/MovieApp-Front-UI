@@ -68,7 +68,7 @@ export class MovieMatchModalComponent extends LitElement {
     let gestureDecided = false;
     let ignorePan = false;
 
-    manager.on('panstart pancancel', (e) => {
+    manager.on('panstart pancancel', (_e) => {
       // reset per-gesture flags on panstart/pancancel (panstart happens when hammer decides to start)
       // But we keep gestureStartedInOverview as set by pointerdown (below).
       gestureDecided = false;
