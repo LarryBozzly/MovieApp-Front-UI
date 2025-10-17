@@ -15,8 +15,9 @@ export class MovieMatchModalComponent extends LitElement {
     ${tailwindStyles}
   `;
 
+  private cleanupFns: (() => void)[] = [];
+  private manager!: HammerManager;
   @property({ type: Array }) movies: Movie[] = [];
-
   @state() private currentIndex = 0;
 
   private get currentMovie(): Movie | undefined {
@@ -47,7 +48,7 @@ export class MovieMatchModalComponent extends LitElement {
     const modalContent = this.closest('.modal-box') as HTMLElement;
     if (!modalContent) return;
 
-    const manager = new Hammer.Manager(container, {
+    this.manager = new Hammer.Manager(container, {
       inputClass: Hammer.TouchMouseInput,
       touchAction: 'pan-y',
     });
@@ -56,7 +57,7 @@ export class MovieMatchModalComponent extends LitElement {
       threshold: 0,
       direction: Hammer.DIRECTION_HORIZONTAL,
     });
-    manager.add(pan);
+    this.manager.add(pan);
 
     let currentX = 0;
 
@@ -68,7 +69,7 @@ export class MovieMatchModalComponent extends LitElement {
     let gestureDecided = false;
     let ignorePan = false;
 
-    manager.on('panstart pancancel', (_e) => {
+    this.manager.on('panstart pancancel', (_e) => {
       // reset per-gesture flags on panstart/pancancel (panstart happens when hammer decides to start)
       // But we keep gestureStartedInOverview as set by pointerdown (below).
       gestureDecided = false;
@@ -76,7 +77,7 @@ export class MovieMatchModalComponent extends LitElement {
       currentX = 0;
     });
 
-    manager.on('panmove', (e) => {
+    this.manager.on('panmove', (e) => {
       // If the gesture started in the overview, we need to decide intent.
       if (gestureStartedInOverview && !gestureDecided) {
         const absX = Math.abs(e.deltaX);
@@ -125,7 +126,7 @@ export class MovieMatchModalComponent extends LitElement {
       }
     });
 
-    manager.on('panend', (e) => {
+    this.manager.on('panend', (e) => {
       // At panend we only proceed if we didn't ignore the pan
       if (gestureStartedInOverview && ignorePan) {
         // Reset flags and do nothing (native scroll handled it)
@@ -165,34 +166,53 @@ export class MovieMatchModalComponent extends LitElement {
     // --- Listen for pointerdown inside the overview area to mark where the gesture started ---
     const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement;
     if (overview) {
-      // pointerdown used to mark origin; do not set passive:true so we can preventDefault later if needed
-      overview.addEventListener('pointerdown', (_ev: PointerEvent) => {
-        gestureStartedInOverview = true;
-        gestureDecided = false;
-        ignorePan = false;
-        // Do not call preventDefault here; decision is made in panmove handler.
-      }, { passive: true });
 
-      // Also track touchstart for older browsers (pointer events are ideal)
-      overview.addEventListener('touchstart', (_ev: TouchEvent) => {
+      this.addToCleanup(overview, 'pointerdown', (_ev: PointerEvent) => {
         gestureStartedInOverview = true;
         gestureDecided = false;
         ignorePan = false;
       }, { passive: true });
 
-      // Make sure to clear the flag if finger lifts outside
-      window.addEventListener('pointerup', () => {
+      this.addToCleanup(overview, 'touchstart', (_ev: TouchEvent) => {
+        gestureStartedInOverview = true;
+        gestureDecided = false;
+        ignorePan = false;
+      }, { passive: true });
+
+      this.addToCleanup(window, 'pointerup', () => {
         gestureStartedInOverview = false;
         gestureDecided = false;
         ignorePan = false;
       });
-      window.addEventListener('touchend', () => {
+
+      this.addToCleanup(window, 'touchend', () => {
         gestureStartedInOverview = false;
         gestureDecided = false;
         ignorePan = false;
       });
     }
+
+    // Also track Hammer manager cleanup
+    this.cleanupFns.push(() => this.manager.destroy());
   }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.cleanupFns.forEach(fn => {
+      try { fn(); } catch { /* ignore */ }
+    });
+    this.cleanupFns = [];
+  }
+
+  private addToCleanup = <K extends keyof HTMLElementEventMap>(
+    target: HTMLElement | Window,
+    type: K,
+    listener: (ev: any) => void,
+    options?: AddEventListenerOptions
+  ) => {
+    target.addEventListener(type, listener, options);
+    this.cleanupFns.push(() => target.removeEventListener(type, listener, options));
+  };
 
 
   render() {
