@@ -166,7 +166,7 @@ export class MovieMatchModalComponent extends LitElement {
     const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement;
     if (overview) {
       // pointerdown used to mark origin; do not set passive:true so we can preventDefault later if needed
-      overview.addEventListener('pointerdown', (ev: PointerEvent) => {
+      overview.addEventListener('pointerdown', (_ev: PointerEvent) => {
         gestureStartedInOverview = true;
         gestureDecided = false;
         ignorePan = false;
@@ -174,7 +174,7 @@ export class MovieMatchModalComponent extends LitElement {
       }, { passive: true });
 
       // Also track touchstart for older browsers (pointer events are ideal)
-      overview.addEventListener('touchstart', (ev: TouchEvent) => {
+      overview.addEventListener('touchstart', (_ev: TouchEvent) => {
         gestureStartedInOverview = true;
         gestureDecided = false;
         ignorePan = false;
