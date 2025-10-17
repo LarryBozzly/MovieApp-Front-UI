@@ -13,14 +13,6 @@ export class MovieMatchModalComponent extends LitElement {
 
   static styles = css`
     ${tailwindStyles}
-
-      #scroll-overview {
-      /* CRITICAL: Hides the scrollbar and removes the scroll function */
-      overflow-y: hidden !important; 
-    
-      /* CRITICAL: Prevents the browser from claiming any vertical touch action */
-      touch-action: none !important; 
-    }
   `;
 
   @property({ type: Array }) movies: Movie[] = [];
@@ -52,24 +44,74 @@ export class MovieMatchModalComponent extends LitElement {
 
   firstUpdated() {
     const container = this as HTMLElement;
-
     const modalContent = this.closest('.modal-box') as HTMLElement;
     if (!modalContent) return;
 
     const manager = new Hammer.Manager(container, {
-      inputClass: Hammer.TouchMouseInput, // Recommended for touch/mouse consistency
-      touchAction: 'pan-y',              // Allows browser to scroll vertically if needed
+      inputClass: Hammer.TouchMouseInput,
+      touchAction: 'pan-y',
     });
 
     const pan = new Hammer.Pan({
       threshold: 0,
-      direction: Hammer.DIRECTION_HORIZONTAL // Only recognize horizontal movement
+      direction: Hammer.DIRECTION_HORIZONTAL,
     });
     manager.add(pan);
 
     let currentX = 0;
 
+    // --- Gesture-decision flags ---
+    // gestureStartedInOverview: true if pointerdown began inside the description
+    // gestureDecided: true after we decide horizontal vs vertical for this gesture
+    // ignorePan: true if we decided it is vertical (so ignore Hammer pan movement)
+    let gestureStartedInOverview = false;
+    let gestureDecided = false;
+    let ignorePan = false;
+
+    manager.on('panstart pancancel', (e) => {
+      // reset per-gesture flags on panstart/pancancel (panstart happens when hammer decides to start)
+      // But we keep gestureStartedInOverview as set by pointerdown (below).
+      gestureDecided = false;
+      ignorePan = false;
+      currentX = 0;
+    });
+
     manager.on('panmove', (e) => {
+      // If the gesture started in the overview, we need to decide intent.
+      if (gestureStartedInOverview && !gestureDecided) {
+        const absX = Math.abs(e.deltaX);
+        const absY = Math.abs(e.deltaY);
+        const threshold = 8; // pixels to avoid accidental tiny moves
+        if (absX >= threshold || absY >= threshold) {
+          if (absY > absX) {
+            // Vertical intent -> ignore Hammer pans for the rest of this gesture
+            ignorePan = true;
+            gestureDecided = true;
+            // Do NOT call preventDefault() so browser can continue scrolling
+            return;
+          } else {
+            // Horizontal intent -> allow Hammer to handle the pan smoothly
+            ignorePan = false;
+            gestureDecided = true;
+            // Prevent the native scroll when we decide horizontal so the page doesn't fight us
+            try {
+              e.srcEvent?.preventDefault?.();
+            } catch (err) {
+              /* some environments may not allow; it's best-effort */
+            }
+          }
+        } else {
+          // Not enough movement yet — don't do anything
+          return;
+        }
+      }
+
+      if (gestureStartedInOverview && ignorePan) {
+        // User started inside overview and intent is vertical -> do nothing (native scroll)
+        return;
+      }
+
+      // Normal pan handling (either started outside overview OR decided horizontal)
       currentX = e.deltaX;
       const maxRotate = 15;
       const rotate = Math.max(-maxRotate, Math.min(maxRotate, currentX / 10));
@@ -79,14 +121,23 @@ export class MovieMatchModalComponent extends LitElement {
       modalContent.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
 
       if (e.srcEvent?.cancelable) {
-        e.srcEvent.preventDefault();
+        try { e.srcEvent.preventDefault(); } catch { }
       }
     });
 
     manager.on('panend', (e) => {
+      // At panend we only proceed if we didn't ignore the pan
+      if (gestureStartedInOverview && ignorePan) {
+        // Reset flags and do nothing (native scroll handled it)
+        gestureStartedInOverview = false;
+        gestureDecided = false;
+        ignorePan = false;
+        currentX = 0;
+        return;
+      }
+
       const tempCurrentX = currentX;
       currentX = 0;
-
       const threshold = 150;
       const velocity = Math.abs(e.velocityX);
       const shouldDismiss = Math.abs(tempCurrentX) > threshold || velocity > 0.5;
@@ -104,9 +155,45 @@ export class MovieMatchModalComponent extends LitElement {
         modalContent.style.transition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
         modalContent.style.transform = 'translateX(0) rotate(0)';
       }
+
+      // Reset flags for the next gesture
+      gestureStartedInOverview = false;
+      gestureDecided = false;
+      ignorePan = false;
     });
 
+    // --- Listen for pointerdown inside the overview area to mark where the gesture started ---
+    const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement;
+    if (overview) {
+      // pointerdown used to mark origin; do not set passive:true so we can preventDefault later if needed
+      overview.addEventListener('pointerdown', (ev: PointerEvent) => {
+        gestureStartedInOverview = true;
+        gestureDecided = false;
+        ignorePan = false;
+        // Do not call preventDefault here; decision is made in panmove handler.
+      }, { passive: true });
+
+      // Also track touchstart for older browsers (pointer events are ideal)
+      overview.addEventListener('touchstart', (ev: TouchEvent) => {
+        gestureStartedInOverview = true;
+        gestureDecided = false;
+        ignorePan = false;
+      }, { passive: true });
+
+      // Make sure to clear the flag if finger lifts outside
+      window.addEventListener('pointerup', () => {
+        gestureStartedInOverview = false;
+        gestureDecided = false;
+        ignorePan = false;
+      });
+      window.addEventListener('touchend', () => {
+        gestureStartedInOverview = false;
+        gestureDecided = false;
+        ignorePan = false;
+      });
+    }
   }
+
 
   render() {
     const movie = this.currentMovie;
