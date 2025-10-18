@@ -15,6 +15,7 @@ import {
 
 import '../components/movies-list.component';
 import '../components/categories.component';
+import '../components/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { MovieCategory, type Movie } from '../models/models';
@@ -119,6 +120,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
+      <invite-fab></invite-fab>
       <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
         <categories-component
               .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
