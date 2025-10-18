@@ -4,6 +4,7 @@ import {
   appStore,
   selectedCategory,
   selectIsLoading,
+  selectisNavbarVisible,
   selectIsOnInitLoaded,
   selectMaxPage,
   selectMovies,
@@ -28,6 +29,7 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectMaxPage }) readonly maxPage!: number;
   @watchWithSelector({ store: appStore, selector: selectedCategory }) readonly selectedCategory!: MovieCategory;
   @watchWithSelector({ store: appStore, selector: selectIsOnInitLoaded }) readonly selectIsOnInitLoaded!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectisNavbarVisible }) readonly isNavbarVisible!: boolean;
 
   static styles = css`
    ${tailwindStyles}
@@ -44,7 +46,6 @@ export class HomePage extends LitElement {
   }
 
   private observer!: IntersectionObserver;
-  private headerWrapper!: HTMLElement;
   private _removeScrollListener?: () => void;
   @query('#sentinel') private sentinel!: HTMLElement;
 
@@ -52,7 +53,6 @@ export class HomePage extends LitElement {
     if (!this.movies.length) {
       this.appState.onInit();
     }
-    this.headerWrapper = this.renderRoot.querySelector('#header-wrapper') as HTMLElement;
     this.setupInfiniteScroll();
     this.setupScrollListener();
   }
@@ -83,34 +83,13 @@ export class HomePage extends LitElement {
   }
 
   private setupScrollListener() {
-    if (!this.headerWrapper) return;
-
     const onScroll = () => {
-      const scrollY = window.scrollY;
-      if (scrollY < 17) {
-        // near top → remove sticky
-        this.headerWrapper.classList.remove(
-          'top-0',
-          'bg-base-100',
-          'custom-shadow',
-          'fixed'
-        );
-        this.appState.setNavbarVisibility(true);
-      } else {
-        // scrolled down → add sticky
-        this.headerWrapper.classList.add(
-          'top-0',
-          'bg-base-100',
-          'custom-shadow',
-          'fixed'
-        );
-        this.appState.setNavbarVisibility(false);
-      }
+      const hideNavbar = window.scrollY < 17;
+      hideNavbar ? this.appState.setNavbarVisibility(true) : this.appState.setNavbarVisibility(false);
     };
 
-    onScroll(); // run once
+    onScroll();
     window.addEventListener('scroll', onScroll);
-
     this._removeScrollListener = () => window.removeEventListener('scroll', onScroll);
   }
 
@@ -140,7 +119,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <div id="header-wrapper" class="w-full z-25">
+      <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
         <categories-component
               .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
               .selectedCategory=${this.selectedCategory}
@@ -150,6 +129,7 @@ export class HomePage extends LitElement {
       </div>
 
       <movies-list-component
+        class="${this.isNavbarVisible ? '' : 'block pt-24'}"
         .isLoading=${this.isLoading}
         .movies=${this.movies}>
       </movies-list-component>
