@@ -44,13 +44,17 @@ export class HomePage extends LitElement {
   }
 
   private observer!: IntersectionObserver;
+  private headerWrapper!: HTMLElement;
+  private _removeScrollListener?: () => void;
   @query('#sentinel') private sentinel!: HTMLElement;
 
   async firstUpdated() {
     if (!this.movies.length) {
       this.appState.onInit();
     }
+    this.headerWrapper = this.renderRoot.querySelector('#header-wrapper') as HTMLElement;
     this.setupInfiniteScroll();
+    this.setupScrollListener();
   }
 
   private onCategoryChanged(e: CustomEvent<{ category: MovieCategory }>) {
@@ -78,6 +82,36 @@ export class HomePage extends LitElement {
     }
   }
 
+  private setupScrollListener() {
+    if (!this.headerWrapper) return;
+
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+      if (scrollY < 20) {
+        // near top → remove sticky
+        this.headerWrapper.classList.remove(
+          'top-0',
+          'bg-base-100',
+          'custom-shadow'
+        );
+        this.appState.setNavbarVisibility(true);
+      } else {
+        // scrolled down → add sticky
+        this.headerWrapper.classList.add(
+          'top-0',
+          'bg-base-100',
+          'custom-shadow'
+        );
+        this.appState.setNavbarVisibility(false);
+      }
+    };
+
+    onScroll(); // run once
+    window.addEventListener('scroll', onScroll);
+
+    this._removeScrollListener = () => window.removeEventListener('scroll', onScroll);
+  }
+
   private setupInfiniteScroll() {
     this.observer = new IntersectionObserver(
       async ([entry]) => {
@@ -99,17 +133,19 @@ export class HomePage extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.observer?.disconnect();
+    this._removeScrollListener?.();
   }
 
   render() {
     return html`
-      <categories-component 
-        .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
-        .selectedCategory=${this.selectedCategory}
-        @onCategoryChanged=${this.onCategoryChanged}
-        @onSearchInput=${this.onSearchInput}
-        >
-      </categories-component>
+      <div id="header-wrapper" class="sticky z-25">
+        <categories-component
+              .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
+              .selectedCategory=${this.selectedCategory}
+              @onCategoryChanged=${this.onCategoryChanged}
+              @onSearchInput=${this.onSearchInput}
+        ></categories-component>
+      </div>
 
       <movies-list-component
         .isLoading=${this.isLoading}

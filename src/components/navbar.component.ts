@@ -4,7 +4,7 @@ import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, selectIsAuthorized, selectTag, type AuthState } from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { appStore, type AppState } from '../store/app-store';
+import { appStore, selectisNavbarVisible, type AppState } from '../store/app-store';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {
@@ -12,6 +12,8 @@ export class NavbarComponent extends LitElement {
   @watch(appStore) appState!: AppState;
   @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
   @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
+  @watchWithSelector({ store: appStore, selector: selectisNavbarVisible }) readonly isNavbarVisible!: boolean;
+
 
   static styles = css`
   ${tailwindStyles}
@@ -42,7 +44,7 @@ export class NavbarComponent extends LitElement {
 
   render() {
     return html`
-    <div class="navbar bg-base-100 shadow-sm sticky top-0 left-0 w-full z-50">
+    <div class="navbar bg-base-100 shadow-sm sticky top-0 left-0 w-full z-50 ${this.isNavbarVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}">
       <div class="flex-1">
         <a @click="${this.redirectToHome}" class="btn btn-ghost text-xl text-primary">Movviator</a>
       </div>

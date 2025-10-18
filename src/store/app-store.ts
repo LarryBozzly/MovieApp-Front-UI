@@ -21,6 +21,7 @@ export interface AppState {
     globalAbortController: AbortController;
     category: MovieCategory | undefined;
     onInitLoaded: boolean;
+    isNavbarVisible: boolean;
     page: number;
     maxPage: number;
     movies: Movie[];
@@ -33,6 +34,7 @@ export interface AppState {
     setPage: (value: number) => void;
     setQuery: (query: string) => void;
     setMaxPage: (maxPage: number) => void;
+    setNavbarVisibility: (isNavbarVisible: boolean) => void;
     setCategory: (category: MovieCategory | undefined) => void;
     setMovies: (movies: Movie[]) => void;
     clearMovies: () => void;
@@ -64,11 +66,13 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     globalAbortController: new AbortController(),
     category: undefined,
     onInitLoaded: false,
+    isNavbarVisible: true,
     // reducers
     storeInit: (deps) => set({ deps }),
     setLoading: (isLoading: boolean) => set({ isLoading }),
     setOnInitLoaded: (onInitLoaded: boolean) => set({ onInitLoaded }),
     setPage: (value: number) => set((state) => ({ ...state, page: value })),
+    setNavbarVisibility: (isNavbarVisible: boolean) => set((state) => ({ ...state, isNavbarVisible })),
     setQuery: (query: string) => set((state) => ({ ...state, query })),
     setMaxPage: (maxPage: number) => set((state) => ({ ...state, maxPage })),
     setCategory: (category: MovieCategory | undefined) => set((state) => ({ ...state, category })),
@@ -264,3 +268,4 @@ export const selectPage = (state: AppState) => state.page;
 export const selectQuery = (state: AppState) => state.query;
 export const selectMaxPage = (state: AppState) => state.maxPage;
 export const selectedCategory = (state: AppState) => state.category;
+export const selectisNavbarVisible = (state: AppState) => state.isNavbarVisible;
