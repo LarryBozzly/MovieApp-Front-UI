@@ -87,7 +87,7 @@ export class HomePage extends LitElement {
 
     const onScroll = () => {
       const scrollY = window.scrollY;
-      if (scrollY < 20) {
+      if (scrollY < 17) {
         // near top → remove sticky
         this.headerWrapper.classList.remove(
           'top-0',

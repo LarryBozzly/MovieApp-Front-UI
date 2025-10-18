@@ -40,7 +40,7 @@ export class CategoriesComponent extends LitElement {
   render() {
     if (!this.selectIsOnInitLoaded) return html``;
     return html`
-    <div class="p-2 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
       <div class="flex overflow-x-auto gap-2 sm:gap-4 scrollbar-hide order-2 sm:order-1">
         ${Object.entries(this.categoriesMap).map(
