@@ -92,7 +92,8 @@ export class HomePage extends LitElement {
         this.headerWrapper.classList.remove(
           'top-0',
           'bg-base-100',
-          'custom-shadow'
+          'custom-shadow',
+          'fixed'
         );
         this.appState.setNavbarVisibility(true);
       } else {
@@ -100,7 +101,8 @@ export class HomePage extends LitElement {
         this.headerWrapper.classList.add(
           'top-0',
           'bg-base-100',
-          'custom-shadow'
+          'custom-shadow',
+          'fixed'
         );
         this.appState.setNavbarVisibility(false);
       }
@@ -138,7 +140,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <div id="header-wrapper" class="sticky z-25">
+      <div id="header-wrapper" class="w-full z-25">
         <categories-component
               .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
               .selectedCategory=${this.selectedCategory}
