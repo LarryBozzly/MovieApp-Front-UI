@@ -80,7 +80,7 @@ export class InviteFab extends LitElement {
           </button>
         </div>
 
-        <button class="btn btn-circle btn-lg btn-primary" @pointerdown="${this.toggleFab}">
+        <button class="btn btn-circle btn-lg btn-primary" @click="${this.toggleFab}">
           <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
           </svg>
