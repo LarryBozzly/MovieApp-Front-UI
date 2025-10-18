@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { tailwindStyles } from '../utils/app.constants';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import {
   OutlinePaperPlaneIcon,
   FilledCopyIcon
@@ -15,6 +15,8 @@ export class InviteFab extends LitElement {
   @watch(authStore) authState!: AuthState;
   @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
 
+  @state() private isOpen = false;
+
   static styles = css`
     ${tailwindStyles}
     :host {
@@ -25,48 +27,47 @@ export class InviteFab extends LitElement {
     }
   `;
 
+  private toggleFab() {
+    this.isOpen = !this.isOpen;
+  }
+
   private async copyTagToClipboard(e: Event) {
     e.stopPropagation();
     await navigator.clipboard.writeText(this.tag);
-    this.closeFab();
+    this.isOpen = false;
   }
 
   private async sendInvitationRequest(e: Event) {
     e.stopPropagation();
     await this.appState.openSendInvitationModal();
-    this.closeFab();
+    this.isOpen = false;
   }
-
-  private closeFab() {
-    const fabToggle = this.renderRoot.querySelector<HTMLInputElement>('#fab-toggle');
-    if (fabToggle) fabToggle.checked = false;
-  }
-
 
   render() {
     const iconClass = 'size-5';
     return html`
       <div class="relative">
-        <input type="checkbox" id="fab-toggle" class="peer hidden" />
 
-        <div class="absolute bottom-16 right-0 hidden flex-col items-end space-y-2 peer-checked:flex">
+        <div class="${this.isOpen ? 'flex' : 'hidden'}  absolute bottom-16 right-0 flex-col items-end space-y-2">
           
-          <button class="btn btn-circle btn-lg tooltip tooltip-left" @click="${this.sendInvitationRequest}" data-tip="Send Invite">
+          <button class="btn btn-circle btn-lg tooltip tooltip-left"
+                  @click="${this.sendInvitationRequest}" 
+                  data-tip="Send Invite">
             ${OutlinePaperPlaneIcon(iconClass)}
           </button>
 
-          <button class="btn btn-circle btn-lg tooltip tooltip-left" @click="${this.copyTagToClipboard}" data-tip="Copy Tag">
+          <button class="btn btn-circle btn-lg tooltip tooltip-left"
+                  @click="${this.copyTagToClipboard}" 
+                  data-tip="Copy Tag">
             ${FilledCopyIcon(iconClass)}
           </button>
         </div>
 
-        <label for="fab-toggle" class="btn btn-circle btn-lg btn-primary">
+        <button class="btn btn-circle btn-lg btn-primary" @pointerdown="${this.toggleFab}">
           <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
-            <path
-              d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"
-            />
+            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
           </svg>
-        </label>
+        </button>
       </div>
     `;
   }
