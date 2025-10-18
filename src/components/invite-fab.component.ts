@@ -27,9 +27,17 @@ export class InviteFab extends LitElement {
     }
   `;
 
-  private toggleFab() {
+  private toggleFab = (event: PointerEvent) => {
+    event.stopPropagation();
     this.isOpen = !this.isOpen;
-  }
+  };
+
+  private handleOutsideClick = (event: PointerEvent) => {
+    const path = event.composedPath();
+    if (this.isOpen && !path.includes(this)) {
+      this.isOpen = false;
+    }
+  };
 
   private async copyTagToClipboard(e: Event) {
     e.stopPropagation();
@@ -43,13 +51,22 @@ export class InviteFab extends LitElement {
     this.isOpen = false;
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('pointerdown', this.handleOutsideClick);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('pointerdown', this.handleOutsideClick);
+  }
+
   render() {
     const iconClass = 'size-5';
     return html`
       <div class="relative">
 
-        <div class="${this.isOpen ? 'flex' : 'hidden'}  absolute bottom-16 right-0 flex-col items-end space-y-2">
-          
+        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'}">
           <button class="btn btn-circle btn-lg tooltip tooltip-left"
                   @click="${this.sendInvitationRequest}" 
                   data-tip="Send Invite">
