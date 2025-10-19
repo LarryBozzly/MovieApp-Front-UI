@@ -18,7 +18,6 @@ export class InviteFab extends LitElement {
   @state() private isOpen = false;
 
   private scrollCheckRaf: number | null = null;
-  private scrollTimeout: number | null = null;
 
   static styles = css`
     ${tailwindStyles}
@@ -42,19 +41,30 @@ export class InviteFab extends LitElement {
 
   private waitForScrollToStop(): Promise<void> {
     return new Promise((resolve) => {
-      const onScroll = () => {
-        if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+      let lastScrollY = window.scrollY;
+      let stableCount = 0;
+      const maxStableCount = 5; // number of RAFs scroll must be stable
+      const rafLoop = () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY === lastScrollY) {
+          stableCount++;
+        } else {
+          stableCount = 0;
+        }
+        lastScrollY = currentScrollY;
 
-        this.scrollTimeout = window.setTimeout(() => {
-          window.removeEventListener('scroll', onScroll);
+        if (stableCount >= maxStableCount) {
           resolve();
-        }, 100);
+        } else {
+          requestAnimationFrame(rafLoop);
+        }
       };
 
-      window.addEventListener('scroll', onScroll, { passive: true });
+      // Start RAF loop immediately
+      requestAnimationFrame(rafLoop);
 
-      // Trigger the first check in case scroll already stopped
-      onScroll();
+      // Fallback timeout in case scroll never stops cleanly
+      setTimeout(resolve, 500);
     });
   }
 
