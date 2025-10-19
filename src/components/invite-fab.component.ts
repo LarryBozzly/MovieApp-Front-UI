@@ -17,7 +17,7 @@ export class InviteFab extends LitElement {
 
   @state() private isOpen = false;
 
-  private lastScrollTop = 0;
+  // private lastScrollTop = 0;
   private scrollCheckRaf: number | null = null;
 
   static styles = css`
@@ -41,21 +41,21 @@ export class InviteFab extends LitElement {
     this.isOpen = !this.isOpen;
   };
 
-  private waitForScrollToStop(): Promise<void> {
-    return new Promise((resolve) => {
-      const checkScroll = () => {
-        const currentScrollTop = window.scrollY || window.pageYOffset;
-        if (currentScrollTop === this.lastScrollTop) {
-          resolve();
-        } else {
-          this.lastScrollTop = currentScrollTop;
-          this.scrollCheckRaf = requestAnimationFrame(checkScroll);
-        }
-      };
-      this.lastScrollTop = window.scrollY || window.pageYOffset;
-      this.scrollCheckRaf = requestAnimationFrame(checkScroll);
-    });
-  }
+  // private waitForScrollToStop(): Promise<void> {
+  //   return new Promise((resolve) => {
+  //     const checkScroll = () => {
+  //       const currentScrollTop = window.scrollY || window.pageYOffset;
+  //       if (currentScrollTop === this.lastScrollTop) {
+  //         resolve();
+  //       } else {
+  //         this.lastScrollTop = currentScrollTop;
+  //         this.scrollCheckRaf = requestAnimationFrame(checkScroll);
+  //       }
+  //     };
+  //     this.lastScrollTop = window.scrollY || window.pageYOffset;
+  //     this.scrollCheckRaf = requestAnimationFrame(checkScroll);
+  //   });
+  // }
 
   private handleOutsideClick = (event: PointerEvent) => {
     const path = event.composedPath();
