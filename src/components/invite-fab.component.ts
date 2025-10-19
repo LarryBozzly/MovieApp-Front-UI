@@ -18,6 +18,7 @@ export class InviteFab extends LitElement {
   @state() private isOpen = false;
 
   private scrollCheckRaf: number | null = null;
+  private scrollTimeout: number | null = null;
 
   static styles = css`
     ${tailwindStyles}
@@ -39,36 +40,24 @@ export class InviteFab extends LitElement {
     this.isOpen = !this.isOpen;
   };
 
-  private waitForScrollToStop(timeout = 150): Promise<void> {
+  private waitForScrollToStop(): Promise<void> {
     return new Promise((resolve) => {
-      let lastScrollTop = window.scrollY || window.pageYOffset;
-      let stableFrames = 0;
+      const onScroll = () => {
+        if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
 
-      const checkScroll = () => {
-        const currentScrollTop = window.scrollY || window.pageYOffset;
-
-        if (currentScrollTop === lastScrollTop) {
-          stableFrames += 1;
-        } else {
-          stableFrames = 0;
-        }
-
-        lastScrollTop = currentScrollTop;
-
-        // Wait until scroll is stable for ~3 frames (~50ms) or timeout reached
-        if (stableFrames >= 3) {
+        this.scrollTimeout = window.setTimeout(() => {
+          window.removeEventListener('scroll', onScroll);
           resolve();
-        } else {
-          requestAnimationFrame(checkScroll);
-        }
+        }, 100);
       };
 
-      requestAnimationFrame(checkScroll);
+      window.addEventListener('scroll', onScroll, { passive: true });
 
-      // Safety timeout in case scroll keeps drifting forever
-      setTimeout(resolve, timeout);
+      // Trigger the first check in case scroll already stopped
+      onScroll();
     });
   }
+
 
   private handleOutsideClick = (event: PointerEvent) => {
     const path = event.composedPath();
