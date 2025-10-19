@@ -17,7 +17,8 @@ export class InviteFab extends LitElement {
 
   @state() private isOpen = false;
 
-  private scrollCheckRaf: number | null = null;
+  private rafId: number | null = null;
+  private touchActive = false;
 
   static styles = css`
     ${tailwindStyles}
@@ -27,54 +28,66 @@ export class InviteFab extends LitElement {
       right: 1.5rem;
       z-index: 50;
     }
+    .fab-menu {
+      transition: opacity 150ms ease-out, visibility 150ms ease-out;
+      pointer-events: auto;
+    }
+    .fab-menu.closed {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .fab-menu.open {
+      opacity: 1;
+      visibility: visible;
+    }
   `;
+
+  // Robust scroll wait
+  private waitForScrollStop(timeout = 700): Promise<void> {
+    return new Promise((resolve) => {
+      let lastScroll = window.scrollY;
+      let stableFrames = 0;
+      const requiredStableFrames = 5; // ~80ms
+
+      const check = () => {
+        const currentScroll = window.scrollY;
+        const delta = Math.abs(currentScroll - lastScroll);
+
+        // If scroll is practically stationary, increase stable counter
+        if (delta < 0.5) stableFrames++;
+        else stableFrames = 0;
+
+        lastScroll = currentScroll;
+
+        // Only consider stable if touch ended
+        if (stableFrames >= requiredStableFrames && !this.touchActive) {
+          resolve();
+        } else {
+          this.rafId = requestAnimationFrame(check);
+        }
+      };
+
+      this.rafId = requestAnimationFrame(check);
+
+      // Fallback timeout
+      setTimeout(() => resolve(), timeout);
+    });
+  }
 
   private toggleFab = async (event: Event) => {
     event.stopPropagation();
 
-    // Wait for scroll to end if any
-    await this.waitForScrollToStop();
+    // Wait for any ongoing scroll/momentum to finish
+    await this.waitForScrollStop();
 
-    // Now toggle the FAB
+    // Toggle FAB
     this.isOpen = !this.isOpen;
   };
 
-  private waitForScrollToStop(): Promise<void> {
-    return new Promise((resolve) => {
-      let lastScrollY = window.scrollY;
-      let stableCount = 0;
-      const maxStableCount = 5; // ~80ms (5 frames at 60fps)
-      let touchEnded = false;
-
-      const onTouchEnd = () => { touchEnded = true; };
-      window.addEventListener('touchend', onTouchEnd, { once: true });
-
-      const rafLoop = () => {
-        const currentScrollY = window.scrollY;
-        const delta = Math.abs(currentScrollY - lastScrollY);
-        if (delta < 0.5) stableCount++; else stableCount = 0;
-        lastScrollY = currentScrollY;
-
-        if (stableCount >= maxStableCount && touchEnded) {
-          resolve();
-        } else {
-          requestAnimationFrame(rafLoop);
-        }
-      };
-
-      requestAnimationFrame(rafLoop);
-
-      // Fallback timeout so it never waits forever
-      setTimeout(resolve, 700);
-    });
-  }
-
-
   private handleOutsideClick = (event: PointerEvent) => {
     const path = event.composedPath();
-    if (this.isOpen && !path.includes(this)) {
-      this.isOpen = false;
-    }
+    if (this.isOpen && !path.includes(this)) this.isOpen = false;
   };
 
   private async copyTagToClipboard(e: Event) {
@@ -92,20 +105,31 @@ export class InviteFab extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener('pointerdown', this.handleOutsideClick);
+
+    // Track touch state
+    window.addEventListener('touchstart', this.onTouchStart, { passive: true });
+    window.addEventListener('touchend', this.onTouchEnd, { passive: true });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('pointerdown', this.handleOutsideClick);
-    if (this.scrollCheckRaf) cancelAnimationFrame(this.scrollCheckRaf);
+    window.removeEventListener('touchstart', this.onTouchStart);
+    window.removeEventListener('touchend', this.onTouchEnd);
+
+    if (this.rafId) cancelAnimationFrame(this.rafId);
   }
+
+  private onTouchStart = () => { this.touchActive = true; };
+  private onTouchEnd = () => { this.touchActive = false; };
 
   render() {
     const iconClass = 'size-5';
+    const menuClass = this.isOpen ? 'fab-menu open flex' : 'fab-menu closed flex';
+
     return html`
       <div class="relative">
-
-        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'}">
+        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${menuClass}">
           <button class="btn btn-circle btn-lg tooltip tooltip-left"
                   @click="${this.sendInvitationRequest}" 
                   data-tip="Send Invite">
