@@ -31,16 +31,18 @@ export class InviteFab extends LitElement {
     event.stopPropagation();
     const startScroll = window.scrollY;
 
-    // Wait a few frames to see if scrolling continues
-    await new Promise(r => setTimeout(r, 150));
+    // Wait a bit longer for momentum scroll to settle
+    await new Promise(r => setTimeout(r, 400));
 
     const endScroll = window.scrollY;
-    if (Math.abs(endScroll - startScroll) < 1) {
+    const delta = Math.abs(endScroll - startScroll);
+
+    if (delta < 3) {
       // Scroll is stable → toggle
       this.toggleFab(event);
     } else {
-      // Scroll still moving → try again after 200ms
-      setTimeout(() => this.safeToggle(event), 200);
+      // Still scrolling → retry
+      setTimeout(() => this.safeToggle(event), 400);
     }
   }
 
