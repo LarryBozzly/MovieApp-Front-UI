@@ -43,28 +43,29 @@ export class InviteFab extends LitElement {
     return new Promise((resolve) => {
       let lastScrollY = window.scrollY;
       let stableCount = 0;
-      const maxStableCount = 5; // number of RAFs scroll must be stable
+      const maxStableCount = 5; // ~80ms (5 frames at 60fps)
+      let touchEnded = false;
+
+      const onTouchEnd = () => { touchEnded = true; };
+      window.addEventListener('touchend', onTouchEnd, { once: true });
+
       const rafLoop = () => {
         const currentScrollY = window.scrollY;
-        if (currentScrollY === lastScrollY) {
-          stableCount++;
-        } else {
-          stableCount = 0;
-        }
+        const delta = Math.abs(currentScrollY - lastScrollY);
+        if (delta < 0.5) stableCount++; else stableCount = 0;
         lastScrollY = currentScrollY;
 
-        if (stableCount >= maxStableCount) {
+        if (stableCount >= maxStableCount && touchEnded) {
           resolve();
         } else {
           requestAnimationFrame(rafLoop);
         }
       };
 
-      // Start RAF loop immediately
       requestAnimationFrame(rafLoop);
 
-      // Fallback timeout in case scroll never stops cleanly
-      setTimeout(resolve, 500);
+      // Fallback timeout so it never waits forever
+      setTimeout(resolve, 700);
     });
   }
 
