@@ -24,37 +24,28 @@ export class InviteFab extends LitElement {
       bottom: 1.5rem;
       right: 1.5rem;
       z-index: 50;
-      touch-action: manipulation;
-      transform: translateZ(0);
-      will-change: transform;
-      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation; /* ensures taps register immediately */
+    }
+
+    .fab-menu {
+      transition: opacity 150ms ease-out, visibility 150ms ease-out;
+      pointer-events: auto;
+    }
+    .fab-menu.closed {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .fab-menu.open {
+      opacity: 1;
+      visibility: visible;
     }
   `;
-  private async safeToggle(event: Event) {
-    event.stopPropagation();
-    const startScroll = window.scrollY;
-    console.log('touched');
-
-    // Wait a bit longer for momentum scroll to settle
-    await new Promise(r => setTimeout(r, 400));
-
-    const endScroll = window.scrollY;
-    const delta = Math.abs(endScroll - startScroll);
-
-    if (delta < 3) {
-      // Scroll is stable → toggle
-      this.toggleFab(event);
-    } else {
-      // Still scrolling → retry
-      setTimeout(() => this.safeToggle(event), 400);
-    }
-  }
 
   private toggleFab = (event: Event) => {
     event.stopPropagation();
     this.isOpen = !this.isOpen;
   };
-
 
   private handleOutsideClick = (event: PointerEvent) => {
     const path = event.composedPath();
@@ -87,10 +78,13 @@ export class InviteFab extends LitElement {
 
   render() {
     const iconClass = 'size-5';
+    const menuClass = this.isOpen ? 'fab-menu open flex' : 'fab-menu closed flex';
+
     return html`
       <div class="relative">
 
-        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'}">
+        <!-- FAB menu -->
+        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${menuClass}">
           <button class="btn btn-circle btn-lg tooltip tooltip-left"
                   @click="${this.sendInvitationRequest}" 
                   data-tip="Send Invite">
@@ -104,13 +98,8 @@ export class InviteFab extends LitElement {
           </button>
         </div>
 
-        <button class="btn btn-circle btn-lg btn-primary" @pointerup=${this.safeToggle}
-  @pointercancel=${this.safeToggle}
-  @click=${this.safeToggle}
-  @touchstart=${(e: TouchEvent) => {
-        e.stopPropagation();
-        setTimeout(() => this.safeToggle(e), 100);
-      }}>
+        <!-- FAB button -->
+        <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.toggleFab}">
           <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
           </svg>
