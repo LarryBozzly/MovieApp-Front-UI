@@ -17,9 +17,6 @@ export class InviteFab extends LitElement {
 
   @state() private isOpen = false;
 
-  // private lastScrollTop = 0;
-  private scrollCheckRaf: number | null = null;
-
   static styles = css`
     ${tailwindStyles}
     :host {
@@ -27,35 +24,31 @@ export class InviteFab extends LitElement {
       bottom: 1.5rem;
       right: 1.5rem;
       z-index: 50;
+      touch-action: manipulation;
     }
   `;
-
-  private toggleFab = async (event: Event) => {
+  private async safeToggle(event: Event) {
     event.stopPropagation();
+    const startScroll = window.scrollY;
 
-    // Wait for scroll to end if any
-    // await this.waitForScrollToStop();
-    await new Promise<void>((resolve) => setTimeout(resolve, 150));
+    // Wait a few frames to see if scrolling continues
+    await new Promise(r => setTimeout(r, 150));
 
-    // Now toggle the FAB
+    const endScroll = window.scrollY;
+    if (Math.abs(endScroll - startScroll) < 1) {
+      // Scroll is stable → toggle
+      this.toggleFab(event);
+    } else {
+      // Scroll still moving → try again after 200ms
+      setTimeout(() => this.safeToggle(event), 200);
+    }
+  }
+
+  private toggleFab = (event: Event) => {
+    event.stopPropagation();
     this.isOpen = !this.isOpen;
   };
 
-  // private waitForScrollToStop(): Promise<void> {
-  //   return new Promise((resolve) => {
-  //     const checkScroll = () => {
-  //       const currentScrollTop = window.scrollY || window.pageYOffset;
-  //       if (currentScrollTop === this.lastScrollTop) {
-  //         resolve();
-  //       } else {
-  //         this.lastScrollTop = currentScrollTop;
-  //         this.scrollCheckRaf = requestAnimationFrame(checkScroll);
-  //       }
-  //     };
-  //     this.lastScrollTop = window.scrollY || window.pageYOffset;
-  //     this.scrollCheckRaf = requestAnimationFrame(checkScroll);
-  //   });
-  // }
 
   private handleOutsideClick = (event: PointerEvent) => {
     const path = event.composedPath();
@@ -84,7 +77,6 @@ export class InviteFab extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('pointerdown', this.handleOutsideClick);
-    if (this.scrollCheckRaf) cancelAnimationFrame(this.scrollCheckRaf);
   }
 
   render() {
@@ -106,7 +98,7 @@ export class InviteFab extends LitElement {
           </button>
         </div>
 
-        <button class="btn btn-circle btn-lg btn-primary" @pointerdown="${this.toggleFab}">
+        <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.safeToggle}">
           <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
           </svg>
