@@ -40,19 +40,34 @@ export class InviteFab extends LitElement {
     this.isOpen = !this.isOpen;
   };
 
-  private waitForScrollToStop(): Promise<void> {
+  private waitForScrollToStop(timeout = 150): Promise<void> {
     return new Promise((resolve) => {
+      let lastScrollTop = window.scrollY || window.pageYOffset;
+      let stableFrames = 0;
+
       const checkScroll = () => {
         const currentScrollTop = window.scrollY || window.pageYOffset;
-        if (currentScrollTop === this.lastScrollTop) {
+
+        if (currentScrollTop === lastScrollTop) {
+          stableFrames += 1;
+        } else {
+          stableFrames = 0;
+        }
+
+        lastScrollTop = currentScrollTop;
+
+        // Wait until scroll is stable for ~3 frames (~50ms) or timeout reached
+        if (stableFrames >= 3) {
           resolve();
         } else {
-          this.lastScrollTop = currentScrollTop;
-          this.scrollCheckRaf = requestAnimationFrame(checkScroll);
+          requestAnimationFrame(checkScroll);
         }
       };
-      this.lastScrollTop = window.scrollY || window.pageYOffset;
-      this.scrollCheckRaf = requestAnimationFrame(checkScroll);
+
+      requestAnimationFrame(checkScroll);
+
+      // Safety timeout in case scroll keeps drifting forever
+      setTimeout(resolve, timeout);
     });
   }
 
