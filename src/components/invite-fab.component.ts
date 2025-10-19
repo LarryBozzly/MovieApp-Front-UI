@@ -30,6 +30,7 @@ export class InviteFab extends LitElement {
   private async safeToggle(event: Event) {
     event.stopPropagation();
     const startScroll = window.scrollY;
+    console.log('touched');
 
     // Wait a bit longer for momentum scroll to settle
     await new Promise(r => setTimeout(r, 400));
