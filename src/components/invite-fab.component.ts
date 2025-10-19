@@ -19,6 +19,7 @@ export class InviteFab extends LitElement {
 
   private rafId: number | null = null;
   private touchActive = false;
+  private momentumLock = false;
 
   static styles = css`
     ${tailwindStyles}
@@ -41,44 +42,66 @@ export class InviteFab extends LitElement {
       opacity: 1;
       visibility: visible;
     }
+    .locked {
+      pointer-events: none !important;
+      opacity: 0.7;
+    }
   `;
 
-  // Robust scroll wait
-  private waitForScrollStop(timeout = 700): Promise<void> {
+  /**
+   * Hacky, robust scroll stabilization
+   */
+  private waitForScrollStop(timeout = 1000): Promise<void> {
     return new Promise((resolve) => {
-      let lastScroll = window.scrollY;
+      let lastScrollY = window.scrollY;
       let stableFrames = 0;
-      const requiredStableFrames = 5; // ~80ms
+      const requiredStableFrames = 5;
+      let lastVelocity = 0;
 
       const check = () => {
-        const currentScroll = window.scrollY;
-        const delta = Math.abs(currentScroll - lastScroll);
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY;
+        const velocity = Math.abs(delta);
 
-        // If scroll is practically stationary, increase stable counter
-        if (delta < 0.5) stableFrames++;
-        else stableFrames = 0;
+        // If velocity is low and touch not active, increment stable frames
+        if (velocity < 0.5 && lastVelocity < 0.5 && !this.touchActive) {
+          stableFrames++;
+        } else {
+          stableFrames = 0;
+        }
 
-        lastScroll = currentScroll;
+        lastVelocity = velocity;
+        lastScrollY = currentY;
 
-        // Only consider stable if touch ended
         if (stableFrames >= requiredStableFrames && !this.touchActive) {
+          this.momentumLock = false;
+          this.classList.remove('locked');
           resolve();
         } else {
           this.rafId = requestAnimationFrame(check);
         }
       };
 
+      this.momentumLock = true;
+      this.classList.add('locked');
       this.rafId = requestAnimationFrame(check);
 
-      // Fallback timeout
-      setTimeout(() => resolve(), timeout);
+      // Safety timeout
+      setTimeout(() => {
+        this.momentumLock = false;
+        this.classList.remove('locked');
+        resolve();
+      }, timeout);
     });
   }
 
   private toggleFab = async (event: Event) => {
     event.stopPropagation();
 
-    // Wait for any ongoing scroll/momentum to finish
+    // If locked (momentum scrolling), ignore clicks
+    if (this.momentumLock) return;
+
+    // Wait for scroll/momentum to fully stop
     await this.waitForScrollStop();
 
     // Toggle FAB
@@ -121,7 +144,13 @@ export class InviteFab extends LitElement {
   }
 
   private onTouchStart = () => { this.touchActive = true; };
-  private onTouchEnd = () => { this.touchActive = false; };
+  private onTouchEnd = () => {
+    this.touchActive = false;
+    // Add slight delay to let inertia settle
+    setTimeout(() => {
+      if (!this.touchActive) this.classList.remove('locked');
+    }, 120);
+  };
 
   render() {
     const iconClass = 'size-5';
@@ -143,8 +172,12 @@ export class InviteFab extends LitElement {
           </button>
         </div>
 
-        <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.toggleFab}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
+        <button class="btn btn-circle btn-lg btn-primary"
+                @pointerup="${this.toggleFab}">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="${iconClass}"
+               fill="currentColor"
+               viewBox="0 0 16 16">
             <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
           </svg>
         </button>
