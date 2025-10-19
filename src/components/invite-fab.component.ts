@@ -17,7 +17,6 @@ export class InviteFab extends LitElement {
 
   @state() private isOpen = false;
 
-  private lastScrollTop = 0;
   private scrollCheckRaf: number | null = null;
 
   static styles = css`
