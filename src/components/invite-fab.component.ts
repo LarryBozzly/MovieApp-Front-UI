@@ -26,20 +26,6 @@ export class InviteFab extends LitElement {
       z-index: 50;
       touch-action: manipulation; /* ensures taps register immediately */
     }
-
-    .fab-menu {
-      transition: opacity 150ms ease-out, visibility 150ms ease-out;
-      pointer-events: auto;
-    }
-    .fab-menu.closed {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .fab-menu.open {
-      opacity: 1;
-      visibility: visible;
-    }
   `;
 
   private toggleFab = (event: Event) => {
@@ -78,13 +64,11 @@ export class InviteFab extends LitElement {
 
   render() {
     const iconClass = 'size-5';
-    const menuClass = this.isOpen ? 'fab-menu open flex' : 'fab-menu closed flex';
-
     return html`
       <div class="relative">
 
         <!-- FAB menu -->
-        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${menuClass}">
+        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'}">
           <button class="btn btn-circle btn-lg tooltip tooltip-left"
                   @click="${this.sendInvitationRequest}" 
                   data-tip="Send Invite">
