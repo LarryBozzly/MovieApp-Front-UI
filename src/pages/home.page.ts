@@ -89,7 +89,7 @@ export class HomePage extends LitElement {
   private setupScrollListener() {
     const onScroll = () => {
       const hideNavbar = window.scrollY < 17;
-      hideNavbar ? this.appState.setNavbarVisibility(true) : this.appState.setNavbarVisibility(false);
+      this.appState.setNavbarVisibility(hideNavbar);
     };
 
     onScroll();
