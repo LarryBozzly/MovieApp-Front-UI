@@ -87,14 +87,14 @@ export class HomePage extends LitElement {
   }
 
   private setupScrollListener() {
-    const onScroll = () => {
-      const hideNavbar = window.scrollY < 17;
-      hideNavbar ? this.appState.setNavbarVisibility(true) : this.appState.setNavbarVisibility(false);
-    };
+    // const onScroll = () => {
+    //   const hideNavbar = window.scrollY < 17;
+    //   hideNavbar ? this.appState.setNavbarVisibility(true) : this.appState.setNavbarVisibility(false);
+    // };
 
-    onScroll();
-    window.addEventListener('scroll', onScroll);
-    this._removeScrollListener = () => window.removeEventListener('scroll', onScroll);
+    // onScroll();
+    // window.addEventListener('scroll', onScroll);
+    // this._removeScrollListener = () => window.removeEventListener('scroll', onScroll);
   }
 
   private setupInfiniteScroll() {
@@ -123,7 +123,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-    <invite-fab></invite-fab>
+     <invite-fab></invite-fab>
      <categories-component
               .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
               .selectedCategory=${this.selectedCategory}
