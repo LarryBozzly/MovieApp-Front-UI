@@ -24,13 +24,12 @@ export class InviteFab extends LitElement {
       bottom: 1.5rem;
       right: 1.5rem;
       z-index: 50;
-      touch-action: pan-y; /* allow vertical scrolling gestures through FAB */
-      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation; /* ensures taps register immediately */
     }
   `;
 
-  private toggleFab = (event: PointerEvent) => {
-    this.setPointerCapture(event.pointerId); // capture this pointer
+  private toggleFab = (event: Event) => {
+    event.stopPropagation();
     this.isOpen = !this.isOpen;
   };
 
@@ -84,7 +83,7 @@ export class InviteFab extends LitElement {
         </div>
 
         <!-- FAB button -->
-        <button class="btn btn-circle btn-lg btn-primary" @pointerdown="${this.toggleFab}">
+        <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.toggleFab}">
           <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
           </svg>
