@@ -37,19 +37,18 @@ export class HomePage extends LitElement {
     :host {
       display: block;
       width: 100%;
-      height: 100vh; /* fill viewport */
+      min-height: 100vh; 
       font-family: system-ui, sans-serif;
-      overflow: hidden; /* prevent body scroll */
+      overflow: hidden; 
       position: relative;
     }
 
     .scrollable-container {
-      height: 100%;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+      height: 100%; 
+      overflow-y: auto; 
+      -webkit-overflow-scrolling: touch;
     }
   `;
-
   private observer!: IntersectionObserver;
   private _removeScrollListener?: () => void;
   @query('#sentinel') private sentinel!: HTMLElement;
@@ -124,27 +123,22 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <!-- FAB is outside scrollable content -->
-      <invite-fab></invite-fab>
+    <invite-fab></invite-fab>
+     <categories-component
+              .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
+              .selectedCategory=${this.selectedCategory}
+              @onCategoryChanged=${this.onCategoryChanged}
+              @onSearchInput=${this.onSearchInput}
+        ></categories-component>
 
-      <div class="scrollable-container">
-        <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
-          <categories-component
-                .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
-                .selectedCategory=${this.selectedCategory}
-                @onCategoryChanged=${this.onCategoryChanged}
-                @onSearchInput=${this.onSearchInput}
-          ></categories-component>
-        </div>
-
-        <movies-list-component
-          class="${this.isNavbarVisible ? '' : 'block pt-24'}"
-          .isLoading=${this.isLoading}
-          .movies=${this.movies}>
-        </movies-list-component>
-
-        <div id="sentinel" class="w-full"></div>
-      </div>
+       <div class="scrollable-container">
+         <movies-list-component
+           .isLoading=${this.isLoading}
+           .movies=${this.movies}>
+         </movies-list-component>
+   
+         <div id="sentinel" class="w-full"></div>
+       </div>
     `;
   }
 }

@@ -44,7 +44,7 @@ export class NavbarComponent extends LitElement {
 
   render() {
     return html`
-    <div class="navbar bg-base-100 shadow-sm sticky top-0 left-0 w-full z-50 ${this.isNavbarVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}">
+    <div class="navbar bg-base-100 shadow-sm sticky top-0 left-0 w-full z-50">
       <div class="flex-1">
         <a @click="${this.redirectToHome}" class="btn btn-ghost text-xl text-primary">Movviator</a>
       </div>
