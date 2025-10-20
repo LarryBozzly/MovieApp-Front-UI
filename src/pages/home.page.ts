@@ -124,15 +124,18 @@ export class HomePage extends LitElement {
   render() {
     return html`
      <invite-fab></invite-fab>
-     <categories-component
+     <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
+        <categories-component
               .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
               .selectedCategory=${this.selectedCategory}
               @onCategoryChanged=${this.onCategoryChanged}
               @onSearchInput=${this.onSearchInput}
         ></categories-component>
+      </div>
 
        <div class="scrollable-container">
          <movies-list-component
+            class="${this.isNavbarVisible ? '' : 'block pt-[110px]'}"
            .isLoading=${this.isLoading}
            .movies=${this.movies}>
          </movies-list-component>
