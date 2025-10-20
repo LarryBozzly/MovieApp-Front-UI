@@ -33,20 +33,12 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible }) readonly isNavbarVisible!: boolean;
 
   static styles = css`
-    ${tailwindStyles}
+   ${tailwindStyles}
     :host {
-      display: block;
       width: 100%;
-      min-height: 100vh; 
+      display: block;
+      height: auto;
       font-family: system-ui, sans-serif;
-      overflow: hidden; 
-      position: relative;
-    }
-
-    .scrollable-container {
-      height: 100%; 
-      overflow-y: auto; 
-      -webkit-overflow-scrolling: touch;
     }
   `;
   private observer!: IntersectionObserver;
@@ -123,8 +115,8 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-     <invite-fab></invite-fab>
-     <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
+      <invite-fab></invite-fab>
+      <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
         <categories-component
               .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
               .selectedCategory=${this.selectedCategory}
@@ -133,15 +125,13 @@ export class HomePage extends LitElement {
         ></categories-component>
       </div>
 
-       <div class="scrollable-container">
-         <movies-list-component
-            class="${this.isNavbarVisible ? '' : 'block pt-[110px]'}"
-           .isLoading=${this.isLoading}
-           .movies=${this.movies}>
-         </movies-list-component>
-   
-         <div id="sentinel" class="w-full"></div>
-       </div>
+      <movies-list-component
+        class="${this.isNavbarVisible ? '' : 'block pt-[110px]'}"
+        .isLoading=${this.isLoading}
+        .movies=${this.movies}>
+      </movies-list-component>
+
+      <div id="sentinel" class="w-full"></div>
     `;
   }
 }
