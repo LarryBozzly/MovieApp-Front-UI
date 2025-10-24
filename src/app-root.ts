@@ -23,6 +23,8 @@ export class AppRoot extends LitElement {
       display: block;
       min-height: 100vh;
       background-color: var(--color-base-300); 
+      height: 100vh;
+      overflow: hidden; /* <home-page> will scroll naturally */
     }
   `;
 

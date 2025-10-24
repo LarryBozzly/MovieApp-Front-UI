@@ -33,17 +33,24 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible }) readonly isNavbarVisible!: boolean;
 
   static styles = css`
-   ${tailwindStyles}
+    ${tailwindStyles}
     :host {
-      width: 100%;
-      display: block;
-      height: auto;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
       font-family: system-ui, sans-serif;
     }
+    main {
+      flex: 1;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+    }
   `;
+
   private observer!: IntersectionObserver;
   private _removeScrollListener?: () => void;
   @query('#sentinel') private sentinel!: HTMLElement;
+  @query('main') private mainContent!: HTMLElement;
 
   async firstUpdated() {
     if (!this.movies.length) {
@@ -80,13 +87,13 @@ export class HomePage extends LitElement {
 
   private setupScrollListener() {
     const onScroll = () => {
-      const hideNavbar = window.scrollY < 17;
+      const hideNavbar = this.mainContent.scrollTop < 17;
       this.appState.setNavbarVisibility(hideNavbar);
     };
 
     onScroll();
-    window.addEventListener('scroll', onScroll);
-    this._removeScrollListener = () => window.removeEventListener('scroll', onScroll);
+    this.mainContent.addEventListener('scroll', onScroll);
+    this._removeScrollListener = () => this.mainContent.removeEventListener('scroll', onScroll);
   }
 
   private setupInfiniteScroll() {
@@ -96,15 +103,13 @@ export class HomePage extends LitElement {
         await this.loadNextPage();
       },
       {
-        root: null,
+        root: this.mainContent,
         rootMargin: '50%',
         threshold: 0.1
       }
     );
 
-    if (this.sentinel) {
-      this.observer.observe(this.sentinel);
-    }
+    if (this.sentinel) this.observer.observe(this.sentinel);
   }
 
   disconnectedCallback() {
@@ -115,23 +120,25 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
+      <main>
+        <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 sticky custom-shadow'}">
+          <categories-component
+            .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
+            .selectedCategory=${this.selectedCategory}
+            @onCategoryChanged=${this.onCategoryChanged}
+            @onSearchInput=${this.onSearchInput}>
+          </categories-component>
+        </div>
+        <movies-list-component
+           class="${this.isNavbarVisible ? '' : 'block pt-[17px]'}"
+          .isLoading=${this.isLoading}
+          .movies=${this.movies}>
+        </movies-list-component>
+
+        <div id="sentinel"></div>
+      </main>
+
       <invite-fab></invite-fab>
-      <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'custom-sticky custom-shadow'}">
-        <categories-component
-              .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
-              .selectedCategory=${this.selectedCategory}
-              @onCategoryChanged=${this.onCategoryChanged}
-              @onSearchInput=${this.onSearchInput}
-        ></categories-component>
-      </div>
-
-      <movies-list-component
-        class="${this.isNavbarVisible ? '' : 'block pt-[110px]'}"
-        .isLoading=${this.isLoading}
-        .movies=${this.movies}>
-      </movies-list-component>
-
-      <div id="sentinel" class="w-full"></div>
     `;
   }
 }
