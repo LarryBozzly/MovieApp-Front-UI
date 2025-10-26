@@ -21,12 +21,16 @@ export class AppRoot extends LitElement {
     :host {
       width: 100%;
       display: block;
-      min-height: 100vh;
-      background-color: var(--color-base-300); 
-      height: 100vh;
-      overflow: hidden; /* <home-page> will scroll naturally */
+      height: var(--app-height);
+      min-height: var(--app-height);
+      background-color: var(--color-base-300);
+      overflow: hidden;
     }
   `;
+
+  private setAppHeight = () => {
+    this.style.setProperty("--app-height", `${window.innerHeight}px`);
+  };
 
   private initRouter() {
     const outlet = document.createElement("div");
@@ -55,11 +59,18 @@ export class AppRoot extends LitElement {
   }
 
   firstUpdated() {
+    this.setAppHeight();
+    window.addEventListener("resize", this.setAppHeight);
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("resize", this.setAppHeight);
   }
 
   render() {
