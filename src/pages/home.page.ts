@@ -37,7 +37,7 @@ export class HomePage extends LitElement {
     :host {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      height: 100dvh;
       font-family: system-ui, sans-serif;
     }
     main {
