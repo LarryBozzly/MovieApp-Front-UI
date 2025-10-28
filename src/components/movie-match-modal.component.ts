@@ -24,6 +24,25 @@ export class MovieMatchModalComponent extends LitElement {
   private get currentMovie(): Movie | undefined {
     return this.movies[this.currentIndex];
   }
+  
+  private nudge() {
+    const modalContent = this.closest('.modal-box') as HTMLElement;
+    const nudgeTransition = 'transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)'; 
+    const defaultTransition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)'; 
+    modalContent.style.transformOrigin = 'bottom center';
+    modalContent.style.transition = nudgeTransition;
+    modalContent.style.transform = 'translateX(25px) rotate(3deg)';
+    setTimeout(() => {
+      modalContent.style.transform = 'translateX(0) rotate(0)';
+    }, 300);
+    setTimeout(() => {
+      modalContent.style.transform = 'translateX(-25px) rotate(-3deg)';
+    }, 600);
+    setTimeout(() => {
+      modalContent.style.transform = 'translateX(0) rotate(0)';
+      modalContent.style.transition = defaultTransition;
+    }, 900);
+  }
 
   private async swipe(direction: MovieMatchDirection) {
     const movie = this.currentMovie;
@@ -44,7 +63,9 @@ export class MovieMatchModalComponent extends LitElement {
     }
   }
 
-  firstUpdated() {
+  async firstUpdated() {
+    await this.updateComplete;
+
     const container = this as HTMLElement;
     const modalContent = this.closest('.modal-box') as HTMLElement;
     if (!modalContent) return;
@@ -195,6 +216,10 @@ export class MovieMatchModalComponent extends LitElement {
 
     // Also track Hammer manager cleanup
     this.cleanupFns.push(() => this.manager.destroy());
+    if (this.currentIndex === 0) {
+      await new Promise(resolve => setTimeout(resolve, 350));
+      this.nudge(); 
+    }
   }
 
   disconnectedCallback() {
