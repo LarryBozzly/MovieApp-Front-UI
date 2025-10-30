@@ -261,9 +261,10 @@ export class MovieMatchModalComponent extends LitElement {
     return html`
       <div class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]">
         <img
+          draggable="false"
           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
           alt="${movie.title}"
-          class="w-full h-64 object-contain bg-base-200 flex-shrink-0"
+          class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
            @contextmenu=${this.disableContextMenu}
           />
 

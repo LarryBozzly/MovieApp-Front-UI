@@ -49,7 +49,8 @@ export class MoviesListComponent extends LitElement {
           <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
             <figure class="flex-shrink-0">
               <img
-                class="h-64 object-contain"
+                draggable="false"
+                class="h-64 object-contain select-none"
                 src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
                 alt="${movie.title}"
                 @contextmenu=${this.disableContextMenu}
