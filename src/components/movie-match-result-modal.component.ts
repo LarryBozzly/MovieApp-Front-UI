@@ -14,7 +14,7 @@ export class MovieMatchResultModal extends LitElement {
   @state() private canClose = false;
 
   firstUpdated() {
-    setTimeout(() => (this.canClose = true), 2000);
+    setTimeout(() => (this.canClose = true), 10000);
   }
 
   render() {
