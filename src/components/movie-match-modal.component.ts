@@ -240,6 +240,11 @@ export class MovieMatchModalComponent extends LitElement {
     this.cleanupFns.push(() => target.removeEventListener(type, listener, options));
   };
 
+  private disableContextMenu(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false
+  }
 
   render() {
     const movie = this.currentMovie;
@@ -258,8 +263,9 @@ export class MovieMatchModalComponent extends LitElement {
         <img
           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
           alt="${movie.title}"
-          class="w-full h-64 object-contain bg-base-200 flex-shrink-0 pointer-events-none"
-        />
+          class="w-full h-64 object-contain bg-base-200 flex-shrink-0"
+           @contextmenu=${this.disableContextMenu}
+          />
 
       <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
         <div>

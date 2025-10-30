@@ -36,6 +36,12 @@ export class MoviesListComponent extends LitElement {
     return isFavorited ? FilledHeartIcon() : OutlineHeartIcon();
   }
 
+  private disableContextMenu(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false
+  }
+
   render() {
     return html`
       <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-4">
@@ -46,6 +52,7 @@ export class MoviesListComponent extends LitElement {
                 class="h-64 object-contain"
                 src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
                 alt="${movie.title}"
+                @contextmenu=${this.disableContextMenu}
               />
             </figure>
             <div class="card-body p-4 flex flex-col flex-grow">
