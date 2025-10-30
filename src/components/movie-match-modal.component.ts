@@ -51,11 +51,6 @@ export class MovieMatchModalComponent extends LitElement {
       // Trigger pre-fetch for the movie *after* the one we just swiped to
       this.prefetchNextImage();
     }
-
-    // If the movies list itself changes (e.g., new data fetched), prefetch the second movie
-    if (changedProperties.has('movies')) {
-      this.prefetchNextImage();
-    }
  }
   
   private nudge() {
