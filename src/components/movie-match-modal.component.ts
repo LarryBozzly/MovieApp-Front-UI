@@ -31,12 +31,12 @@ export class MovieMatchModalComponent extends LitElement {
     const defaultTransition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)'; 
     modalContent.style.transformOrigin = 'bottom center';
     modalContent.style.transition = nudgeTransition;
-    modalContent.style.transform = 'translateX(25px) rotate(3deg)';
+    modalContent.style.transform = 'translateX(30px) rotate(10deg)';
     setTimeout(() => {
       modalContent.style.transform = 'translateX(0) rotate(0)';
     }, 300);
     setTimeout(() => {
-      modalContent.style.transform = 'translateX(-25px) rotate(-3deg)';
+      modalContent.style.transform = 'translateX(-30px) rotate(-10deg)';
     }, 600);
     setTimeout(() => {
       modalContent.style.transform = 'translateX(0) rotate(0)';
