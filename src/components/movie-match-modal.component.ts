@@ -24,6 +24,39 @@ export class MovieMatchModalComponent extends LitElement {
   private get currentMovie(): Movie | undefined {
     return this.movies[this.currentIndex];
   }
+
+  private get nextMovie(): Movie | undefined {
+		return this.movies[this.currentIndex + 1];
+	}
+
+	private getPosterUrl(movie: Movie): string {
+		// Matches the size used in the render method ('w500')
+		return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+	}
+
+	private prefetchNextImage() {
+		const nextMovie = this.nextMovie;
+
+		if (nextMovie && nextMovie.poster_path) {
+			const nextPosterUrl = this.getPosterUrl(nextMovie);
+			const img = new Image();
+			img.src = nextPosterUrl;
+		}
+	}
+
+  protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
+    super.updated(changedProperties);
+ 
+    if (changedProperties.has('currentIndex')) {
+      // Trigger pre-fetch for the movie *after* the one we just swiped to
+      this.prefetchNextImage();
+    }
+
+    // If the movies list itself changes (e.g., new data fetched), prefetch the second movie
+    if (changedProperties.has('movies')) {
+      this.prefetchNextImage();
+    }
+ }
   
   private nudge() {
     const modalContent = this.closest('.modal-box') as HTMLElement;
@@ -262,7 +295,7 @@ export class MovieMatchModalComponent extends LitElement {
       <div class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]">
         <img
           draggable="false"
-          src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
+          src="${this.getPosterUrl(movie)}"
           alt="${movie.title}"
           class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
            @contextmenu=${this.disableContextMenu}
