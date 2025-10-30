@@ -57,7 +57,6 @@ export class MovieMatchResultModal extends LitElement {
         </div>
 
         <button
-          @click=${this.onClose}
           @click=${() => this.canClose && this.onClose()}
           class="btn btn-primary w-full flex-shrink-0 mt-4"
         >
