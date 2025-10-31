@@ -112,7 +112,7 @@ export class HomePage extends LitElement {
       },
       {
         root: this.mainContent,
-        rootMargin: '0px 0px 500px 0px', 
+        rootMargin: '0px 0px 2000px 0px',
         threshold: 0,
       }
     );
