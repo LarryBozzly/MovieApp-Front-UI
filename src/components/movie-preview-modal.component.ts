@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { MovieGenreMap, type Movie } from '../models/models';
+import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 
 @customElement('movie-preview-modal')
@@ -31,12 +31,8 @@ export class MoviePreviewModal extends LitElement {
             </span>
           </h3>
 
-          <div class="flex gap-2 mt-1 overflow-x-auto whitespace-nowrap flex-shrink-0">
-            ${this.movie.genre_ids.map((id) => html`
-              <span class="badge badge-outline text-xs border-base-content/40 text-base-content/80">
-                ${MovieGenreMap.get(id)}
-              </span>
-            `)}
+          <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
+            <genre-badges .genreIds=${this.movie.genre_ids} .limit=${10}></genre-badges>
           </div>
 
           <p class="mt-2 flex-1 overflow-y-auto pr-1 text-base-content/80">
