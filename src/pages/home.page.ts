@@ -132,7 +132,7 @@ export class HomePage extends LitElement {
           </categories-component>
         </div>
         <movies-list-component
-           class="transition-all duration-400 ${this.isNavbarVisible 
+           class="transition-all duration-100 ${this.isNavbarVisible 
             ? ''
             : 'block pt-[95px]'}"
           .isLoading=${this.isLoading}
