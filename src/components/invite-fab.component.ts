@@ -3,7 +3,8 @@ import { tailwindStyles } from '../utils/app.constants';
 import { customElement, state } from 'lit/decorators.js';
 import {
   OutlinePaperPlaneIcon,
-  FilledCopyIcon
+  FilledCopyIcon,
+  OutlineChevronUpIcon
 } from './icons/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '../store/app-store';
@@ -46,6 +47,15 @@ export class InviteFab extends LitElement {
     this.isOpen = false;
   }
 
+  private scrollToTopSmooth(): void {
+    const main = this.parentNode?.firstElementChild;
+    main?.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
+
   private async sendInvitationRequest(e: Event) {
     e.stopPropagation();
     await this.appState.openSendInvitationModal();
@@ -69,16 +79,22 @@ export class InviteFab extends LitElement {
 
         <!-- FAB menu -->
         <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'}">
-          <button class="btn btn-circle btn-lg tooltip tooltip-left"
-                  @click="${this.sendInvitationRequest}" 
-                  data-tip="Send Invite">
+          <button class="btn btn-circle btn-lg"
+                  @click="${this.sendInvitationRequest}">
             ${OutlinePaperPlaneIcon(iconClass)}
           </button>
 
-          <button class="btn btn-circle btn-lg tooltip tooltip-left"
-                  @click="${this.copyTagToClipboard}" 
-                  data-tip="Copy Tag">
+          <button class="btn btn-circle btn-lg"
+                  @click="${this.copyTagToClipboard}">
             ${FilledCopyIcon(iconClass)}
+          </button>
+
+
+          <button
+            class="btn btn-circle btn-lg"
+            @click="${this.scrollToTopSmooth}"
+          >
+            ${OutlineChevronUpIcon(iconClass)}
           </button>
         </div>
 
