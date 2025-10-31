@@ -10,6 +10,8 @@ import '../components/send-invite-modal.component';
 import '../components/invitation-notification-modal.component';
 import '../components/movie-match-modal.component';
 import '../components/movie-match-result-modal.component';
+import '../components/movie-preview-modal.component';
+
 
 export interface AppState {
     deps?: {
@@ -52,6 +54,7 @@ export interface AppState {
     openReceivedInvitationModal: (fromTag: string) => Promise<void>;
     openStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
     openMovieMatchModal: (movie: Movie) => Promise<void>;
+    openMoviePreviewModal: (movie: Movie) => Promise<void>;
     closeModal: () => Promise<void>;
 }
 
@@ -247,6 +250,18 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 
         modalService.open({
             tag: 'movie-match-result-modal',
+            props: {
+                movie,
+                onClose: closeModal,
+            }
+        });
+    }),
+    openMoviePreviewModal: createEffect(store, async (deps, store, movie: Movie) => {
+        const { modalService } = deps;
+        const { closeModal } = store.getState();
+
+        modalService.open({
+            tag: 'movie-preview-modal',
             props: {
                 movie,
                 onClose: closeModal,

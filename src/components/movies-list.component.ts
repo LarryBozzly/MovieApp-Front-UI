@@ -22,7 +22,10 @@ export class MoviesListComponent extends LitElement {
     return new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric' });
   }
 
-  private async handleHeartClick(movie: Movie): Promise<void> {
+  private async handleHeartClick(event: Event, movie: Movie): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
     const { addToFavorites, removeFromFavorites } = appStore.getState();
     const isFavorited = Boolean(this.favoritesIds[movie.id]?.isFavorite);
 
@@ -42,11 +45,18 @@ export class MoviesListComponent extends LitElement {
     return false
   }
 
+  private openMoviePreviewModal(event: Event, movie: Movie) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    appStore.getState().openMoviePreviewModal(movie);
+  }
+
   render() {
     return html`
       <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-4">
         ${this.movies.map(movie => html`
-          <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
+          <div @click=${(event:Event) => this.openMoviePreviewModal(event,movie)} class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
             <figure class="flex-shrink-0">
               <img
                 draggable="false"
@@ -69,7 +79,7 @@ export class MoviesListComponent extends LitElement {
                 </span>
 
               <button
-                @click=${this.handleHeartClick.bind(this, movie)}
+                @click=${(event:Event) => this.handleHeartClick(event,movie)}
                 class="ml-auto focus:outline-none"
                 title="Toggle Favorite"
                 ?disabled=${this.favoritesIds[movie.id]?.isLoading}
