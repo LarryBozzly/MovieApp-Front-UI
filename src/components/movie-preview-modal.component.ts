@@ -16,7 +16,7 @@ export class MoviePreviewModal extends LitElement {
   render() {
     return html`
       <div
-        class="p-6 space-y-4 flex flex-col max-h-[90vh] overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
+        class="p-6 gap-3 flex flex-col max-h-[90vh] overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
         <img
           src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
@@ -24,7 +24,7 @@ export class MoviePreviewModal extends LitElement {
           class="w-full h-64 object-contain rounded-lg shadow-md flex-shrink-0 bg-base-200"
         />
 
-        <div class="flex flex-col flex-1 overflow-hidden">
+        <div class="flex gap-3 flex-col flex-1 overflow-hidden">
           <h3 class="text-2xl font-semibold flex-shrink-0">
             ${this.movie.title}
             <span class="text-base-content/70 text-base">
@@ -32,7 +32,7 @@ export class MoviePreviewModal extends LitElement {
             </span>
           </h3>
 
-          <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
+          <div class="flex gap-2 overflow-hidden whitespace-nowrap flex-shrink-0">
             <genre-badges .genreIds=${this.movie.genre_ids} .limit=${10}></genre-badges>
           </div>
 
@@ -43,7 +43,7 @@ export class MoviePreviewModal extends LitElement {
 
         <button
           @click=${this.onClose}
-          class="btn btn-primary w-full flex-shrink-0 mt-4"
+          class="btn btn-primary w-full flex-shrink-0"
         >
           Close
         </button>
