@@ -13,6 +13,12 @@ export class MoviePreviewModal extends LitElement {
   @property({ type: Object }) movie!: Movie;
   @property({ type: Function }) onClose!: () => void;
  
+  private disableContextMenu(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false
+  }
+
   render() {
     return html`
       <div
@@ -23,6 +29,7 @@ export class MoviePreviewModal extends LitElement {
           src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
           alt="${this.movie.title}"
           class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
+          @contextmenu=${this.disableContextMenu}
         />
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
