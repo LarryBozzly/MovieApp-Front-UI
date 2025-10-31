@@ -62,13 +62,21 @@ export class HomePage extends LitElement {
     this.setupScrollListener();
   }
 
+  private scrollToTop() {
+    if (this.mainContent) {
+      this.mainContent.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }
+
   private onCategoryChanged(e: CustomEvent<{ category: MovieCategory }>) {
     const category = e.detail.category;
+    this.scrollToTop();
     this.appState.fetchCategoryMovies(category, 1);
   }
 
   private onSearchInput(e: CustomEvent<{ query: string }>) {
     const query = e.detail.query;
+    this.scrollToTop();
     this.appState.fetchCategoryMovies(undefined, 1, query);
   }
 

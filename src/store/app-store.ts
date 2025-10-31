@@ -99,7 +99,6 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         triggerAbort();
         setCategory(category);
         clearMovies();
-        window.scrollTo({ top: 0, behavior: 'auto' });
         setQuery('');
         if (category === MovieCategory.TRENDING) {
             await fetchTrendingMovies(page);
