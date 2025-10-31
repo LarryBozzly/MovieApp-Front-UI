@@ -19,9 +19,10 @@ export class MoviePreviewModal extends LitElement {
         class="p-6 gap-3 flex flex-col max-h-[90vh] overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
         <img
+          draggable="false"
           src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
           alt="${this.movie.title}"
-          class="w-full h-64 object-contain rounded-lg shadow-md flex-shrink-0 bg-base-200"
+          class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
         />
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
