@@ -54,6 +54,7 @@ export class InviteFab extends LitElement {
       left: 0,
       behavior: 'smooth',
     });
+    this.isOpen = false;
   }
 
   private async sendInvitationRequest(e: Event) {

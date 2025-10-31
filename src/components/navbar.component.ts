@@ -29,11 +29,6 @@ export class NavbarComponent extends LitElement {
     await navigator.clipboard.writeText(this.tag);
   }
 
-  private async sendInvitationRequest(e: Event) {
-    e.stopPropagation();
-    await this.appState.openSendInvitationModal();
-  }
-
   private redirectToProfile() {
     Router.go('/profile');
   }
@@ -65,7 +60,6 @@ export class NavbarComponent extends LitElement {
                 </a>
               </li>
               <li><a class="text-primary font-semibold" @click="${this.copyTagToClipboard}">Tag: ${this.tag}</a></li>
-              <li><a class="text-primary font-semibold" @click="${this.sendInvitationRequest}">Send Invite</a></li>
               <li><a class="text-primary font-semibold" @click="${this.logout}" >Logout</a></li>
             </ul>
           </div>
