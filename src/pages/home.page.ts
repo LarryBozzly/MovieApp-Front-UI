@@ -63,9 +63,7 @@ export class HomePage extends LitElement {
   }
 
   private scrollToTop() {
-    if (this.mainContent) {
-      this.mainContent.scrollTo({ top: 0, behavior: "auto" });
-    }
+    this.mainContent.scrollTo({ top: 0, behavior: "auto" });
   }
 
   private onCategoryChanged(e: CustomEvent<{ category: MovieCategory }>) {
