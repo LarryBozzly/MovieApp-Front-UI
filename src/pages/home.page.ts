@@ -112,8 +112,8 @@ export class HomePage extends LitElement {
       },
       {
         root: this.mainContent,
-        rootMargin: '50%',
-        threshold: 0.1
+        rootMargin: '0px 0px 500px 0px', 
+        threshold: 0,
       }
     );
 

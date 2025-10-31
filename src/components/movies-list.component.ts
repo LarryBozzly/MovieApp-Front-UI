@@ -44,7 +44,7 @@ export class MoviesListComponent extends LitElement {
 
   render() {
     return html`
-      <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-16">
+      <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-4">
         ${this.movies.map(movie => html`
           <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
             <figure class="flex-shrink-0">
@@ -83,7 +83,7 @@ export class MoviesListComponent extends LitElement {
 
       ${this.isLoading ? html`
           <div class="col-span-full flex justify-center items-center
-                ${this.movies.length ? '' : 'min-h-[25vh]'}">
+                ${this.movies.length ? 'mt-2' : 'min-h-[25vh]'}">
           <span class="loading loading-dots w-14 text-primary"></span>
         </div>
       ` : null}
