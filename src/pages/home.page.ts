@@ -123,7 +123,7 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <main>
-        <div class="w-full z-25 ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 fixed custom-shadow'}">
+        <div class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}">
           <categories-component
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
             .selectedCategory=${this.selectedCategory}
@@ -132,7 +132,7 @@ export class HomePage extends LitElement {
           </categories-component>
         </div>
         <movies-list-component
-           class="${this.isNavbarVisible ? '' : 'block pt-[95px]'}"
+           class="block pt-[116px] sm:pt-[72px]"
           .isLoading=${this.isLoading}
           .movies=${this.movies}>
         </movies-list-component>
