@@ -42,8 +42,7 @@ export class HomePage extends LitElement {
     }
     main {
      position: fixed;
-     inset: 0; 
-     top:64px;
+     inset: 0;
      overflow: auto;
      -webkit-overflow-scrolling: touch;
     }
