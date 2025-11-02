@@ -128,6 +128,7 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <main>
+        <div class="mt-[64px]"></div>
         <div class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}">
           <categories-component
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
