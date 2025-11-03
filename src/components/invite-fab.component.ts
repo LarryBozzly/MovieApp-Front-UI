@@ -35,6 +35,7 @@ export class InviteFab extends LitElement {
   };
 
   private handleOutsideClick = (event: PointerEvent) => {
+    event.stopPropagation();
     const path = event.composedPath();
     if (this.isOpen && !path.includes(this)) {
       this.isOpen = false;

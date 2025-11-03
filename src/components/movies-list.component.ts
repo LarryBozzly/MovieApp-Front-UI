@@ -56,11 +56,12 @@ export class MoviesListComponent extends LitElement {
     return html`
       <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-4">
         ${this.movies.map(movie => html`
-          <div @click=${(event:Event) => this.openMoviePreviewModal(event,movie)} class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
+          <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
             <figure class="flex-shrink-0">
               <img
+               @click=${(event:Event) => this.openMoviePreviewModal(event,movie)}
                 draggable="false"
-                class="h-64 object-contain select-none"
+                class="h-64 object-contain select-none cursor-pointer"
                 src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
                 alt="${movie.title}"
                 @contextmenu=${this.disableContextMenu}
@@ -68,7 +69,12 @@ export class MoviesListComponent extends LitElement {
             </figure>
             <div class="card-body p-4 flex flex-col flex-grow">
               <h2 class="card-title text-xl font-bold text-base-content mb-1 leading-tight line-clamp-2">
-                ${movie.title}
+                <span
+                  @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
+                  class="inline cursor-pointer"
+                >
+                  ${movie.title}
+                </span>
               </h2>
               <p class="text-sm text-base-content/50 mb-2">${this.formatDate(movie.release_date)}</p>
               <div class="flex items-center gap-3 mt-auto">
