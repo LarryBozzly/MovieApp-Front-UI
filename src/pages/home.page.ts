@@ -123,11 +123,24 @@ export class HomePage extends LitElement {
     }
 
     const getRootMargin = () => {
-      const appHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-height'));
-      const appWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-width'));
-      const ratio = appWidth / appHeight;
-      const orientation = ratio >= 1 ? 'horizontal' : 'vertical';
-      const rootMarginV = orientation === 'horizontal' ? appHeight / 3.5 : appHeight * 3.5;
+      const styles = getComputedStyle(document.documentElement);
+      const appHeight = parseInt(styles.getPropertyValue('--app-height')) || window.innerHeight;
+      const appWidth = parseInt(styles.getPropertyValue('--app-width')) || window.innerWidth;
+
+      const aspectRatio = appWidth / appHeight;
+      const isLandscape = aspectRatio > 1;
+
+      // Base scaling curve
+      let scaleFactor = Math.max(0.8, 3.5 - (aspectRatio - 0.5) * 1.2);
+
+      // If in landscape *and* height is quite small, boost margin significantly
+      if (isLandscape && appHeight < 600) {
+        // The smaller the height, the more we boost it
+        const boost = Math.min(4, 1200 / appHeight);
+        scaleFactor *= boost;
+      }
+
+      const rootMarginV = appHeight * scaleFactor;
       return `0px 0px ${rootMarginV}px 0px`;
     };
 
