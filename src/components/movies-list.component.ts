@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { FavoriteState, Movie } from '../models/models.ts';
 import { tailwindStyles } from '../utils/app.constants.ts';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions.ts';
-import { FilledHeartIcon, OutlineHeartIcon } from './icons/icons.ts';
+import { FilledHeartIcon, NoImageIcon, OutlineHeartIcon } from './icons/icons.ts';
 import { appStore, selectFavoriteIds } from '../store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
@@ -52,6 +52,24 @@ export class MoviesListComponent extends LitElement {
     appStore.getState().openMoviePreviewModal(movie);
   }
 
+  private handleImageError(event: Event, clickHandler?: (e: Event) => void) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const img = event.target as HTMLImageElement;
+
+    if (img.dataset.fallback === 'true') return;
+    const svg = new DOMParser().parseFromString(
+      NoImageIcon('w-6 h-6 text-base-content/40').strings.join(''),
+      'image/svg+xml'
+    ).documentElement;
+
+    svg.setAttribute('class', img.className);
+    if (clickHandler) svg.addEventListener('click', clickHandler);
+    svg.dataset.fallback = 'true';
+    img.replaceWith(svg);
+  }
+
   render() {
     return html`
       <div class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-4">
@@ -59,12 +77,13 @@ export class MoviesListComponent extends LitElement {
           <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
             <figure class="flex-shrink-0">
               <img
-               @click=${(event:Event) => this.openMoviePreviewModal(event,movie)}
+               @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
                 draggable="false"
                 class="h-64 object-contain select-none cursor-pointer"
                 src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
                 alt="${movie.title}"
                 @contextmenu=${this.disableContextMenu}
+                @error=${(event: Event) => this.handleImageError(event, (ev: Event) => this.openMoviePreviewModal(ev, movie))}
               />
             </figure>
             <div class="card-body p-4 flex flex-col flex-grow">
@@ -85,7 +104,7 @@ export class MoviesListComponent extends LitElement {
                 </span>
 
               <button
-                @click=${(event:Event) => this.handleHeartClick(event,movie)}
+                @click=${(event: Event) => this.handleHeartClick(event, movie)}
                 class="ml-auto focus:outline-none"
                 title="Toggle Favorite"
                 ?disabled=${this.favoritesIds[movie.id]?.isLoading}

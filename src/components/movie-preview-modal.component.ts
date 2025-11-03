@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import './genre-badges.component';
+import { NoImageIcon } from './icons/icons';
 
 @customElement('movie-preview-modal')
 export class MoviePreviewModal extends LitElement {
@@ -16,9 +17,21 @@ export class MoviePreviewModal extends LitElement {
   private disableContextMenu(e: Event) {
     e.preventDefault();
     e.stopPropagation();
-    return false
+    return false;
   }
 
+  private handleImageError(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const img = event.target as HTMLImageElement;
+    const svg = new DOMParser().parseFromString(
+      NoImageIcon('w-6 h-6 text-base-content/40').strings.join(''),
+      'image/svg+xml'
+    ).documentElement;
+    svg.setAttribute('class', img.className);
+    img.replaceWith(svg);
+  }
   render() {
     return html`
       <div
@@ -30,6 +43,7 @@ export class MoviePreviewModal extends LitElement {
           alt="${this.movie.title}"
           class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
           @contextmenu=${this.disableContextMenu}
+          @error=${this.handleImageError}
         />
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
