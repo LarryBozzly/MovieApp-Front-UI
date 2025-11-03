@@ -1,8 +1,9 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import './genre-badges.component';
+import { dynamicHeight } from '../directives/dynamicHeight';
 
 @customElement('movie-preview-modal')
 export class MoviePreviewModal extends LitElement {
@@ -12,7 +13,6 @@ export class MoviePreviewModal extends LitElement {
 
   @property({ type: Object }) movie!: Movie;
   @property({ type: Function }) onClose!: () => void;
-  @state() private modalHeight = 0;
 
   private disableContextMenu(e: Event) {
     e.preventDefault();
@@ -20,28 +20,10 @@ export class MoviePreviewModal extends LitElement {
     return false
   }
 
-  firstUpdated() {
-    const appRoot = document.querySelector('app-root')! as HTMLElement;
-
-    const updateHeight = () => {
-      const styles = getComputedStyle(appRoot);
-      const appHeight = parseFloat(styles.getPropertyValue('--app-height'));
-      this.modalHeight = appHeight * 0.96;
-    };
-
-    updateHeight();
-
-    window.addEventListener('resize', updateHeight);
-
-    this.addEventListener('disconnected', () => {
-      window.removeEventListener('resize', updateHeight);
-    });
-  }
-  
   render() {
     return html`
       <div
-        style="max-height: ${this.modalHeight}px;"
+        ${dynamicHeight(0.96)}
         class="p-6 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
         <img
