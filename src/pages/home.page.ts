@@ -125,7 +125,9 @@ export class HomePage extends LitElement {
     const getRootMargin = () => {
       const appHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-height'));
       const appWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-width'));
-      const rootMarginV = appWidth > appHeight ? appHeight / 3.5 : appHeight * 3.5;
+      const ratio = appWidth / appHeight;
+      const orientation = ratio >= 1 ? 'horizontal' : 'vertical';
+      const rootMarginV = orientation === 'horizontal' ? appHeight / 3.5 : appHeight * 3.5;
       return `0px 0px ${rootMarginV}px 0px`;
     };
 
