@@ -2,7 +2,6 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { MovieGenreMap, type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
-import { dynamicHeight } from '../directives/dynamicHeight';
 
 @customElement('movie-match-result-modal')
 export class MovieMatchResultModal extends LitElement {
@@ -21,8 +20,7 @@ export class MovieMatchResultModal extends LitElement {
   render() {
     return html`
       <div
-        ${dynamicHeight(0.96)}
-        class="p-6 space-y-4 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
+        class="max-height-modal p-6 space-y-4 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
         <h2
           id="match-title"

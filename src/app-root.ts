@@ -29,7 +29,7 @@ export class AppRoot extends LitElement {
   `;
 
   private setAppHeight = () => {
-    this.style.setProperty("--app-height", `${window.innerHeight}px`);
+    document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
   };
 
   private initRouter() {

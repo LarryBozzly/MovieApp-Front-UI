@@ -3,7 +3,6 @@ import { customElement, property } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import './genre-badges.component';
-import { dynamicHeight } from '../directives/dynamicHeight';
 
 @customElement('movie-preview-modal')
 export class MoviePreviewModal extends LitElement {
@@ -23,8 +22,7 @@ export class MoviePreviewModal extends LitElement {
   render() {
     return html`
       <div
-        ${dynamicHeight(0.96)}
-        class="p-6 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
+        class="max-height-modal p-6 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
         <img
           draggable="false"
