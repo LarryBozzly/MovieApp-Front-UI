@@ -41,18 +41,24 @@ export class HomePage extends LitElement {
       font-family: system-ui, sans-serif;
     }
     main {
-     position: fixed;
-     inset: 0;
-     top:64px;
-     overflow: auto;
-     -webkit-overflow-scrolling: touch;
+      position: fixed;
+      inset: 0;
+      top: 64px;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
   `;
 
-  private observer!: IntersectionObserver;
+  private observer?: IntersectionObserver;
   private _removeScrollListener?: () => void;
+  private resizeTimeout?: number;
+
   @query('#sentinel') private sentinel!: HTMLElement;
   @query('main') private mainContent!: HTMLElement;
+
+  // Dedicated handler references (so removeEventListener works)
+  private _onResize = () => this._debouncedRecreateObserver();
+  private _onOrientationChange = () => this._recreateObserver();
 
   async firstUpdated() {
     if (!this.movies.length) {
@@ -63,7 +69,7 @@ export class HomePage extends LitElement {
   }
 
   private scrollToTop() {
-    this.mainContent.scrollTo({ top: 0, behavior: "auto" });
+    this.mainContent?.scrollTo({ top: 0, behavior: 'auto' });
   }
 
   private onCategoryChanged(e: CustomEvent<{ category: MovieCategory }>) {
@@ -94,6 +100,8 @@ export class HomePage extends LitElement {
   }
 
   private setupScrollListener() {
+    if (!this.mainContent) return;
+
     const onScroll = () => {
       const hideNavbar = this.mainContent.scrollTop < 17;
       this.appState.setNavbarVisibility(hideNavbar);
@@ -104,7 +112,16 @@ export class HomePage extends LitElement {
     this._removeScrollListener = () => this.mainContent.removeEventListener('scroll', onScroll);
   }
 
-  private setupInfiniteScroll() {
+  // Core intersection observer setup
+  private _setupObserver() {
+    if (!this.sentinel || !this.mainContent) return;
+
+    // Disconnect any existing observer
+    if (this.observer) {
+      this.observer.unobserve(this.sentinel);
+      this.observer.disconnect();
+    }
+
     const getRootMargin = () => {
       const appHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-height'));
       const appWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-width'));
@@ -124,13 +141,30 @@ export class HomePage extends LitElement {
       }
     );
 
-    if (this.sentinel) this.observer.observe(this.sentinel);
+    this.observer.observe(this.sentinel);
+  }
+
+  private setupInfiniteScroll() {
+    this._setupObserver();
+    window.addEventListener('resize', this._onResize);
+    window.addEventListener('orientationchange', this._onOrientationChange);
+  }
+
+  private _recreateObserver() {
+    this._setupObserver();
+  }
+
+  private _debouncedRecreateObserver() {
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = window.setTimeout(() => this._recreateObserver(), 200);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.observer?.disconnect();
     this._removeScrollListener?.();
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('orientationchange', this._onOrientationChange);
   }
 
   render() {
