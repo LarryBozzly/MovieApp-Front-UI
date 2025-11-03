@@ -105,6 +105,11 @@ export class HomePage extends LitElement {
   }
 
   private setupInfiniteScroll() {
+    const getRootMargin = () => {
+      const appWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-width')) || 800;
+      return `0px 0px ${appWidth / 2}px 0px`;
+    };
+
     this.observer = new IntersectionObserver(
       async ([entry]) => {
         if (!entry.isIntersecting || this.isLoading) return;
@@ -112,7 +117,7 @@ export class HomePage extends LitElement {
       },
       {
         root: this.mainContent,
-        rootMargin: '0px 0px 80% 0px',
+        rootMargin: getRootMargin(),
         threshold: 0,
       }
     );

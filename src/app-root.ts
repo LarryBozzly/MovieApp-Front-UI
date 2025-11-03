@@ -28,8 +28,9 @@ export class AppRoot extends LitElement {
     }
   `;
 
-  private setAppHeight = () => {
+  private setAppDimensions = () => {
     document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+    document.documentElement.style.setProperty('--app-width', `${window.innerWidth}px`);
   };
 
   private initRouter() {
@@ -47,7 +48,7 @@ export class AppRoot extends LitElement {
       modalService: new ModalService(),
     });
   }
- 
+
   private initAuthStore() {
     authStore.getInitialState().storeInit({
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
@@ -59,8 +60,8 @@ export class AppRoot extends LitElement {
   }
 
   firstUpdated() {
-    this.setAppHeight();
-    window.addEventListener("resize", this.setAppHeight);
+    this.setAppDimensions();
+    window.addEventListener("resize", this.setAppDimensions);
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
@@ -70,7 +71,7 @@ export class AppRoot extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener("resize", this.setAppHeight);
+    window.removeEventListener("resize", this.setAppDimensions);
   }
 
   render() {
