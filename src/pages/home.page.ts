@@ -129,15 +129,20 @@ export class HomePage extends LitElement {
 
       const aspectRatio = appWidth / appHeight;
       const isLandscape = aspectRatio > 1;
+      const isMobile = appWidth < 768; // adjust threshold as needed
 
-      // Base scaling curve
+      // Base scaling curve (smaller aspectRatio → larger margin)
       let scaleFactor = Math.max(0.8, 3.5 - (aspectRatio - 0.5) * 1.2);
 
-      // If in landscape *and* height is quite small, boost margin significantly
+      // If landscape and height is small, boost even more
       if (isLandscape && appHeight < 600) {
-        // The smaller the height, the more we boost it
         const boost = Math.min(4, 1200 / appHeight);
         scaleFactor *= boost;
+      }
+
+      // If mobile (portrait or narrow screen), apply extra multiplier
+      if (isMobile) {
+        scaleFactor *= 1.8;
       }
 
       const rootMarginV = appHeight * scaleFactor;
