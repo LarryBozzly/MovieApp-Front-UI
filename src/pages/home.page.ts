@@ -106,8 +106,10 @@ export class HomePage extends LitElement {
 
   private setupInfiniteScroll() {
     const getRootMargin = () => {
-      const appWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-width')) || 800;
-      return `0px 0px ${appWidth / 2}px 0px`;
+      const appHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-height'));
+      const appWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--app-width'));
+      const rootMarginV = appWidth > appHeight ? appHeight / 2 : appHeight * 2;
+      return `0px 0px ${rootMarginV}px 0px`;
     };
 
     this.observer = new IntersectionObserver(
