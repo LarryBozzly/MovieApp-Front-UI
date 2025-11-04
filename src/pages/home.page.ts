@@ -51,21 +51,21 @@ export class HomePage extends LitElement {
 
   private observer?: IntersectionObserver;
   private _removeScrollListener?: () => void;
-  private resizeTimeout?: number;
+  private resizeObserver?: ResizeObserver;
 
   @query('#sentinel') private sentinel!: HTMLElement;
   @query('main') private mainContent!: HTMLElement;
+  @query('movies-list-component') private moviesListComponent!: HTMLElement;
 
-  // Dedicated handler references (so removeEventListener works)
-  private _onResize = () => this._debouncedRecreateObserver();
-  private _onOrientationChange = () => this._recreateObserver();
 
   async firstUpdated() {
     if (!this.movies.length) {
       this.appState.onInit();
     }
+
     this.setupInfiniteScroll();
     this.setupScrollListener();
+    this._setupResizeObserver();
   }
 
   private scrollToTop() {
@@ -112,41 +112,18 @@ export class HomePage extends LitElement {
     this._removeScrollListener = () => this.mainContent.removeEventListener('scroll', onScroll);
   }
 
-  // Core intersection observer setup
+  // IntersectionObserver setup
   private _setupObserver() {
     if (!this.sentinel || !this.mainContent) return;
 
-    // Disconnect any existing observer
     if (this.observer) {
-      this.observer.unobserve(this.sentinel);
       this.observer.disconnect();
     }
 
     const getRootMargin = () => {
-      const styles = getComputedStyle(document.documentElement);
-      const appHeight = parseInt(styles.getPropertyValue('--app-height')) || window.innerHeight;
-      const appWidth = parseInt(styles.getPropertyValue('--app-width')) || window.innerWidth;
-
-      const aspectRatio = appWidth / appHeight;
-      const isLandscape = aspectRatio > 1;
-      const isMobile = appWidth < 768; // adjust threshold as needed
-
-      // Base scaling curve (smaller aspectRatio → larger margin)
-      let scaleFactor = Math.max(0.8, 3.5 - (aspectRatio - 0.5) * 1.2);
-
-      // If landscape and height is small, boost even more
-      if (isLandscape && appHeight < 600) {
-        const boost = Math.min(4, 1200 / appHeight);
-        scaleFactor *= boost;
-      }
-
-      // If mobile (portrait or narrow screen), apply extra multiplier
-      if (isMobile) {
-        scaleFactor *= 1.8;
-      }
-
-      const rootMarginV = appHeight * scaleFactor;
-      return `0px 0px ${rootMarginV}px 0px`;
+      if (!this.moviesListComponent) return '0px 0px 0px 0px';
+      const contentHeight = this.moviesListComponent.scrollHeight;
+      return `0px 0px ${contentHeight * 0.5}px 0px`; // 50% of content height
     };
 
     this.observer = new IntersectionObserver(
@@ -166,25 +143,28 @@ export class HomePage extends LitElement {
 
   private setupInfiniteScroll() {
     this._setupObserver();
-    window.addEventListener('resize', this._onResize);
-    window.addEventListener('orientationchange', this._onOrientationChange);
   }
 
   private _recreateObserver() {
     this._setupObserver();
   }
 
-  private _debouncedRecreateObserver() {
-    clearTimeout(this.resizeTimeout);
-    this.resizeTimeout = window.setTimeout(() => this._recreateObserver(), 200);
+  // ResizeObserver to watch content height changes
+  private _setupResizeObserver() {
+    if (!this.moviesListComponent) return;
+
+    this.resizeObserver = new ResizeObserver(() => {
+      this._recreateObserver();
+    });
+
+    this.resizeObserver.observe(this.moviesListComponent);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.observer?.disconnect();
+    this.resizeObserver?.disconnect();
     this._removeScrollListener?.();
-    window.removeEventListener('resize', this._onResize);
-    window.removeEventListener('orientationchange', this._onOrientationChange);
   }
 
   render() {
