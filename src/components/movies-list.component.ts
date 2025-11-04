@@ -60,11 +60,11 @@ export class MoviesListComponent extends LitElement {
 
     if (img.dataset.fallback === 'true') return;
     const svg = new DOMParser().parseFromString(
-      NoImageIcon('w-6 h-6 text-base-content/40').strings.join(''),
+      NoImageIcon().strings.join(''),
       'image/svg+xml'
     ).documentElement;
 
-    svg.setAttribute('class', img.className);
+    svg.setAttribute('class', 'w-full h-64 text-base-content/40 select-none cursor-pointer');
     if (clickHandler) svg.addEventListener('click', clickHandler);
     svg.dataset.fallback = 'true';
     img.replaceWith(svg);

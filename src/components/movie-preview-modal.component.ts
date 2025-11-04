@@ -26,10 +26,10 @@ export class MoviePreviewModal extends LitElement {
 
     const img = event.target as HTMLImageElement;
     const svg = new DOMParser().parseFromString(
-      NoImageIcon('w-6 h-6 text-base-content/40').strings.join(''),
+      NoImageIcon().strings.join(''),
       'image/svg+xml'
     ).documentElement;
-    svg.setAttribute('class', img.className);
+    svg.setAttribute('class', 'w-full h-64 text-base-content/40 bg-base-200 select-none');
     img.replaceWith(svg);
   }
   render() {
