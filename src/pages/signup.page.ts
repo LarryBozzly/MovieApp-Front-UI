@@ -5,8 +5,8 @@ import '../components/movies-list.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { authStore, selectError, selectIsLoading, type AuthState } from '../store/auth-store';
 
-@customElement('register-page')
-export class RegisterPage extends LitElement {
+@customElement('signup-page')
+export class SignupPage extends LitElement {
   @watch(authStore) authState!: AuthState;
   @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
   @watchWithSelector({ store: authStore, selector: selectError }) readonly error!: Error | null;
@@ -21,7 +21,7 @@ export class RegisterPage extends LitElement {
     const formData = new FormData(form);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    await this.authState.login({ email, password, remember: true });
+    // await this.authState.login({ email, password, remember: true });
   }
 
   private clearError() {
@@ -35,7 +35,7 @@ export class RegisterPage extends LitElement {
       <div class="min-h-screen flex items-center justify-center bg-base-200">
         <div class="card w-full max-w-md bg-base-100 shadow-xl">
           <div class="card-body">
-            <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
+            <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign Up</h2>
 
             ${this.error
         ? html`
@@ -69,7 +69,7 @@ export class RegisterPage extends LitElement {
                 type="submit"
                 class="btn btn-primary w-full"
               >
-                ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
+                ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Register'}
               </button>
             </form>
           </div>
@@ -77,4 +77,10 @@ export class RegisterPage extends LitElement {
       </div>
     `;
   }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'signup-page': SignupPage;
+    }
 }

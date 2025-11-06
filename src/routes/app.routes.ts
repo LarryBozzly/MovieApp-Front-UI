@@ -2,8 +2,9 @@ import type { Route } from "@vaadin/router";
 import { profileViews } from "./profile.routes";
 import { homeViews } from "./home.routes";
 import { authGuard } from "../guards/auth-guard";
-import { loginGuard } from "../guards/login-guard";
+import { publicGuard } from "../guards/public-guard";
 import "../pages/login.page";
+import "../pages/signup.page";
 
 const children: Route[] = [...homeViews, ...profileViews];
 
@@ -16,6 +17,11 @@ export const routes: Route[] = [
   {
     path: "/login",
     component: "login-page",
-    action: loginGuard,
+    action: publicGuard,
+  },
+  {
+    path: "/signup",
+    component: "signup-page",
+    action: publicGuard,
   },
 ];

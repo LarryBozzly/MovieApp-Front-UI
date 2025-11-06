@@ -78,3 +78,8 @@ export class LoginPage extends LitElement {
     `;
   }
 }
+declare global {
+    interface HTMLElementTagNameMap {
+        'login-page': LoginPage;
+    }
+}
