@@ -52,7 +52,7 @@ export class LoginPage extends LitElement {
                 name="email"
                 placeholder="Email"
                 required
-                autocomplete="username"
+                autocomplete="Email"
                 class="input input-bordered w-full bg-base-200"
               />
               <input
