@@ -32,17 +32,17 @@ export class SignupPage extends LitElement {
 
   render() {
     return html`
-      <div class="min-h-screen flex items-center justify-center bg-base-200">
+      <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
         <div class="card w-full max-w-md bg-base-100 shadow-xl">
           <div class="card-body">
             <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign Up</h2>
 
             ${this.error
         ? html`
-                <div class="alert alert-error text-sm">
-                  <span>${this.error.message}</span>
-                </div>
-              `
+                  <div class="alert alert-error text-sm">
+                    <span>${this.error.message}</span>
+                  </div>
+                `
         : null}
 
             <form @submit=${this.handleSubmit} class="flex flex-col gap-4">
@@ -52,7 +52,7 @@ export class SignupPage extends LitElement {
                 name="email"
                 placeholder="Email"
                 required
-                autocomplete="Email"
+                autocomplete="email"
                 class="input input-bordered w-full bg-base-200"
               />
               <input
@@ -61,7 +61,7 @@ export class SignupPage extends LitElement {
                 name="password"
                 placeholder="Password"
                 required
-                autocomplete="current-password"
+                autocomplete="new-password"
                 class="input input-bordered w-full bg-base-200"
               />
               <button
@@ -74,13 +74,21 @@ export class SignupPage extends LitElement {
             </form>
           </div>
         </div>
+
+        <!-- Login footer -->
+        <div class="mt-4 text-sm text-center text-base-content/60">
+          Already have an account?
+          <a href="/login" class="link link-primary font-medium hover:underline">
+            Sign in here
+          </a>
+        </div>
       </div>
     `;
   }
 }
 
 declare global {
-    interface HTMLElementTagNameMap {
-        'signup-page': SignupPage;
-    }
+  interface HTMLElementTagNameMap {
+    'signup-page': SignupPage;
+  }
 }
