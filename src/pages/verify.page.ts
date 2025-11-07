@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { authStore, selectError, selectIsLoading, selectIsVerified, type AuthState } from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
