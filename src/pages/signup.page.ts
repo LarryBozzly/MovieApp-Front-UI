@@ -15,12 +15,12 @@ export class SignupPage extends LitElement {
     ${tailwindStyles}
   `;
 
-  private async handleSubmit(e: Event) {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+  private async handleSubmit(_e: Event) {
+    // e.preventDefault();
+    // const form = e.target as HTMLFormElement;
+    // const formData = new FormData(form);
+    // const email = formData.get('email') as string;
+    // const password = formData.get('password') as string;
     // await this.authState.login({ email, password, remember: true });
   }
 
