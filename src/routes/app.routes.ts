@@ -5,6 +5,7 @@ import { authGuard } from "../guards/auth-guard";
 import { publicGuard } from "../guards/public-guard";
 import "../pages/login.page";
 import "../pages/signup.page";
+import "../pages/verify.page";
 
 const children: Route[] = [...homeViews, ...profileViews];
 
@@ -25,7 +26,7 @@ export const routes: Route[] = [
     action: publicGuard,
   },
   {
-    path: "/verify:token",
+    path: "/verify",
     component: 'verify-page',
     action: publicGuard,
   },

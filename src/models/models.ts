@@ -85,6 +85,10 @@ export interface LoginResponse {
   message: string;
 }
 
+export interface VerifyResponse {
+  message: string;
+}
+
 export interface CheckLoginResponse {
   message: string;
 }
