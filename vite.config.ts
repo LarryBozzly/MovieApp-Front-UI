@@ -24,7 +24,7 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true,
         globDirectory: "dist/",
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,md}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,md,txt}"],
         skipWaiting: true,
       },
     }),
