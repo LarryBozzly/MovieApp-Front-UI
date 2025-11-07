@@ -24,4 +24,9 @@ export const routes: Route[] = [
     component: "signup-page",
     action: publicGuard,
   },
+  {
+    path: "/verify:token",
+    component: 'verify-page',
+    action: publicGuard,
+  },
 ];
