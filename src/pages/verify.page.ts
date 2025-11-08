@@ -15,7 +15,6 @@ export class VerifyPage extends LitElement {
     ${tailwindStyles}
   `;
 
-
   async connectedCallback() {
     super.connectedCallback();
     await this.verifyAccount();
@@ -35,37 +34,60 @@ export class VerifyPage extends LitElement {
     await this.authState.verifyAccount(token);
   }
 
-  render() {
+  private _renderLoading() {
     return html`
-    <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
-      <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
-        ${this.isLoading
-        ? html`
-              <span class="loading loading-spinner loading-lg text-primary mb-4"></span>
-              <h2 class="text-lg font-semibold">Verifying your account...</h2>
-            `
-        : this.isVerified
-          ? html`
-              <div class="text-success text-4xl mb-2">✅</div>
-              <h2 class="text-xl font-bold mb-2">Verification Successful</h2>
-              <p>Your account has been verified! Redirecting to login...</p>
-            `
-          : this.error
-            ? html`
-              <div class="text-error text-4xl mb-2">❌</div>
-              <h2 class="text-xl font-bold mb-2">Verification Failed</h2>
-              <p>${this.error?.message || 'Invalid or expired verification link.'}</p>
-              <a href="/login" class="btn btn-primary mt-4">Back to Login</a>
-            `
-            : html`
-              <div class="text-error text-4xl mb-2">❌</div>
-              <h2 class="text-xl font-bold mb-2">Verification Failed</h2>
-              <p>Something went wrong. Please try again later.</p>
-              <a href="/login" class="btn btn-primary mt-4">Back to Login</a>
-            `}
+      <div class="flex flex-col items-center">
+        <span class="loading loading-spinner loading-lg text-primary mb-4"></span>
+        <h2 class="text-lg font-semibold">Verifying your account...</h2>
       </div>
-    </div>
-  `;
+    `;
+  }
+
+  private _renderSuccess() {
+    return html`
+      <div class="flex flex-col items-center">
+        <div class="text-success text-4xl mb-2">✅</div>
+        <h2 class="text-xl font-bold mb-2">Verification Successful</h2>
+        <p>Your account has been verified! Redirecting to login...</p>
+      </div>
+    `;
+  }
+
+  private _renderError(message: string) {
+    return html`
+      <div class="flex flex-col items-center">
+        <div class="text-error text-4xl mb-2">❌</div>
+        <h2 class="text-xl font-bold mb-2">Verification Failed</h2>
+        <p>${message}</p>
+        <a href="/login" class="btn btn-primary mt-4">Back to Login</a>
+      </div>
+    `;
+  }
+
+  private _renderGenericError() {
+    return this._renderError('Something went wrong. Please try again later.');
+  }
+
+  render() {
+    let content;
+
+    if (this.isLoading) {
+      content = this._renderLoading();
+    } else if (this.isVerified) {
+      content = this._renderSuccess();
+    } else if (this.error) {
+      content = this._renderError(this.error?.message || 'Invalid or expired verification link.');
+    } else {
+      content = this._renderGenericError();
+    }
+
+    return html`
+      <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
+        <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
+          ${content}
+        </div>
+      </div>
+    `;
   }
 }
 
