@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { watch, watchWithSelector } from 'zustand-lit';
-import '../components/movies-list.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { authStore, selectError, selectIsLoading, type AuthState } from '../store/auth-store';
 
@@ -32,14 +31,13 @@ export class LoginPage extends LitElement {
 
   render() {
     return html`
-    <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
-      <div class="card w-full max-w-md bg-base-100 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title justify-center text-2xl font-bold mb-4">Sign In</h2>
+      <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
+        <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
+          <h2 class="text-2xl font-bold mb-4">Sign In</h2>
 
           ${this.error
         ? html`
-                <div class="alert alert-error text-sm">
+                <div class="alert alert-error text-sm mb-3">
                   <span>${this.error.message}</span>
                 </div>
               `
@@ -69,22 +67,20 @@ export class LoginPage extends LitElement {
               type="submit"
               class="btn btn-primary w-full"
             >
-              ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'}
-            </button>
+            ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'} </button>
           </form>
+          <div class="mt-4 text-sm text-center text-base-content/60">
+            Don’t have an account?
+            <a href="/signup" class="link link-primary font-medium hover:underline">
+              Sign up here
+            </a>
+          </div>
         </div>
       </div>
-
-      <div class="mt-4 text-sm text-center text-base-content/60">
-        Don’t have an account?
-        <a href="/signup" class="link link-primary font-medium hover:underline">
-          Sign up here
-        </a>
-      </div>
-    </div>
-  `;
+    `;
   }
 }
+
 declare global {
   interface HTMLElementTagNameMap {
     'login-page': LoginPage;

@@ -1,5 +1,5 @@
 import { createStore } from 'zustand/vanilla';
-import type { LoginRequest, LoginResponse, Movie, VerifyResponse } from '../models/models';
+import type { LoginRequest, LoginResponse, Movie, RegisterRequest, RegisterResponse, VerifyResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import { tryCatch } from '../utils/try-catch';
@@ -20,6 +20,7 @@ export interface AuthState {
     };
     isAuthorized: boolean;
     isLoading: boolean;
+    isRegistered: boolean;
     isVerified: boolean;
     tag: string;
     isWSConnected: boolean;
@@ -31,7 +32,9 @@ export interface AuthState {
     setWSConnected: (isWSConnected: boolean) => void;
     setTag: (tag: string) => void;
     setIsVerified: (isVerified: boolean) => void;
+    setIsRegistered: (isRegistered: boolean) => void;
     login: (loginData: LoginRequest) => Promise<void>;
+    register: (loginData: RegisterRequest) => Promise<void>;
     verifyAccount: (token: string) => Promise<void>;
     logout: () => Promise<void>;
     refresh: () => Promise<void>;
@@ -46,6 +49,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     isAuthorized: false,
     isLoading: false,
     isVerified: false,
+    isRegistered: false,
     deps: undefined,
     tag: '',
     isWSConnected: false,
@@ -57,6 +61,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     setWSConnected: (isWSConnected: boolean) => set({ isWSConnected }),
     setTag: (tag: string) => set({ tag }),
     setIsVerified: (isVerified: boolean) => set({ isVerified }),
+    setIsRegistered: (isRegistered: boolean) => set({ isRegistered }),
     setAuthorization: (status: boolean) => set({ isAuthorized: status }),
     // effects
     login: createEffect(store, async (deps, store, loginData) => {
@@ -85,26 +90,31 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
             Router.go('/');
         }
     }),
+    register: createEffect(store, async (deps, store, registerData) => {
+        const { httpService } = deps;
+        const { setLoading, setError, setIsRegistered } = store.getState();
+
+        setLoading(true);
+        const { data, error } = await tryCatch(
+            httpService.post<RegisterResponse>('/signup', registerData)
+        );
+
+        setLoading(false);
+        setError(error);
+        setIsRegistered(!!data);
+    }),
     verifyAccount: createEffect(store, async (deps, store, token) => {
         const { httpService } = deps;
         const { setLoading, setIsVerified, setError } = store.getState();
 
         setLoading(true);
-        const { error } = await tryCatch(
+        const { data, error } = await tryCatch(
             httpService.get<VerifyResponse>('/verify', { token })
         );
 
         setLoading(false);
-        if (error) {
-            setError(error);
-            setIsVerified(false);
-        }
-
-        if (!error) {
-            setError(null);
-            setIsVerified(true);
-        }
-
+        setError(error);
+        setIsVerified(!!data);
         setTimeout(() => (Router.go('/')), 3000);
     }),
     logout: createEffect(store, async (deps, store) => {
@@ -208,6 +218,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 export const selectIsAuthorized = (state: AuthState) => state.isAuthorized;
 export const selectIsLoading = (state: AuthState) => state.isLoading;
 export const selectIsVerified = (state: AuthState) => state.isVerified;
+export const selectIsRegistered = (state: AuthState) => state.isRegistered;
 export const selectError = (state: AuthState) => state.error;
 export const selectTag = (state: AuthState) => state.tag;
 export const selectIsWSConnected = (state: AuthState) => state.isWSConnected;
