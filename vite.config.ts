@@ -27,6 +27,33 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,md}"],
         skipWaiting: true,
       },
+      manifest: {
+        name: "Your New App Name",           // Full app name
+        short_name: "Short Name",            // Appears under icon
+        description: "A brief description of your PWA",
+        theme_color: "#ffffff",              // Color for the status bar/splash
+        background_color: "#ffffff",
+        display: "standalone",
+        start_url: "./",
+        icons: [
+          {
+            src: "assets/pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "assets/pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "assets/pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
+          },
+        ],
+      },
     }),
   ],
 });
