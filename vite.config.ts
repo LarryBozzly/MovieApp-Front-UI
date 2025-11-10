@@ -31,7 +31,7 @@ export default defineConfig({
         name: "Movviator",           // Full app name
         short_name: "Movviator",            // Appears under icon
         description: "Match, watch, and enjoy movie nights effortlessly!",
-        theme_color: "#422ad5",              // Color for the status bar/splash
+        theme_color: "#ffffff",              // Color for the status bar/splash
         background_color: "#ffffff",
         display: "standalone",
         start_url: "./",
