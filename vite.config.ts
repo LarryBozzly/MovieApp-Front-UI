@@ -32,22 +32,22 @@ export default defineConfig({
         short_name: "Movviator",            // Appears under icon
         description: "Match, watch, and enjoy movie nights effortlessly!",
         theme_color: "#422ad5",              // Color for the status bar/splash
-        background_color: "#eeeeee",
+        background_color: "#ffffff",
         display: "standalone",
         start_url: "./",
         icons: [
           {
-            src: "public/images/pwa-192x192.png",
+            src: "/images/pwa-192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "public/images/pwa-512x512.png",
+            src: "/images/pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "public/images/pwa-512x512.png",
+            src: "/images/pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
