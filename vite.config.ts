@@ -37,22 +37,28 @@ export default defineConfig({
         start_url: "./",
         icons: [
           {
-            src: "/images/movviator.svg",
+            src: "/images/android-chrome-192x192.png",
             sizes: "192x192",
-            type: "image/svg+xml",
+            type: "image/png"
+          },
+          {
+            src: "/images/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png"
+          },
+          {
+            src: "/images/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
           },
           {
             src: "/images/movviator.svg",
-            sizes: "512x512",
+            sizes: "any",
             type: "image/svg+xml",
-          },
-          {
-            src: "/images/movviator.svg",
-            sizes: "512x512",
-            type: "image/svg+xml",
-            purpose: "any maskable",
-          },
-        ],
+            purpose: "any"
+          }
+        ]
       },
     }),
   ],
