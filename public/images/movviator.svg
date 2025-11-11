@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Abstract wave icon with larger Avenir M">
+  <defs>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#422ad5"/>
+      <stop offset="100%" stop-color="#8c5aff"/>
+    </linearGradient>
+    <linearGradient id="waveGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.8)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <style>
+      .bg { fill: url(#bgGradient); }
+      .wave { fill: url(#waveGradient); }
+      .letter {
+        fill: white;
+        font-family: 'Avenir Next Rounded', 'Avenir', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        font-weight: 800;
+        font-size: 130px; /* increased from 100px */
+        letter-spacing: -2px;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect class="bg" x="0" y="0" width="240" height="240" rx="32"/>
+
+  <!-- Abstract flowing waves -->
+  <path class="wave" d="M-20,180 C40,100 140,220 240,150 L240,240 L-20,240 Z"/>
+  <path class="wave" d="M-20,120 C60,80 160,200 240,110 L240,240 L-20,240 Z" opacity="0.35"/>
+
+  <!-- Centered larger Avenir M -->
+  <text class="letter" x="120" y="125">M</text>
+</svg>
