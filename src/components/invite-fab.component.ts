@@ -82,29 +82,26 @@ export class InviteFab extends LitElement {
       <div class="relative">
 
         <!-- FAB menu -->
-        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'}">
-          <button class="btn btn-circle btn-lg"
-                  @click="${this.sendInvitationRequest}">
-            ${OutlinePaperPlaneIcon(iconClass)}
-          </button>
+        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'} pointer-events-none">
+        <button class="btn btn-circle btn-lg pointer-events-auto"
+                @click="${this.sendInvitationRequest}">
+          ${OutlinePaperPlaneIcon(iconClass)}
+        </button>
 
-          <!-- Tag + Copy (horizontal) -->
-          <div class="flex items-center gap-2 self-start">
-            <div class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300">
-              ${TagIcon(tagClass)}
-              <span>${this.tag}</span>
-            </div>
-
-            <button class="btn btn-circle btn-lg"
-                    @click="${this.copyTagToClipboard}">
-              ${FilledCopyIcon(iconClass)}
-            </button>
+        <!-- Tag + Copy -->
+        <div class="flex items-center gap-2 self-start pointer-events-none">
+          <div class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300 pointer-events-none">
+            ${TagIcon(tagClass)}
+            <span>${this.tag}</span>
           </div>
 
-          <button
-            class="btn btn-circle btn-lg"
-            @click="${this.scrollToTopSmooth}"
-          >
+          <button class="btn btn-circle btn-lg pointer-events-auto"
+                  @click="${this.copyTagToClipboard}">
+            ${FilledCopyIcon(iconClass)}
+          </button>
+        </div>
+          <button class="btn btn-circle btn-lg pointer-events-auto"
+            @click="${this.scrollToTopSmooth}">
             ${OutlineChevronUpIcon(iconClass)}
           </button>
         </div>
