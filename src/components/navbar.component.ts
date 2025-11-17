@@ -24,11 +24,6 @@ export class NavbarComponent extends LitElement {
     await this.authState.logout();
   }
 
-  private async copyTagToClipboard(e: Event) {
-    e.stopPropagation();
-    await navigator.clipboard.writeText(this.tag);
-  }
-
   private redirectToProfile() {
     Router.go('/profile');
   }
@@ -41,7 +36,9 @@ export class NavbarComponent extends LitElement {
     return html`
     <div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50 ${this.isNavbarVisible ? '' : 'hidden'}">
       <div class="flex-1">
-        <a @click="${this.redirectToHome}" class="btn btn-ghost text-xl text-primary">Movviator</a>
+        <a @click="${this.redirectToHome}"
+         class="btn text-xl text-primary bg-transparent border-none shadow-none hover:bg-transparent active:bg-transparent focus:bg-transparent no-animation"
+        >Movviator</a>
       </div>
         ${this.isAuthorized ? html`
         <div class="flex-none">
@@ -59,7 +56,6 @@ export class NavbarComponent extends LitElement {
                   Profile
                 </a>
               </li>
-              <li><a class="text-primary font-semibold" @click="${this.copyTagToClipboard}">Tag: ${this.tag}</a></li>
               <li><a class="text-primary font-semibold" @click="${this.logout}" >Logout</a></li>
             </ul>
           </div>

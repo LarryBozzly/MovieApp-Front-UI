@@ -62,3 +62,11 @@ export const NoImageIcon = (
     />
   </svg>
 `;
+
+export const TagIcon = (
+  className = 'w-6 h-6 text-primary'
+): TemplateResult => html`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="${className}">
+    <path d="M20.59 13.41 11 3.83A3 3 0 0 0 8.88 3H5a2 2 0 0 0-2 2v3.88A3 3 0 0 0 3.83 11l9.58 9.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83ZM7.5 8A1.5 1.5 0 1 1 9 6.5 1.5 1.5 0 0 1 7.5 8Z"/>
+  </svg>
+`;

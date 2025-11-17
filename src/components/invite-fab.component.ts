@@ -4,7 +4,8 @@ import { customElement, state } from 'lit/decorators.js';
 import {
   OutlinePaperPlaneIcon,
   FilledCopyIcon,
-  OutlineChevronUpIcon
+  OutlineChevronUpIcon,
+  TagIcon
 } from './icons/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '../store/app-store';
@@ -76,6 +77,7 @@ export class InviteFab extends LitElement {
 
   render() {
     const iconClass = 'size-5';
+    const tagClass = 'size-5 text-primary';
     return html`
       <div class="relative">
 
@@ -86,11 +88,18 @@ export class InviteFab extends LitElement {
             ${OutlinePaperPlaneIcon(iconClass)}
           </button>
 
-          <button class="btn btn-circle btn-lg"
-                  @click="${this.copyTagToClipboard}">
-            ${FilledCopyIcon(iconClass)}
-          </button>
+          <!-- Tag + Copy (horizontal) -->
+          <div class="flex items-center gap-2 self-start">
+            <div class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full">
+              ${TagIcon(tagClass)}
+              <span>${this.tag}</span>
+            </div>
 
+            <button class="btn btn-circle btn-lg"
+                    @click="${this.copyTagToClipboard}">
+              ${FilledCopyIcon(iconClass)}
+            </button>
+          </div>
 
           <button
             class="btn btn-circle btn-lg"
@@ -99,7 +108,6 @@ export class InviteFab extends LitElement {
             ${OutlineChevronUpIcon(iconClass)}
           </button>
         </div>
-
         <!-- FAB button -->
         <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.toggleFab}">
           <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
