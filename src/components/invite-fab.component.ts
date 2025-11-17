@@ -90,7 +90,7 @@ export class InviteFab extends LitElement {
 
           <!-- Tag + Copy (horizontal) -->
           <div class="flex items-center gap-2 self-start">
-            <div class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full">
+            <div class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300">
               ${TagIcon(tagClass)}
               <span>${this.tag}</span>
             </div>
