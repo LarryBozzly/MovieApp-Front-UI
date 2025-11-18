@@ -5,6 +5,7 @@ import { Router } from '@vaadin/router';
 import { authStore, selectIsAuthorized, selectTag, type AuthState } from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, selectisNavbarVisible, type AppState } from '../store/app-store';
+import '../components/logo-back.component';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {
@@ -28,17 +29,12 @@ export class NavbarComponent extends LitElement {
     Router.go('/profile');
   }
 
-  private redirectToHome() {
-    Router.go('/');
-  }
-
+  
   render() {
     return html`
     <div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50 ${this.isNavbarVisible ? '' : 'hidden'}">
       <div class="flex-1">
-        <a @click="${this.redirectToHome}"
-         class="btn text-xl text-primary bg-transparent border-none shadow-none hover:bg-transparent active:bg-transparent focus:bg-transparent no-animation"
-        >Movviator</a>
+        <logo-back-component></logo-back-component>
       </div>
         ${this.isAuthorized ? html`
         <div class="flex-none">
