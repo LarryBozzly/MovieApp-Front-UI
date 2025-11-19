@@ -44,7 +44,7 @@ export const MovieGenre = {
   Music: 10402,
   Mystery: 9648,
   Romance: 10749,
-  ScienceFiction: 878,
+  SciFi: 878,
   TVMovie: 10770,
   Thriller: 53,
   War: 10752,
