@@ -70,10 +70,10 @@ export class LoginPage extends LitElement {
             ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'} </button>
           </form>
           <div class="mt-4 text-sm text-center text-base-content/60">
-            Don’t have an account?
-            <a href="/signup" class="link link-primary font-medium hover:underline">
-              Sign up here
-            </a>
+            <a href="/forgot-password" class="link link-primary font-medium hover:underline">Forgot your password?</a>
+            <div class="mt-2">
+              Don’t have an account? <a href="/signup" class="link link-primary font-medium hover:underline">Sign up here</a>
+            </div>
           </div>
         </div>
       </div>
