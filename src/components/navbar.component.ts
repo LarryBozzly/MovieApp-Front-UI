@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, query } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, selectIsAuthorized, selectTag, type AuthState } from '../store/auth-store';
@@ -15,6 +15,7 @@ export class NavbarComponent extends LitElement {
   @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible }) readonly isNavbarVisible!: boolean;
 
+  @query('.dropdown-content') private dropdownContainer!: HTMLElement;
 
   static styles = css`
   ${tailwindStyles}
@@ -22,10 +23,13 @@ export class NavbarComponent extends LitElement {
 
   private async logout(e: Event) {
     e.stopPropagation();
+    this.dropdownContainer?.blur();
     await this.authState.logout();
   }
 
-  private redirectToProfile() {
+  private redirectToProfile(e: Event) {
+    e.stopPropagation();
+    this.dropdownContainer?.blur();
     Router.go('/profile');
   }
 
