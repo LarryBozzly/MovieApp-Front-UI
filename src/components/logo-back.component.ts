@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
 import { OutlineChevronLeftIcon } from '../components/icons/icons';
@@ -8,6 +8,7 @@ import { OutlineChevronLeftIcon } from '../components/icons/icons';
 export class LogoBackComponent extends LitElement {
   static styles = css`${tailwindStyles}`;
 
+  @property() isAuthorized!: boolean;
   @state() private path = window.location.pathname;
 
   connectedCallback() {

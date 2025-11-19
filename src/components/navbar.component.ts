@@ -33,12 +33,12 @@ export class NavbarComponent extends LitElement {
     Router.go('/profile');
   }
 
-  
+
   render() {
     return html`
     <div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50 ${this.isNavbarVisible ? '' : 'hidden'}">
       <div class="flex-1">
-        <logo-back-component></logo-back-component>
+        <logo-back-component .isAuthorized=${this.isAuthorized}></logo-back-component>
       </div>
         ${this.isAuthorized ? html`
         <div class="flex-none">
