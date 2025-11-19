@@ -34,24 +34,26 @@ export class LogoBackComponent extends LitElement {
     const isHome = this.path === '/';
 
     return html`
-      ${isHome
+    ${isHome
         ? html`
-            <a
-              @click="${this.goHome}"
-              class="btn text-xl text-primary bg-transparent border-none shadow-none hover:bg-transparent active:bg-transparent focus:bg-transparent no-animation"
-            >
-              Movviator
-            </a>
-          `
-        : html`
-            <button
-              @click="${this.goHome}"
-              class="btn btn-ghost btn-circle shadow-none border-none hover:bg-transparent active:bg-transparent"
-            >
-              ${OutlineChevronLeftIcon()}
-            </button>
-          `}
-    `;
+          <a
+            @click="${this.goHome}"
+            class="btn text-xl text-primary bg-transparent border-none shadow-none hover:bg-transparent active:bg-transparent focus:bg-transparent no-animation"
+          >
+            Movviator
+          </a>
+        `
+        : this.isAuthorized
+          ? html`
+          <button
+            @click="${this.goHome}"
+            class="btn btn-ghost btn-circle shadow-none border-none hover:bg-transparent active:bg-transparent"
+          >
+            ${OutlineChevronLeftIcon()}
+          </button>
+        `
+          : ''}
+  `;
   }
 }
 
