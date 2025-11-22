@@ -1,5 +1,5 @@
 import { createStore } from 'zustand/vanilla';
-import type { LoginRequest, LoginResponse, Movie, RegisterRequest, RegisterResponse, VerifyResponse } from '../models/models';
+import type { LoginRequest, LoginResponse, Movie, PasswordResetResponse, RegisterRequest, RegisterResponse, VerifyResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import { tryCatch } from '../utils/try-catch';
@@ -22,6 +22,9 @@ export interface AuthState {
     isLoading: boolean;
     isRegistered: boolean;
     isVerified: boolean;
+    isForgottenPasswordSent: boolean;
+    isVerifiedPasswordCodeSent: boolean;
+    isPasswordChanged: boolean;
     tag: string;
     isWSConnected: boolean;
     error: Error | null;
@@ -33,9 +36,15 @@ export interface AuthState {
     setTag: (tag: string) => void;
     setIsVerified: (isVerified: boolean) => void;
     setIsRegistered: (isRegistered: boolean) => void;
+    setIsForgottenPasswordSent: (isForgottenPasswordSent: boolean) => void;
+    setIsVerifiedPasswordCodeSent: (isVerifiedPasswordCodeSent: boolean) => void;
+    setIsPasswordChanged: (isPasswordChanged: boolean) => void;
     login: (loginData: LoginRequest) => Promise<void>;
     register: (loginData: RegisterRequest) => Promise<void>;
     verifyAccount: (token: string) => Promise<void>;
+    forgotPassword: (email: string) => Promise<void>;
+    verifyPasswordCode: (email: string, code: string) => Promise<void>;
+    passwordChange: (password: string) => Promise<void>;
     logout: () => Promise<void>;
     refresh: () => Promise<void>;
     sendInvitationRequest: (toTag: string) => Promise<void>;
@@ -50,6 +59,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     isLoading: false,
     isVerified: false,
     isRegistered: false,
+    isForgottenPasswordSent: false,
+    isVerifiedPasswordCodeSent: false,
+    isPasswordChanged: false,
     deps: undefined,
     tag: '',
     isWSConnected: false,
@@ -62,6 +74,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     setTag: (tag: string) => set({ tag }),
     setIsVerified: (isVerified: boolean) => set({ isVerified }),
     setIsRegistered: (isRegistered: boolean) => set({ isRegistered }),
+    setIsForgottenPasswordSent: (isForgottenPasswordSent: boolean) => set({ isForgottenPasswordSent }),
+    setIsVerifiedPasswordCodeSent: (isVerifiedPasswordCodeSent: boolean) => set({ isVerifiedPasswordCodeSent }),
+    setIsPasswordChanged: (isPasswordChanged: boolean) => set({ isPasswordChanged }),
     setAuthorization: (status: boolean) => set({ isAuthorized: status }),
     // effects
     login: createEffect(store, async (deps, store, loginData) => {
@@ -102,6 +117,46 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         setLoading(false);
         setError(error);
         setIsRegistered(!!data);
+    }),
+    forgotPassword: createEffect(store, async (deps, store, email) => {
+        const { httpService } = deps;
+        const { setLoading, setIsForgottenPasswordSent, setError } = store.getState();
+
+        setLoading(true);
+        const { data, error } = await tryCatch(
+            httpService.post<PasswordResetResponse>('/password/reset/request', { email })
+        );
+
+        setLoading(false);
+        setError(error);
+        setIsForgottenPasswordSent(!!data);
+    }),
+    verifyPasswordCode: createEffect(store, async (deps, store, email, code) => {
+        const { httpService } = deps;
+        const { setLoading, setIsVerifiedPasswordCodeSent, setError } = store.getState();
+
+        setLoading(true);
+        const { data, error } = await tryCatch(
+            httpService.post<PasswordResetResponse>('/password/reset/verify', { email, code })
+        );
+
+        setLoading(false);
+        setError(error);
+        setIsVerifiedPasswordCodeSent(!!data);
+    }),
+    passwordChange: createEffect(store, async (deps, store, password) => {
+        const { httpService } = deps;
+        const { setLoading, setIsPasswordChanged, setError } = store.getState();
+
+        setLoading(true);
+        const { data, error } = await tryCatch(
+            httpService.post<PasswordResetResponse>('/password/reset/confirm', { password })
+        );
+
+        setLoading(false);
+        setError(error);
+        setIsPasswordChanged(!!data);
+        if (!error) setTimeout(() => (Router.go('/')), 3000);
     }),
     verifyAccount: createEffect(store, async (deps, store, token) => {
         const { httpService } = deps;
@@ -219,6 +274,9 @@ export const selectIsAuthorized = (state: AuthState) => state.isAuthorized;
 export const selectIsLoading = (state: AuthState) => state.isLoading;
 export const selectIsVerified = (state: AuthState) => state.isVerified;
 export const selectIsRegistered = (state: AuthState) => state.isRegistered;
+export const selectIsForgottenPasswordSent = (state: AuthState) => state.isForgottenPasswordSent;
+export const selectIsVerifiedPasswordCodeSent = (state: AuthState) => state.isVerifiedPasswordCodeSent;
+export const selectisPasswordChanged = (state: AuthState) => state.isPasswordChanged;
 export const selectError = (state: AuthState) => state.error;
 export const selectTag = (state: AuthState) => state.tag;
 export const selectIsWSConnected = (state: AuthState) => state.isWSConnected;

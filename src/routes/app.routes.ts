@@ -6,6 +6,8 @@ import { publicGuard } from "../guards/public-guard";
 import "../pages/login.page";
 import "../pages/signup.page";
 import "../pages/verify.page";
+import "../pages/forgot-password.page";
+
 
 const children: Route[] = [...homeViews, ...profileViews];
 
@@ -28,6 +30,11 @@ export const routes: Route[] = [
   {
     path: "/verify",
     component: 'verify-page',
+    action: publicGuard,
+  },
+   {
+    path: "/forgot-password",
+    component: 'forgot-password-page',
     action: publicGuard,
   },
 ];

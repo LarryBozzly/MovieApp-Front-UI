@@ -89,9 +89,13 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface RegisterResponse extends LoginResponse {}
+export interface RegisterResponse extends LoginResponse { }
 
 export interface VerifyResponse {
+  message: string;
+}
+
+export interface PasswordResetResponse {
   message: string;
 }
 
