@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { FavoriteState, Movie } from '../models/models.ts';
 import { tailwindStyles } from '../utils/app.constants.ts';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions.ts';
-import { FilledHeartIcon, NoImageIcon, OutlineHeartIcon } from './icons/icons.ts';
+import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon } from './icons/icons.ts';
 import { appStore, selectFavoriteIds } from '../store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
@@ -36,7 +36,7 @@ export class MoviesListComponent extends LitElement {
     const favoriteListItem = this.favoritesIds[movie.id];
     if (favoriteListItem?.isLoading) return html`<span class="loading loading-spinner w-5 h-5 text-primary"></span>`;
     const isFavorited = Boolean(favoriteListItem?.isFavorite);
-    return isFavorited ? FilledHeartIcon() : OutlineHeartIcon();
+    return isFavorited ? FilledBookmarkIcon() : OutlineBookmarkIcon();
   }
 
   private disableContextMenu(e: Event) {
