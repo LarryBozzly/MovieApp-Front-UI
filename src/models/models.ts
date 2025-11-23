@@ -103,7 +103,7 @@ export interface CheckLoginResponse {
   message: string;
 }
 
-export interface FavoriteMoviesResponse {
+export interface WatchlistMoviesResponse {
   success: boolean;
   status_code: number;
   status_message: string;
@@ -111,18 +111,18 @@ export interface FavoriteMoviesResponse {
   errors?: string[];
 }
 
-export interface FavoriteMoviesIdsResponse {
+export interface WatchlistMoviesIdsResponse {
   mediaIds: number[];
 }
 
-export interface FavoriteState {
-  isFavorite: boolean;
+export interface WatchlistState {
+  isWatchlist: boolean;
   isLoading: boolean;
 }
 
 export const MovieCategory = {
   TRENDING: 'trending',
-  FAVORITES: 'favorites',
+  WATCHLIST: 'watchlist',
   TOP_RATED: 'top-rated'
 } as const;
 export type MovieCategory = typeof MovieCategory[keyof typeof MovieCategory];
@@ -130,7 +130,7 @@ export type MovieCategory = typeof MovieCategory[keyof typeof MovieCategory];
 export const MovieCategoryMap: Record<MovieCategory, string> = {
   [MovieCategory.TRENDING]: 'Trending',
   [MovieCategory.TOP_RATED]: 'Top Rated',
-  [MovieCategory.FAVORITES]: 'Favorites',
+  [MovieCategory.WATCHLIST]: 'Watchlist',
 };
 
 export const ERROR_NAMES = {
@@ -142,7 +142,7 @@ export type ErrorName = typeof ERROR_NAMES[keyof typeof ERROR_NAMES];
 export interface MovieListResponse {
   created_by?: string;
   description?: string;
-  favorite_count: number;
+  watchlist_count: number;
   id: number;
   iso_639_1: string;
   item_count: number;

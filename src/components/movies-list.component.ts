@@ -1,15 +1,15 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { FavoriteState, Movie } from '../models/models.ts';
+import type { WatchlistState, Movie } from '../models/models.ts';
 import { tailwindStyles } from '../utils/app.constants.ts';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions.ts';
 import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon } from './icons/icons.ts';
-import { appStore, selectFavoriteIds } from '../store/app-store.ts';
+import { appStore, selectWatchlistIds } from '../store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
 @customElement('movies-list-component')
 export class MoviesListComponent extends LitElement {
-  @watchWithSelector({ store: appStore, selector: selectFavoriteIds }) readonly favoritesIds!: Record<number, FavoriteState>
+  @watchWithSelector({ store: appStore, selector: selectWatchlistIds }) readonly watchlistIds!: Record<number, WatchlistState>
   static styles = css`
     ${tailwindStyles}
   `;
@@ -26,17 +26,17 @@ export class MoviesListComponent extends LitElement {
     event.preventDefault();
     event.stopPropagation();
 
-    const { addToFavorites, removeFromFavorites } = appStore.getState();
-    const isFavorited = Boolean(this.favoritesIds[movie.id]?.isFavorite);
+    const { addToWatchlist, removeFromWatchlist } = appStore.getState();
+    const isWatchlisted = Boolean(this.watchlistIds[movie.id]?.isWatchlist);
 
-    await (isFavorited ? removeFromFavorites(movie) : addToFavorites(movie));
+    await (isWatchlisted ? removeFromWatchlist(movie) : addToWatchlist(movie));
   }
 
-  private renderHeartIcon(movie: Movie) {
-    const favoriteListItem = this.favoritesIds[movie.id];
-    if (favoriteListItem?.isLoading) return html`<span class="loading loading-spinner w-5 h-5 text-primary"></span>`;
-    const isFavorited = Boolean(favoriteListItem?.isFavorite);
-    return isFavorited ? FilledBookmarkIcon() : OutlineBookmarkIcon();
+  private renderWatchlistIcon(movie: Movie) {
+    const watchlistItem = this.watchlistIds[movie.id];
+    if (watchlistItem?.isLoading) return html`<span class="loading loading-spinner w-5 h-5 text-primary"></span>`;
+    const isWatchlisted = Boolean(watchlistItem?.isWatchlist);
+    return isWatchlisted ? FilledBookmarkIcon() : OutlineBookmarkIcon();
   }
 
   private disableContextMenu(e: Event) {
@@ -106,10 +106,10 @@ export class MoviesListComponent extends LitElement {
               <button
                 @click=${(event: Event) => this.handleHeartClick(event, movie)}
                 class="ml-auto focus:outline-none"
-                title="Toggle Favorite"
-                ?disabled=${this.favoritesIds[movie.id]?.isLoading}
+                title="Toggle watchlist"
+                ?disabled=${this.watchlistIds[movie.id]?.isLoading}
               >
-                ${this.renderHeartIcon(movie)}
+                ${this.renderWatchlistIcon(movie)}
               </button>
               </div>
             </div>

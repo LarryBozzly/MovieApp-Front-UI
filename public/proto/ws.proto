@@ -79,7 +79,7 @@ message MovieMatch {
   Movie movie = 1;
 }
 
-message FavoriteMoviesUpdate {
+message WatchlistMoviesUpdate {
   repeated uint32 mediaIds = 1;
 }
 
@@ -107,6 +107,6 @@ message ServerMessage {
     MovieSelection movieSelection = 4;
     NoMovieSelected noMovieSelected = 5;
     MovieMatch movieMatch = 6;
-    FavoriteMoviesUpdate favoriteMoviesUpdate = 7;
+    WatchlistMoviesUpdate watchlistMoviesUpdate = 7;
   }
 }

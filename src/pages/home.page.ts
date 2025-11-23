@@ -92,8 +92,8 @@ export class HomePage extends LitElement {
       await this.appState.fetchTrendingMovies(nextPage);
     } else if (this.selectedCategory === MovieCategory.TOP_RATED) {
       await this.appState.fetchTopRatedMovies(nextPage);
-    } else if (this.selectedCategory === MovieCategory.FAVORITES) {
-      await this.appState.fetchFavoriteMovies(nextPage);
+    } else if (this.selectedCategory === MovieCategory.WATCHLIST) {
+      await this.appState.fetchWatchlistMovies(nextPage);
     } else {
       await this.appState.fetchFindMovie(nextPage, this.query);
     }

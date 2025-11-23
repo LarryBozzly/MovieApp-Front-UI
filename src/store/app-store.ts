@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
-import { ERROR_NAMES, MovieCategory, type FavoriteMoviesResponse, type FavoriteState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
+import { ERROR_NAMES, MovieCategory, type WatchlistMoviesResponse, type WatchlistState, type Movie, type MovieListResponse, type MoviesResponse } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -27,7 +27,7 @@ export interface AppState {
     page: number;
     maxPage: number;
     movies: Movie[];
-    favoritesIds: Record<number, FavoriteState>;
+    watchlistIds: Record<number, WatchlistState>;
     query: string;
     isLoading: boolean;
     storeInit: (deps: Required<AppState>['deps']) => void;
@@ -41,15 +41,15 @@ export interface AppState {
     setMovies: (movies: Movie[]) => void;
     clearMovies: () => void;
     triggerAbort: () => Promise<void>
-    setFavoritesIds: (ids: Record<number, FavoriteState>) => void;
+    setWatchlistIds: (ids: Record<number, WatchlistState>) => void;
     onInit: () => Promise<void>;
     fetchTrendingMovies: (page: number) => Promise<void>;
     fetchTopRatedMovies: (page: number) => Promise<void>;
-    fetchFavoriteMovies: (page: number) => Promise<void>;
+    fetchWatchlistMovies: (page: number) => Promise<void>;
     fetchFindMovie: (page: number, query: string) => Promise<void>;
     fetchCategoryMovies: (category: MovieCategory | undefined, page: number, query?: string) => Promise<void>;
-    addToFavorites: (movie: Movie) => Promise<void>;
-    removeFromFavorites: (movie: Movie) => Promise<void>;
+    addToWatchlist: (movie: Movie) => Promise<void>;
+    removeFromWatchlist: (movie: Movie) => Promise<void>;
     openSendInvitationModal: () => Promise<void>;
     openReceivedInvitationModal: (fromTag: string) => Promise<void>;
     openStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
@@ -62,7 +62,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     page: 1,
     maxPage: 1,
     movies: [],
-    favoritesIds: {},
+    watchlistIds: {},
     query: '',
     isLoading: false,
     deps: undefined,
@@ -81,9 +81,9 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setCategory: (category: MovieCategory | undefined) => set((state) => ({ ...state, category })),
     setMovies: (movies: Movie[]) => set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
     clearMovies: () => set({ movies: [] }),
-    setFavoritesIds: (ids: Record<number, FavoriteState>) => set((state) => ({
-        favoritesIds: {
-            ...state.favoritesIds,
+    setWatchlistIds: (ids: Record<number, WatchlistState>) => set((state) => ({
+        watchlistIds: {
+            ...state.watchlistIds,
             ...ids,
         },
     })),
@@ -98,7 +98,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         set({ globalAbortController: new AbortController() });
     }),
     fetchCategoryMovies: createEffect(store, async (_deps, store, category: MovieCategory | undefined, page: number, query?: string) => {
-        const { fetchTopRatedMovies, fetchTrendingMovies, fetchFavoriteMovies, fetchFindMovie, setQuery, setCategory, clearMovies, triggerAbort } = store.getState();
+        const { fetchTopRatedMovies, fetchTrendingMovies, fetchWatchlistMovies, fetchFindMovie, setQuery, setCategory, clearMovies, triggerAbort } = store.getState();
         triggerAbort();
         setCategory(category);
         clearMovies();
@@ -107,8 +107,8 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
             await fetchTrendingMovies(page);
         } else if (category === MovieCategory.TOP_RATED) {
             await fetchTopRatedMovies(page);
-        } else if (category === MovieCategory.FAVORITES) {
-            await fetchFavoriteMovies(page);
+        } else if (category === MovieCategory.WATCHLIST) {
+            await fetchWatchlistMovies(page);
         } else {
             await fetchFindMovie(page, query ?? '');
         }
@@ -168,7 +168,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         const movies = data?.results ?? [];
         setMovies(movies);
     }),
-    fetchFavoriteMovies: createEffect(store, async (deps, store, page: number) => {
+    fetchWatchlistMovies: createEffect(store, async (deps, store, page: number) => {
         const { httpService } = deps;
         const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
         setPage(page);
@@ -177,7 +177,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         const params = { language: 'en-US', page };
 
         const { data, error } = await tryCatch(
-            httpService.get<MovieListResponse>('/movie/favorites', params, { signal: globalAbortController.signal })
+            httpService.get<MovieListResponse>('/movie/watchlist', params, { signal: globalAbortController.signal })
         );
 
         if (error?.name === ERROR_NAMES.ABORT) return;
@@ -187,48 +187,48 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         const movies = data?.items ?? [];
         setMovies(movies);
     }),
-    addToFavorites: createEffect(store, async (deps, store, movie: Movie) => {
+    addToWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
         const { httpService } = deps;
-        const { setLoading, setFavoritesIds } = store.getState();
+        const { setLoading, setWatchlistIds } = store.getState();
 
-        const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
-        const prev = currentFavorites[movie.id];
+        const currentWatchlist = { ...selectWatchlistIds(store.getState()) }; // clone
+        const prev = currentWatchlist[movie.id];
 
         setLoading(true);
-        setFavoritesIds({
-            [movie.id]: { isFavorite: prev?.isFavorite ?? false, isLoading: true },
+        setWatchlistIds({
+            [movie.id]: { isWatchlist: prev?.isWatchlist ?? false, isLoading: true },
         });
 
         const { data } = await tryCatch(
-            httpService.post<FavoriteMoviesResponse>('/movie/favorites', { ...movie })
+            httpService.post<WatchlistMoviesResponse>('/movie/watchlist', { ...movie })
         );
 
         setLoading(false);
-        setFavoritesIds({
-            [movie.id]: { isFavorite: data?.success ?? false, isLoading: false },
+        setWatchlistIds({
+            [movie.id]: { isWatchlist: data?.success ?? false, isLoading: false },
         });
 
     }),
-    removeFromFavorites: createEffect(store, async (deps, store, movie: Movie) => {
+    removeFromWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
         const { httpService } = deps;
-        const { setLoading, setFavoritesIds } = store.getState();
+        const { setLoading, setWatchlistIds } = store.getState();
 
-        const currentFavorites = { ...selectFavoriteIds(store.getState()) }; // clone
-        const prev = currentFavorites[movie.id];
+        const currentWatchlist = { ...selectWatchlistIds(store.getState()) }; // clone
+        const prev = currentWatchlist[movie.id];
 
         setLoading(true);
-        setFavoritesIds({
-            [movie.id]: { isFavorite: prev?.isFavorite ?? true, isLoading: true },
+        setWatchlistIds({
+            [movie.id]: { isWatchlist: prev?.isWatchlist ?? true, isLoading: true },
         });
 
 
         const { data } = await tryCatch(
-            httpService.delete<FavoriteMoviesResponse>(`/movie/favorites/${movie.id}`)
+            httpService.delete<WatchlistMoviesResponse>(`/movie/watchlist/${movie.id}`)
         );
 
         setLoading(false);
-        setFavoritesIds({
-            [movie.id]: { isFavorite: data?.success ? false : true, isLoading: false },
+        setWatchlistIds({
+            [movie.id]: { isWatchlist: data?.success ? false : true, isLoading: false },
         });
     }),
     openSendInvitationModal: createEffect(store, async (deps, _store) => {
@@ -278,7 +278,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 export const selectIsOnInitLoaded = (state: AppState) => state.onInitLoaded;
 export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectMovies = (state: AppState) => state.movies;
-export const selectFavoriteIds = (state: AppState) => state.favoritesIds;
+export const selectWatchlistIds = (state: AppState) => state.watchlistIds;
 export const selectPage = (state: AppState) => state.page;
 export const selectQuery = (state: AppState) => state.query;
 export const selectMaxPage = (state: AppState) => state.maxPage;
