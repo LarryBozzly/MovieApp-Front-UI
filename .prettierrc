@@ -1,5 +1,4 @@
 {
-  "plugins": ["prettier-plugin-html-template-literals"],
   "singleQuote": true,
   "trailingComma": "es5",
   "printWidth": 100,
