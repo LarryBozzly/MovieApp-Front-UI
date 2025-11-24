@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --mode development",
     "build": "tsc && vite build --mode production",
-    "preview": "vite preview --mode production"
+    "preview": "vite preview --mode production",
+    "lint": "prettier --write \"src/**/*.{ts,js}\""
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
@@ -22,6 +23,8 @@
   "devDependencies": {
     "@types/hammerjs": "^2.0.46",
     "bonjour": "^3.5.0",
+    "prettier": "^1.19.1",
+    "prettier-plugin-html-template-literals": "^1.0.5",
     "qrcode-terminal": "^0.12.0",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",
