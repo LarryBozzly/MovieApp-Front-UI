@@ -22,10 +22,7 @@ export class MovieMatchResultModal extends LitElement {
       <div
         class="max-height-modal p-6 space-y-4 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
-        <h2
-          id="match-title"
-          class="text-3xl font-extrabold text-center text-primary flex-shrink-0"
-        >
+        <h2 id="match-title" class="text-3xl font-extrabold text-center text-primary flex-shrink-0">
           It's a Match!
         </h2>
 
@@ -44,11 +41,15 @@ export class MovieMatchResultModal extends LitElement {
           </h3>
 
           <div class="flex gap-2 mt-1 overflow-x-auto whitespace-nowrap flex-shrink-0">
-            ${this.movie.genre_ids.map((id) => html`
-              <span class="badge badge-outline text-xs border-base-content/40 text-base-content/80">
-                ${MovieGenreMap.get(id)}
-              </span>
-            `)}
+            ${this.movie.genre_ids.map(
+              (id) => html`
+                <span
+                  class="badge badge-outline text-xs border-base-content/40 text-base-content/80"
+                >
+                  ${MovieGenreMap.get(id)}
+                </span>
+              `
+            )}
           </div>
 
           <p class="mt-2 flex-1 overflow-y-auto pr-1 text-base-content/80">

@@ -10,7 +10,7 @@ import {
   selectMovies,
   selectPage,
   selectQuery,
-  type AppState
+  type AppState,
 } from '../store/app-store';
 
 import '../components/movies-list.component';
@@ -28,9 +28,12 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectPage }) readonly page!: number;
   @watchWithSelector({ store: appStore, selector: selectQuery }) readonly query!: string;
   @watchWithSelector({ store: appStore, selector: selectMaxPage }) readonly maxPage!: number;
-  @watchWithSelector({ store: appStore, selector: selectedCategory }) readonly selectedCategory!: MovieCategory;
-  @watchWithSelector({ store: appStore, selector: selectIsOnInitLoaded }) readonly selectIsOnInitLoaded!: boolean;
-  @watchWithSelector({ store: appStore, selector: selectisNavbarVisible }) readonly isNavbarVisible!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectedCategory })
+  readonly selectedCategory!: MovieCategory;
+  @watchWithSelector({ store: appStore, selector: selectIsOnInitLoaded })
+  readonly selectIsOnInitLoaded!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectisNavbarVisible })
+  readonly isNavbarVisible!: boolean;
 
   static styles = css`
     ${tailwindStyles}
@@ -56,7 +59,6 @@ export class HomePage extends LitElement {
   @query('#sentinel') private sentinel!: HTMLElement;
   @query('main') private mainContent!: HTMLElement;
   @query('movies-list-component') private moviesListComponent!: HTMLElement;
-
 
   async firstUpdated() {
     if (!this.movies.length) {
@@ -170,19 +172,21 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <main>
-        <div class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}">
+        <div
+          class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}"
+        >
           <categories-component
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
             .selectedCategory=${this.selectedCategory}
             @onCategoryChanged=${this.onCategoryChanged}
-            @onSearchInput=${this.onSearchInput}>
-          </categories-component>
+            @onSearchInput=${this.onSearchInput}
+          ></categories-component>
         </div>
         <movies-list-component
-           class="block pt-[116px] sm:pt-[72px]"
+          class="block pt-[116px] sm:pt-[72px]"
           .isLoading=${this.isLoading}
-          .movies=${this.movies}>
-        </movies-list-component>
+          .movies=${this.movies}
+        ></movies-list-component>
 
         <div id="sentinel"></div>
       </main>

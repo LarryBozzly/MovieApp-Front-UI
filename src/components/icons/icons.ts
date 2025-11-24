@@ -1,9 +1,7 @@
 import { html } from 'lit';
 import type { TemplateResult } from 'lit';
 
-export const FilledBookmarkIcon = (
-  className = 'w-6 h-6 text-primary'
-): TemplateResult => html`
+export const FilledBookmarkIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -48,27 +46,50 @@ export const OutlinePaperPlaneIcon = (className = 'w-6 h-6 text-primary'): Templ
 `;
 
 export const FilledCopyIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
-  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="${className}">
-    <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2Zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6Z"/>
-    <path fill-rule="evenodd" d="M2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2Z"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    viewBox="0 0 16 16"
+    class="${className}"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2Zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6Z"
+    />
+    <path
+      fill-rule="evenodd"
+      d="M2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2Z"
+    />
   </svg>
 `;
 
 export const OutlineChevronUpIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
-  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="${className}">
-    <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    viewBox="0 0 16 16"
+    class="${className}"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+    />
   </svg>
 `;
 
 export const OutlineChevronLeftIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="${className}">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    class="${className}"
+  >
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
   </svg>
 `;
 
-export const NoImageIcon = (
-  className = 'w-6 h-6 text-primary'
-): TemplateResult => html`
+export const NoImageIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 32 32"
@@ -86,10 +107,15 @@ export const NoImageIcon = (
   </svg>
 `;
 
-export const TagIcon = (
-  className = 'w-6 h-6 text-primary'
-): TemplateResult => html`
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="${className}">
-    <path d="M20.59 13.41 11 3.83A3 3 0 0 0 8.88 3H5a2 2 0 0 0-2 2v3.88A3 3 0 0 0 3.83 11l9.58 9.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83ZM7.5 8A1.5 1.5 0 1 1 9 6.5 1.5 1.5 0 0 1 7.5 8Z"/>
+export const TagIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    class="${className}"
+  >
+    <path
+      d="M20.59 13.41 11 3.83A3 3 0 0 0 8.88 3H5a2 2 0 0 0-2 2v3.88A3 3 0 0 0 3.83 11l9.58 9.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83ZM7.5 8A1.5 1.5 0 1 1 9 6.5 1.5 1.5 0 0 1 7.5 8Z"
+    />
   </svg>
 `;

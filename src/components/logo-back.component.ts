@@ -9,7 +9,9 @@ import { authGuard } from '../guards/auth-guard';
 
 @customElement('logo-back-component')
 export class LogoBackComponent extends LitElement {
-  static styles = css`${tailwindStyles}`;
+  static styles = css`
+    ${tailwindStyles}
+  `;
 
   @property() isAuthorized!: boolean;
   @state() private path = window.location.pathname;
@@ -36,7 +38,7 @@ export class LogoBackComponent extends LitElement {
   get publicPages() {
     const pages: string[] = [];
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       if (route.action === publicGuard) {
         if (route.path) pages.push(route.path);
       }
@@ -48,11 +50,11 @@ export class LogoBackComponent extends LitElement {
   get privatePages() {
     const pages: string[] = [];
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       if (route.action === authGuard) {
         if (route.path) pages.push(route.path);
         if (Array.isArray(route.children)) {
-          route.children.forEach(child => {
+          route.children.forEach((child) => {
             if (child.path) pages.push(child.path);
           });
         }
@@ -65,19 +67,13 @@ export class LogoBackComponent extends LitElement {
   render() {
     const isHome = this.path === '/';
 
-    const isPublicPage = this.publicPages.some(p =>
-      p && this.path.startsWith(p)
-    );
+    const isPublicPage = this.publicPages.some((p) => p && this.path.startsWith(p));
 
-    const isPrivatePage = this.privatePages.some(p =>
-      p && this.path.startsWith(p)
-    );
+    const isPrivatePage = this.privatePages.some((p) => p && this.path.startsWith(p));
 
-    const showLogo =
-      isPublicPage || (isHome && this.isAuthorized);
+    const showLogo = isPublicPage || (isHome && this.isAuthorized);
 
-    const showBackButton =
-      this.isAuthorized && isPrivatePage && !isHome;
+    const showBackButton = this.isAuthorized && isPrivatePage && !isHome;
 
     return html`
       ${showLogo
@@ -92,13 +88,13 @@ export class LogoBackComponent extends LitElement {
           `
         : showBackButton
           ? html`
-            <button
-              @click="${this.goHome}"
-              class="btn btn-ghost btn-circle shadow-none border-none hover:bg-transparent active:bg-transparent"
-            >
-              ${OutlineChevronLeftIcon()}
-            </button>
-          `
+              <button
+                @click="${this.goHome}"
+                class="btn btn-ghost btn-circle shadow-none border-none hover:bg-transparent active:bg-transparent"
+              >
+                ${OutlineChevronLeftIcon()}
+              </button>
+            `
           : ''}
     `;
   }

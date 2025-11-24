@@ -6,22 +6,20 @@ import '../components/search.component';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {
-
   static styles = css`
     ${tailwindStyles}
     /* Hide scrollbar but keep scroll functionality */
     .scrollbar-hide::-webkit-scrollbar {
-      display: none; 
+      display: none;
     }
     .scrollbar-hide {
       -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */ 
+      scrollbar-width: none; /* Firefox */
     }
   `;
 
   @property() selectedCategory!: MovieCategory;
   @property() selectIsOnInitLoaded!: boolean;
-
 
   private readonly categoriesMap: Record<MovieCategory, string> = MovieCategoryMap;
 
@@ -40,27 +38,26 @@ export class CategoriesComponent extends LitElement {
   render() {
     if (!this.selectIsOnInitLoaded) return html``;
     return html`
-    <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-
-      <div class="flex overflow-x-auto gap-2 sm:gap-4 scrollbar-hide order-2 sm:order-1">
-        ${Object.entries(this.categoriesMap).map(
-      ([category, label]) => html`
-            <button
-              class="flex-shrink-0 btn btn-sm rounded-md
+      <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex overflow-x-auto gap-2 sm:gap-4 scrollbar-hide order-2 sm:order-1">
+          ${Object.entries(this.categoriesMap).map(
+            ([category, label]) => html`
+              <button
+                class="flex-shrink-0 btn btn-sm rounded-md
                 ${this.selectedCategory === category ? 'btn-primary' : 'btn-neutral-content'}"
-              @click=${() => this.handleCategoryClick(category as MovieCategory)}
-            >
-              ${label}
-            </button>
-          `
-    )}
-      </div>
+                @click=${() => this.handleCategoryClick(category as MovieCategory)}
+              >
+                ${label}
+              </button>
+            `
+          )}
+        </div>
 
-      <div class="w-full sm:w-80 order-1 sm:order-2">
-        <search-component></search-component>
+        <div class="w-full sm:w-80 order-1 sm:order-2">
+          <search-component></search-component>
+        </div>
       </div>
-  </div>
-  `;
+    `;
   }
 }
 

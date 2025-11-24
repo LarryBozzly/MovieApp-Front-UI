@@ -5,7 +5,7 @@ import {
   OutlinePaperPlaneIcon,
   FilledCopyIcon,
   OutlineChevronUpIcon,
-  TagIcon
+  TagIcon,
 } from './icons/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '../store/app-store';
@@ -80,35 +80,53 @@ export class InviteFab extends LitElement {
     const tagClass = 'size-5 text-primary';
     return html`
       <div class="relative">
-
         <!-- FAB menu -->
-        <div class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen ? 'flex' : 'hidden'} pointer-events-none">
-        <button class="btn btn-circle btn-lg pointer-events-auto"
-                @click="${this.sendInvitationRequest}">
-          ${OutlinePaperPlaneIcon(iconClass)}
-        </button>
-
-        <!-- Tag + Copy -->
-        <div class="flex items-center gap-2 self-start pointer-events-none">
-          <div class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300 pointer-events-none">
-            ${TagIcon(tagClass)}
-            <span>${this.tag}</span>
-          </div>
-
-          <button class="btn btn-circle btn-lg pointer-events-auto"
-                  @click="${this.copyTagToClipboard}">
-            ${FilledCopyIcon(iconClass)}
+        <div
+          class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen
+            ? 'flex'
+            : 'hidden'} pointer-events-none"
+        >
+          <button
+            class="btn btn-circle btn-lg pointer-events-auto"
+            @click="${this.sendInvitationRequest}"
+          >
+            ${OutlinePaperPlaneIcon(iconClass)}
           </button>
-        </div>
-          <button class="btn btn-circle btn-lg pointer-events-auto"
-            @click="${this.scrollToTopSmooth}">
+
+          <!-- Tag + Copy -->
+          <div class="flex items-center gap-2 self-start pointer-events-none">
+            <div
+              class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300 pointer-events-none"
+            >
+              ${TagIcon(tagClass)}
+              <span>${this.tag}</span>
+            </div>
+
+            <button
+              class="btn btn-circle btn-lg pointer-events-auto"
+              @click="${this.copyTagToClipboard}"
+            >
+              ${FilledCopyIcon(iconClass)}
+            </button>
+          </div>
+          <button
+            class="btn btn-circle btn-lg pointer-events-auto"
+            @click="${this.scrollToTopSmooth}"
+          >
             ${OutlineChevronUpIcon(iconClass)}
           </button>
         </div>
         <!-- FAB button -->
         <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.toggleFab}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="${iconClass}" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="${iconClass}"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"
+            />
           </svg>
         </button>
       </div>

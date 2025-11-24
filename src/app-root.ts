@@ -1,24 +1,23 @@
-import { LitElement, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { router } from "./routes";
-import "./components/navbar.component";
-import { tailwindStyles } from "./utils/app.constants";
-import { env } from "./config";
-import { appStore } from "./store/app-store";
-import HttpService from "./services/http.service";
-import AuthService from "./services/auth.service";
-import { authStore } from "./store/auth-store";
-import WebSocketService from "./services/websocket.service";
-import ModalService from "./services/modal.service";
-import DeviceInfoService from "./services/device-info.service";
-import ConnectivityService from "./services/connectivity.service";
-import "./components/loading-overlay.component";
+import { LitElement, css, html } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { router } from './routes';
+import './components/navbar.component';
+import { tailwindStyles } from './utils/app.constants';
+import { env } from './config';
+import { appStore } from './store/app-store';
+import HttpService from './services/http.service';
+import AuthService from './services/auth.service';
+import { authStore } from './store/auth-store';
+import WebSocketService from './services/websocket.service';
+import ModalService from './services/modal.service';
+import DeviceInfoService from './services/device-info.service';
+import ConnectivityService from './services/connectivity.service';
+import './components/loading-overlay.component';
 
-@customElement("app-root")
+@customElement('app-root')
 export class AppRoot extends LitElement {
   static styles = css`
-    ${tailwindStyles}
-    :host {
+    ${tailwindStyles} :host {
       width: 100%;
       display: block;
       height: var(--app-height);
@@ -34,8 +33,8 @@ export class AppRoot extends LitElement {
   };
 
   private initRouter() {
-    const outlet = document.createElement("div");
-    outlet.id = "outlet";
+    const outlet = document.createElement('div');
+    outlet.id = 'outlet';
     this.shadowRoot!.appendChild(outlet);
     router.setOutlet(outlet);
   }
@@ -61,7 +60,7 @@ export class AppRoot extends LitElement {
 
   firstUpdated() {
     this.setAppDimensions();
-    window.addEventListener("resize", this.setAppDimensions);
+    window.addEventListener('resize', this.setAppDimensions);
     this.initRouter();
     this.initAuthStore();
     this.initAppStore();
@@ -71,7 +70,7 @@ export class AppRoot extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener("resize", this.setAppDimensions);
+    window.removeEventListener('resize', this.setAppDimensions);
   }
 
   render() {
@@ -84,6 +83,6 @@ export class AppRoot extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "app-root": AppRoot;
+    'app-root': AppRoot;
   }
 }

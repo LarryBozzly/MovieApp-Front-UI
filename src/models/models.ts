@@ -50,24 +50,23 @@ export const MovieGenre = {
   War: 10752,
   Western: 37,
 } as const;
-export type MovieGenre = typeof MovieGenre[keyof typeof MovieGenre];
+export type MovieGenre = (typeof MovieGenre)[keyof typeof MovieGenre];
 export const MovieGenreMap: Map<number, string> = new Map(
   Object.entries(MovieGenre).map(([key, value]) => [value, key])
 );
-
 
 export const WebSocketStatus = {
   CONNECTING: 'connecting',
   CONNECTED: 'connected',
   DISCONNECTED: 'disconnected',
 } as const;
-export type WebSocketStatus = typeof WebSocketStatus[keyof typeof WebSocketStatus];
+export type WebSocketStatus = (typeof WebSocketStatus)[keyof typeof WebSocketStatus];
 
 export const MovieMatchDirection = {
   Like: 'like',
   Dislike: 'dislike',
 } as const;
-export type MovieMatchDirection = typeof MovieMatchDirection[keyof typeof MovieMatchDirection];
+export type MovieMatchDirection = (typeof MovieMatchDirection)[keyof typeof MovieMatchDirection];
 
 // app
 export interface LoginRequest {
@@ -89,7 +88,7 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface RegisterResponse extends LoginResponse { }
+export interface RegisterResponse extends LoginResponse {}
 
 export interface VerifyResponse {
   message: string;
@@ -123,9 +122,9 @@ export interface WatchlistState {
 export const MovieCategory = {
   TRENDING: 'trending',
   WATCHLIST: 'watchlist',
-  TOP_RATED: 'top-rated'
+  TOP_RATED: 'top-rated',
 } as const;
-export type MovieCategory = typeof MovieCategory[keyof typeof MovieCategory];
+export type MovieCategory = (typeof MovieCategory)[keyof typeof MovieCategory];
 
 export const MovieCategoryMap: Record<MovieCategory, string> = {
   [MovieCategory.TRENDING]: 'Trending',
@@ -137,7 +136,7 @@ export const ERROR_NAMES = {
   ABORT: 'AbortError' as const,
   TIMEOUT: 'TimeoutError' as const,
 };
-export type ErrorName = typeof ERROR_NAMES[keyof typeof ERROR_NAMES];
+export type ErrorName = (typeof ERROR_NAMES)[keyof typeof ERROR_NAMES];
 
 export interface MovieListResponse {
   created_by?: string;

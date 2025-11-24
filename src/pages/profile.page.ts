@@ -15,9 +15,7 @@ interface MockProfile {
 @customElement('profile-page')
 export class ProfilePage extends LitElement {
   static styles = css`
-    ${tailwindStyles}
-
-    :host {
+    ${tailwindStyles} :host {
       display: block;
       height: 100dvh;
       position: relative;
@@ -81,7 +79,7 @@ export class ProfilePage extends LitElement {
                 <p class="text-sm text-base-content/50 mb-1">Favorite Genres</p>
                 <div class="flex flex-wrap gap-2">
                   ${this.mockProfile.favoriteGenres.map(
-                    genre => html`<span class="badge badge-outline">${genre}</span>`
+                    (genre) => html` <span class="badge badge-outline">${genre}</span> `
                   )}
                 </div>
               </div>
@@ -92,12 +90,14 @@ export class ProfilePage extends LitElement {
           <section class="mt-8">
             <h2 class="text-xl font-bold text-base-content mb-4">Recent Activity</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              ${[1, 2, 3, 4, 5, 6].map(i => html`
-                <div class="card bg-base-100 shadow-md rounded-lg p-4">
-                  <h3 class="font-semibold text-base-content mb-1">Movie ${i}</h3>
-                  <p class="text-sm text-base-content/60">Watched on: 2023-0${i}-1${i}</p>
-                </div>
-              `)}
+              ${[1, 2, 3, 4, 5, 6].map(
+                (i) => html`
+                  <div class="card bg-base-100 shadow-md rounded-lg p-4">
+                    <h3 class="font-semibold text-base-content mb-1">Movie ${i}</h3>
+                    <p class="text-sm text-base-content/60">Watched on: 2023-0${i}-1${i}</p>
+                  </div>
+                `
+              )}
             </div>
           </section>
         </main>

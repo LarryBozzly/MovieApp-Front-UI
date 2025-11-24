@@ -58,17 +58,14 @@ export class MoviePreviewModal extends LitElement {
             <genre-badges .genreIds=${this.movie.genre_ids} .limit=${10}></genre-badges>
           </div>
 
-          <div class="overflow-y-auto rounded-lg border border-base-300 bg-base-200/60 p-2 flex-1 text-sm text-base-content/70">
+          <div
+            class="overflow-y-auto rounded-lg border border-base-300 bg-base-200/60 p-2 flex-1 text-sm text-base-content/70"
+          >
             ${this.movie.overview || 'No description available.'}
           </div>
         </div>
 
-        <button
-          @click=${this.onClose}
-          class="btn btn-primary w-full flex-shrink-0"
-        >
-          Close
-        </button>
+        <button @click=${this.onClose} class="btn btn-primary w-full flex-shrink-0">Close</button>
       </div>
     `;
   }

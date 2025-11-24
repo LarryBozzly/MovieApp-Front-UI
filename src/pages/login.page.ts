@@ -36,12 +36,12 @@ export class LoginPage extends LitElement {
           <h2 class="text-2xl font-bold mb-4">Sign In</h2>
 
           ${this.error
-        ? html`
+            ? html`
                 <div class="alert alert-error text-sm mb-3">
                   <span>${this.error.message}</span>
                 </div>
               `
-        : null}
+            : null}
 
           <form @submit=${this.handleSubmit} class="flex flex-col gap-4">
             <input
@@ -62,17 +62,19 @@ export class LoginPage extends LitElement {
               autocomplete="current-password"
               class="input input-bordered w-full bg-base-200"
             />
-            <button
-              ?disabled=${this.isLoading}
-              type="submit"
-              class="btn btn-primary w-full"
-            >
-            ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Login'} </button>
+            <button ?disabled=${this.isLoading} type="submit" class="btn btn-primary w-full">
+              ${this.isLoading ? html` <span class="loading loading-dots"></span> ` : 'Login'}
+            </button>
           </form>
           <div class="mt-4 text-sm text-center text-base-content/60">
-            <a href="/forgot-password" class="link link-primary font-medium hover:underline">Forgot your password?</a>
+            <a href="/forgot-password" class="link link-primary font-medium hover:underline">
+              Forgot your password?
+            </a>
             <div class="mt-2">
-              Don’t have an account? <a href="/signup" class="link link-primary font-medium hover:underline">Sign up here</a>
+              Don’t have an account?
+              <a href="/signup" class="link link-primary font-medium hover:underline">
+                Sign up here
+              </a>
             </div>
           </div>
         </div>

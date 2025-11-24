@@ -26,37 +26,37 @@ export class MovieMatchModalComponent extends LitElement {
   }
 
   private get nextMovie(): Movie | undefined {
-		return this.movies[this.currentIndex + 1];
-	}
+    return this.movies[this.currentIndex + 1];
+  }
 
-	private getPosterUrl(movie: Movie): string {
-		// Matches the size used in the render method ('w500')
-		return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-	}
+  private getPosterUrl(movie: Movie): string {
+    // Matches the size used in the render method ('w500')
+    return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  }
 
-	private prefetchNextImage() {
-		const nextMovie = this.nextMovie;
+  private prefetchNextImage() {
+    const nextMovie = this.nextMovie;
 
-		if (nextMovie && nextMovie.poster_path) {
-			const nextPosterUrl = this.getPosterUrl(nextMovie);
-			const img = new Image();
-			img.src = nextPosterUrl;
-		}
-	}
+    if (nextMovie && nextMovie.poster_path) {
+      const nextPosterUrl = this.getPosterUrl(nextMovie);
+      const img = new Image();
+      img.src = nextPosterUrl;
+    }
+  }
 
   protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
     super.updated(changedProperties);
- 
+
     if (changedProperties.has('currentIndex')) {
       // Trigger pre-fetch for the movie *after* the one we just swiped to
       this.prefetchNextImage();
     }
- }
-  
+  }
+
   private nudge() {
     const modalContent = this.closest('.modal-box') as HTMLElement;
-    const nudgeTransition = 'transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)'; 
-    const defaultTransition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)'; 
+    const nudgeTransition = 'transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)';
+    const defaultTransition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
     modalContent.style.transformOrigin = 'bottom center';
     modalContent.style.transition = nudgeTransition;
     modalContent.style.transform = 'translateX(30px) rotate(10deg)';
@@ -172,7 +172,9 @@ export class MovieMatchModalComponent extends LitElement {
       modalContent.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
 
       if (e.srcEvent?.cancelable) {
-        try { e.srcEvent.preventDefault(); } catch { }
+        try {
+          e.srcEvent.preventDefault();
+        } catch {}
       }
     });
 
@@ -216,18 +218,27 @@ export class MovieMatchModalComponent extends LitElement {
     // --- Listen for pointerdown inside the overview area to mark where the gesture started ---
     const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement;
     if (overview) {
+      this.addToCleanup(
+        overview,
+        'pointerdown',
+        (_ev: PointerEvent) => {
+          gestureStartedInOverview = true;
+          gestureDecided = false;
+          ignorePan = false;
+        },
+        { passive: true }
+      );
 
-      this.addToCleanup(overview, 'pointerdown', (_ev: PointerEvent) => {
-        gestureStartedInOverview = true;
-        gestureDecided = false;
-        ignorePan = false;
-      }, { passive: true });
-
-      this.addToCleanup(overview, 'touchstart', (_ev: TouchEvent) => {
-        gestureStartedInOverview = true;
-        gestureDecided = false;
-        ignorePan = false;
-      }, { passive: true });
+      this.addToCleanup(
+        overview,
+        'touchstart',
+        (_ev: TouchEvent) => {
+          gestureStartedInOverview = true;
+          gestureDecided = false;
+          ignorePan = false;
+        },
+        { passive: true }
+      );
 
       this.addToCleanup(window, 'pointerup', () => {
         gestureStartedInOverview = false;
@@ -245,15 +256,19 @@ export class MovieMatchModalComponent extends LitElement {
     // Also track Hammer manager cleanup
     this.cleanupFns.push(() => this.manager.destroy());
     if (this.currentIndex === 0) {
-      await new Promise(resolve => setTimeout(resolve, 350));
-      this.nudge(); 
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      this.nudge();
     }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.cleanupFns.forEach(fn => {
-      try { fn(); } catch { /* ignore */ }
+    this.cleanupFns.forEach((fn) => {
+      try {
+        fn();
+      } catch {
+        /* ignore */
+      }
     });
     this.cleanupFns = [];
   }
@@ -271,7 +286,7 @@ export class MovieMatchModalComponent extends LitElement {
   private disableContextMenu(e: Event) {
     e.preventDefault();
     e.stopPropagation();
-    return false
+    return false;
   }
 
   render() {
@@ -287,56 +302,67 @@ export class MovieMatchModalComponent extends LitElement {
     }
 
     return html`
-      <div class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]">
+      <div
+        class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]"
+      >
         <img
           draggable="false"
           src="${this.getPosterUrl(movie)}"
           alt="${movie.title}"
           class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
-           @contextmenu=${this.disableContextMenu}
-          />
+          @contextmenu=${this.disableContextMenu}
+        />
 
-      <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
-        <div>
-          <h3 class="text-xl font-bold text-base-content">
-            ${movie.title}
-            <span class="text-base-content/60 text-sm">
-              (${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})
-            </span>
-          </h3>
-          <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
-            <genre-badges .genreIds=${movie.genre_ids} .limit=${2}></genre-badges>
+        <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
+          <div>
+            <h3 class="text-xl font-bold text-base-content">
+              ${movie.title}
+              <span class="text-base-content/60 text-sm">
+                (${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})
+              </span>
+            </h3>
+            <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
+              <genre-badges .genreIds=${movie.genre_ids} .limit=${2}></genre-badges>
+            </div>
+            <div class="flex items-center gap-3 mt-1">
+              <span class="text-yellow-500 text-lg">★</span>
+              <span class="text-base text-base-content/80 font-medium">
+                ${movie.vote_average?.toFixed(1)}
+              </span>
+              <span
+                class="badge badge-outline text-sm ${getPopularityClasses(
+                  movie.percentage_popularity
+                )}"
+              >
+                Popularity: ${movie.percentage_popularity}%
+              </span>
+            </div>
           </div>
-          <div class="flex items-center gap-3 mt-1">
-            <span class="text-yellow-500 text-lg">★</span>
-            <span class="text-base text-base-content/80 font-medium">${movie.vote_average?.toFixed(1)}</span>
-            <span class="badge badge-outline text-sm ${getPopularityClasses(movie.percentage_popularity)}">
-              Popularity: ${movie.percentage_popularity}%
-            </span>
+
+          <div
+            id="scroll-overview"
+            class="overflow-y-auto rounded-lg border border-base-300 bg-base-200/60 p-2 flex-1 text-sm text-base-content/70"
+          >
+            ${movie.overview || 'No description available.'}
           </div>
-        </div>
 
-        <div id="scroll-overview" class="overflow-y-auto rounded-lg border border-base-300 bg-base-200/60 p-2 flex-1 text-sm text-base-content/70">
-         ${movie.overview || 'No description available.'}
-        </div>
+          <div class="flex justify-between gap-4 pt-2 flex-shrink-0">
+            <button
+              @click=${() => this.swipe(MovieMatchDirection.Dislike)}
+              class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
+            >
+              👎 Dislike
+            </button>
 
-        <div class="flex justify-between gap-4 pt-2 flex-shrink-0">
-          <button
-            @click=${() => this.swipe(MovieMatchDirection.Dislike)}
-            class="btn btn-outline btn-error flex-1 text-base font-semibold py-3"
-          >
-            👎 Dislike
-          </button>
-
-          <button
-            @click=${() => this.swipe(MovieMatchDirection.Like)}
-            class="btn btn-primary flex-1 text-base font-semibold py-3"
-          >
-            👍 Like
-          </button>
+            <button
+              @click=${() => this.swipe(MovieMatchDirection.Like)}
+              class="btn btn-primary flex-1 text-base font-semibold py-3"
+            >
+              👍 Like
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     `;
   }
 }

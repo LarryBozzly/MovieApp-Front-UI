@@ -1,14 +1,21 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
-import { authStore, selectError, selectIsLoading, selectIsVerified, type AuthState } from '../store/auth-store';
+import {
+  authStore,
+  selectError,
+  selectIsLoading,
+  selectIsVerified,
+  type AuthState,
+} from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 
 @customElement('verify-page')
 export class VerifyPage extends LitElement {
   @watch(authStore) authState!: AuthState;
   @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectIsVerified }) readonly isVerified!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectIsVerified })
+  readonly isVerified!: boolean;
   @watchWithSelector({ store: authStore, selector: selectError }) readonly error!: Error | null;
 
   static styles = css`
@@ -83,9 +90,7 @@ export class VerifyPage extends LitElement {
 
     return html`
       <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
-        <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
-          ${content}
-        </div>
+        <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">${content}</div>
       </div>
     `;
   }

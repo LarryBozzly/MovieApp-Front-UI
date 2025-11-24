@@ -21,7 +21,7 @@ export class SendInviteModalComponent extends LitElement {
   private async sendInvite(event: Event) {
     event.preventDefault();
     event.stopPropagation();
-    
+
     if (!this.tag.trim()) return;
     await this.authState.sendInvitationRequest(this.tag);
   }
@@ -30,9 +30,7 @@ export class SendInviteModalComponent extends LitElement {
     return html`
       <div class="p-6 space-y-4">
         <h2 class="text-2xl font-bold">Send Invitation</h2>
-        <p class="text-sm text-gray-500">
-          Enter the user tag to send a movie match invitation.
-        </p>
+        <p class="text-sm text-gray-500">Enter the user tag to send a movie match invitation.</p>
 
         <form @submit=${this.sendInvite}>
           <div class="form-control">
@@ -46,11 +44,7 @@ export class SendInviteModalComponent extends LitElement {
           </div>
 
           <div class="pt-2">
-            <button
-              type="submit"
-              class="btn btn-primary w-full"
-              ?disabled=${!this.tag.trim()}
-            >
+            <button type="submit" class="btn btn-primary w-full" ?disabled=${!this.tag.trim()}>
               Send Invite
             </button>
           </div>

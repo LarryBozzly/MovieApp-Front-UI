@@ -29,7 +29,8 @@ export class InvitationNotificationModalComponent extends LitElement {
         <h2 class="text-2xl font-bold">Incoming Invitation</h2>
         <p class="text-sm text-gray-500">
           You have received a movie match invitation from
-          <span class="font-semibold">${this.tag}</span>.
+          <span class="font-semibold">${this.tag}</span>
+          .
         </p>
 
         <div class="pt-4">
@@ -39,13 +40,11 @@ export class InvitationNotificationModalComponent extends LitElement {
             ?disabled=${this.isLoading}
           >
             ${this.isLoading
-        ? html`
-              <span class="loading loading-dots w-5"></span>
-              Accepting...
-              `
-        : html`
-              Accept
-            `}
+              ? html`
+                  <span class="loading loading-dots w-5"></span>
+                  Accepting...
+                `
+              : html` Accept `}
           </button>
         </div>
       </div>

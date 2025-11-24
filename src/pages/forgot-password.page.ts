@@ -10,7 +10,7 @@ import {
   selectIsLoading,
   selectIsVerifiedPasswordCodeSent,
   selectisPasswordChanged,
-  type AuthState
+  type AuthState,
 } from '../store/auth-store';
 
 @customElement('forgot-password-page')
@@ -18,9 +18,12 @@ export class ForgotPasswordPage extends LitElement {
   @watch(authStore) authState!: AuthState;
 
   @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectIsForgottenPasswordSent }) readonly isForgottenPasswordSent!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectIsVerifiedPasswordCodeSent }) readonly isVerifiedPasswordCodeSent!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectisPasswordChanged }) readonly isPasswordChanged!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectIsForgottenPasswordSent })
+  readonly isForgottenPasswordSent!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectIsVerifiedPasswordCodeSent })
+  readonly isVerifiedPasswordCodeSent!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectisPasswordChanged })
+  readonly isPasswordChanged!: boolean;
   @watchWithSelector({ store: authStore, selector: selectError }) readonly error!: Error | null;
 
   @state() private email: string = '';
@@ -28,7 +31,9 @@ export class ForgotPasswordPage extends LitElement {
   @state() private password: string = '';
   @state() private confirmPassword: string = '';
 
-  static styles = css`${tailwindStyles}`;
+  static styles = css`
+    ${tailwindStyles}
+  `;
 
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -56,7 +61,7 @@ export class ForgotPasswordPage extends LitElement {
     e.preventDefault();
 
     if (this.password !== this.confirmPassword) {
-      this.authState.setError(new Error("Passwords do not match"));
+      this.authState.setError(new Error('Passwords do not match'));
       return;
     }
 
@@ -71,13 +76,13 @@ export class ForgotPasswordPage extends LitElement {
     return html`
       <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
         <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
-          
-          ${this.error ? html`
-            <div class="alert alert-error text-sm mb-3">
-              <span>${this.error.message}</span>
-            </div>
-          ` : null}
-
+          ${this.error
+            ? html`
+                <div class="alert alert-error text-sm mb-3">
+                  <span>${this.error.message}</span>
+                </div>
+              `
+            : null}
           ${this.renderStep()}
         </div>
       </div>
@@ -113,7 +118,9 @@ export class ForgotPasswordPage extends LitElement {
         />
 
         <button ?disabled=${this.isLoading} type="submit" class="btn btn-primary w-full">
-          ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Send Reset Email'}
+          ${this.isLoading
+            ? html` <span class="loading loading-dots"></span> `
+            : 'Send Reset Email'}
         </button>
       </form>
 
@@ -129,7 +136,9 @@ export class ForgotPasswordPage extends LitElement {
       <div class="text-success text-4xl mb-3">📧</div>
       <h2 class="text-xl font-bold mb-2">Check Your Email</h2>
       <p class="text-base-content/80 mb-4">
-        A reset code has been sent to <strong>${this.email}</strong>.
+        A reset code has been sent to
+        <strong>${this.email}</strong>
+        .
       </p>
 
       <form @submit=${this.handleCodeSubmit} class="flex flex-col gap-4">
@@ -143,7 +152,7 @@ export class ForgotPasswordPage extends LitElement {
         />
 
         <button type="submit" class="btn btn-primary w-full" ?disabled=${this.isLoading}>
-          ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Verify Code'}
+          ${this.isLoading ? html` <span class="loading loading-dots"></span> ` : 'Verify Code'}
         </button>
       </form>
     `;
@@ -157,7 +166,10 @@ export class ForgotPasswordPage extends LitElement {
 
       <form @submit=${this.handlePasswordReset} class="flex flex-col gap-4">
         <input
-          @input=${(e: any) => { this.clearError(); this.password = e.target.value; }}
+          @input=${(e: any) => {
+            this.clearError();
+            this.password = e.target.value;
+          }}
           type="password"
           placeholder="New Password"
           required
@@ -165,7 +177,10 @@ export class ForgotPasswordPage extends LitElement {
         />
 
         <input
-          @input=${(e: any) => { this.clearError(); this.confirmPassword = e.target.value; }}
+          @input=${(e: any) => {
+            this.clearError();
+            this.confirmPassword = e.target.value;
+          }}
           type="password"
           placeholder="Confirm Password"
           required
@@ -173,7 +188,7 @@ export class ForgotPasswordPage extends LitElement {
         />
 
         <button type="submit" class="btn btn-primary w-full" ?disabled=${this.isLoading}>
-          ${this.isLoading ? html`<span class="loading loading-dots"></span>` : 'Reset Password'}
+          ${this.isLoading ? html` <span class="loading loading-dots"></span> ` : 'Reset Password'}
         </button>
       </form>
     `;

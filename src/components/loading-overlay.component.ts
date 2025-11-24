@@ -2,14 +2,20 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
-import { authStore, selectIsAuthorized, selectIsLoading, selectIsWSConnected } from '../store/auth-store';
+import {
+  authStore,
+  selectIsAuthorized,
+  selectIsLoading,
+  selectIsWSConnected,
+} from '../store/auth-store';
 
 @customElement('loading-overlay-component')
 export class LoadingOverlayComponent extends LitElement {
   @watchWithSelector({ store: authStore, selector: selectIsLoading }) readonly isLoading!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectIsWSConnected }) readonly isWSConnected!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectIsAuthorized }) readonly isAuthorized!: boolean;
-
+  @watchWithSelector({ store: authStore, selector: selectIsWSConnected })
+  readonly isWSConnected!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectIsAuthorized })
+  readonly isAuthorized!: boolean;
 
   static styles = css`
     ${tailwindStyles}
@@ -24,14 +30,16 @@ export class LoadingOverlayComponent extends LitElement {
   }
 
   get overLayLoading() {
-    return this.isLoading || (this.isAuthorized && !this.isWSConnected)
+    return this.isLoading || (this.isAuthorized && !this.isWSConnected);
   }
 
   render() {
     return html`
       ${this.overLayLoading
         ? html`
-            <div class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-[9999]">
+            <div
+              class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/65 z-[9999]"
+            >
               <span class="loading loading-spinner text-white w-16 h-16"></span>
             </div>
           `
