@@ -34,7 +34,7 @@ export class ProfileButtonComponent extends LitElement {
         <div class="dropdown dropdown-end">
           <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
             <div
-              class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
+              class="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
             >
               ${this.tag?.[0] ?? '?'}
             </div>
