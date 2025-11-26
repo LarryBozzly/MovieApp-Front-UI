@@ -88,11 +88,8 @@ export class LogoBackComponent extends LitElement {
           `
         : showBackButton
           ? html`
-              <button
-                @click="${this.goHome}"
-                class="btn btn-ghost btn-circle shadow-none border-none hover:bg-transparent active:bg-transparent"
-              >
-                ${OutlineChevronLeftIcon()}
+              <button @click="${this.goHome}" class="btn btn-ghost btn-circle">
+                ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
               </button>
             `
           : ''}
