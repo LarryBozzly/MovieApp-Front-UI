@@ -46,6 +46,7 @@ export class HomePage extends LitElement {
     main {
       position: fixed;
       inset: 0;
+      top: 66px;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -170,7 +171,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <main class="!top-[114px] sm:!top-[64px]">
+      <main>
         <div
           class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}"
         >
@@ -182,7 +183,7 @@ export class HomePage extends LitElement {
           ></categories-component>
         </div>
         <movies-list-component
-          class="block pt-[116px] sm:pt-[72px]"
+          class="block pt-[74px]"
           .isLoading=${this.isLoading}
           .movies=${this.movies}
         ></movies-list-component>
