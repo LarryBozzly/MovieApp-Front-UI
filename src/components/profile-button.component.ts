@@ -32,12 +32,12 @@ export class ProfileButtonComponent extends LitElement {
     return html`
       <div class="flex-none">
         <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-            <div
-              class="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
-            >
-              ${this.tag?.[0] ?? '?'}
-            </div>
+          <div
+            tabindex="0"
+            role="button"
+            class="btn btn-ghost btn-circle w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
+          >
+            ${this.tag?.[0] ?? '?'}
           </div>
           <ul
             tabindex="0"
