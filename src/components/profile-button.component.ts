@@ -35,7 +35,7 @@ export class ProfileButtonComponent extends LitElement {
           <div
             tabindex="0"
             role="button"
-            class="btn w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
+            class="btn w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
           >
             ${this.tag?.[0] ?? '?'}
           </div>
