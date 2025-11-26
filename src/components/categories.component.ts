@@ -43,6 +43,8 @@ export class CategoriesComponent extends LitElement {
 
   private closeSearch() {
     this.searchOpen = false;
+    const hasCategory = Boolean(this.selectedCategory);
+    this.handleCategoryClick(hasCategory ? this.selectedCategory : MovieCategory.TRENDING);
   }
 
   render() {
@@ -53,7 +55,7 @@ export class CategoriesComponent extends LitElement {
         ${!this.searchOpen
           ? html`
               <div class="flex items-center overflow-x-auto gap-2 scrollbar-hide w-full">
-                <button class="btn" @click=${this.openSearch}>
+                <button class="btn btn-ghost btn-circle" @click=${this.openSearch}>
                   ${SearchIcon('w-6 h-6 text-primary')}
                 </button>
 
@@ -76,7 +78,7 @@ export class CategoriesComponent extends LitElement {
         ${this.searchOpen
           ? html`
               <div class="flex flex-row gap-2 w-full">
-                <button class="btn" @click=${this.closeSearch}>
+                <button class="btn btn-ghost btn-circle" @click=${this.closeSearch}>
                   ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
                 </button>
                 <search-component></search-component>
