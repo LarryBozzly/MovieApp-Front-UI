@@ -106,7 +106,7 @@ export class HomePage extends LitElement {
     if (!this.mainContent) return;
 
     const onScroll = () => {
-      const hideNavbar = this.mainContent.scrollTop < 17;
+      const hideNavbar = this.mainContent.scrollTop < 16;
       this.appState.setNavbarVisibility(hideNavbar);
     };
 
@@ -187,7 +187,7 @@ export class HomePage extends LitElement {
           ></categories-component>
         </div>
         <movies-list-component
-          class="block pt-16.5"
+          class="block pt-16"
           .isLoading=${this.isLoading}
           .movies=${this.movies}
         ></movies-list-component>
