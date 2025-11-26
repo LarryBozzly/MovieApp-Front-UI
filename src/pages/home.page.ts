@@ -45,8 +45,7 @@ export class HomePage extends LitElement {
     }
     main {
       position: fixed;
-      inset: 0;
-      top: 66px;
+      inset: 68px 0px 0px;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -183,7 +182,7 @@ export class HomePage extends LitElement {
           ></categories-component>
         </div>
         <movies-list-component
-          class="block pt-[74px]"
+          class="block pt-[76px]"
           .isLoading=${this.isLoading}
           .movies=${this.movies}
         ></movies-list-component>
