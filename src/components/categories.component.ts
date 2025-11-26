@@ -2,8 +2,9 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { MovieCategory, MovieCategoryMap } from '../models/models';
-import '../components/search.component';
 import { OutlineChevronLeftIcon, SearchIcon } from './icons/icons';
+import '../components/search.component';
+import '../components/profile-button.component';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {
@@ -21,6 +22,9 @@ export class CategoriesComponent extends LitElement {
 
   @property() selectedCategory!: MovieCategory;
   @property() selectIsOnInitLoaded!: boolean;
+  @property() isNavbarVisible!: boolean;
+  @property() tag: string = '?';
+
   @state() private searchOpen = false;
 
   private readonly categoriesMap: Record<MovieCategory, string> = MovieCategoryMap;
@@ -54,11 +58,10 @@ export class CategoriesComponent extends LitElement {
       <div class="p-4 flex items-center gap-3 w-full">
         ${!this.searchOpen
           ? html`
+              <button class="btn btn-ghost btn-circle" @click=${this.openSearch}>
+                ${SearchIcon('w-6 h-6 text-primary')}
+              </button>
               <div class="flex items-center overflow-x-auto gap-2 scrollbar-hide w-full">
-                <button class="btn btn-ghost btn-circle" @click=${this.openSearch}>
-                  ${SearchIcon('w-6 h-6 text-primary')}
-                </button>
-
                 ${Object.entries(this.categoriesMap).map(
                   ([category, label]) => html`
                     <button
@@ -84,6 +87,9 @@ export class CategoriesComponent extends LitElement {
                 <search-component></search-component>
               </div>
             `
+          : ''}
+        ${!this.isNavbarVisible
+          ? html` <profile-button-component .tag=${this.tag}></profile-button-component>`
           : ''}
       </div>
     `;

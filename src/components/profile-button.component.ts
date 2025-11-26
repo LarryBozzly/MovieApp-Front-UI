@@ -9,7 +9,6 @@ import { watch } from 'zustand-lit';
 export class ProfileButtonComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
-
   @query('.dropdown-content') private dropdownContainer!: HTMLElement;
   @property() tag: string = '?';
 

@@ -19,6 +19,7 @@ import '../components/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { MovieCategory, type Movie } from '../models/models';
+import { authStore, selectTag } from '../store/auth-store';
 
 @customElement('home-page')
 export class HomePage extends LitElement {
@@ -34,6 +35,7 @@ export class HomePage extends LitElement {
   readonly selectIsOnInitLoaded!: boolean;
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible })
   readonly isNavbarVisible!: boolean;
+  @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
 
   static styles = css`
     ${tailwindStyles}
@@ -175,6 +177,8 @@ export class HomePage extends LitElement {
           class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}"
         >
           <categories-component
+            .isNavbarVisible=${this.isNavbarVisible}
+            .tag=${this.tag}
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
             .selectedCategory=${this.selectedCategory}
             @onCategoryChanged=${this.onCategoryChanged}
