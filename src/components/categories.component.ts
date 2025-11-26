@@ -79,7 +79,7 @@ export class CategoriesComponent extends LitElement {
     if (!this.selectIsOnInitLoaded) return html``;
 
     return html`
-      <div class="p-4 flex items-center gap-3 w-full">
+      <div class="p-2 h-16 flex items-center gap-3 w-full">
         ${!this.searchOpen
           ? html`
               <button class="btn btn-ghost btn-circle" @click=${this.openSearch}>
