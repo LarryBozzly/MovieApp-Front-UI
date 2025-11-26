@@ -18,6 +18,30 @@ export class CategoriesComponent extends LitElement {
       -ms-overflow-style: none; /* IE and Edge */
       scrollbar-width: none; /* Firefox */
     }
+
+    .scroll-fade {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0px,
+        black 5px,
+        black calc(100% - 5px),
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0px,
+        black 5px,
+        black calc(100% - 5px),
+        transparent 100%
+      );
+    }
+
+    .scroll-fade > :first-child {
+      margin-left: 5px;
+    }
+    .scroll-fade > :last-child {
+      margin-right: 5px;
+    }
   `;
 
   @property() selectedCategory!: MovieCategory;
@@ -61,7 +85,9 @@ export class CategoriesComponent extends LitElement {
               <button class="btn btn-ghost btn-circle" @click=${this.openSearch}>
                 ${SearchIcon('w-6 h-6 text-primary')}
               </button>
-              <div class="flex items-center overflow-x-auto gap-2 scrollbar-hide w-full">
+              <div
+                class="flex items-center overflow-x-auto gap-2 scrollbar-hide w-full scroll-fade"
+              >
                 ${Object.entries(this.categoriesMap).map(
                   ([category, label]) => html`
                     <button
