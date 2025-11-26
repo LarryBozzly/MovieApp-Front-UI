@@ -168,6 +168,7 @@ export class HomePage extends LitElement {
     this.observer?.disconnect();
     this.resizeObserver?.disconnect();
     this._removeScrollListener?.();
+    this.appState.setNavbarVisibility(true);
   }
 
   render() {
