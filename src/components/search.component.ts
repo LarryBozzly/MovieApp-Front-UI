@@ -6,6 +6,7 @@ import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, selectQuery, type AppState } from '../store/app-store';
 import { MovieCategory } from '../models/models';
 import { debounce } from '../utils/debounce';
+import { SearchIcon } from './icons/icons';
 
 @customElement('search-component')
 export class SearchComponent extends LitElement {
@@ -54,19 +55,7 @@ export class SearchComponent extends LitElement {
     const hasText = this.query.length > 0;
     return html`
       <label class="w-full input flex items-center gap-2 ">
-        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2.5"
-            fill="none"
-            stroke="currentColor"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </g>
-        </svg>
-
+        ${SearchIcon()}
         <input
           type="text"
           class="grow"
