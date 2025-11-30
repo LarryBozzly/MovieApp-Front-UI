@@ -46,13 +46,27 @@ export class ProfileButtonComponent extends LitElement {
             <li>
               <a
                 @click="${this.redirectToProfile}"
-                class="justify-between text-primary font-semibold"
+                class="flex items-center px-4 py-2 text-primary font-semibold transition "
               >
                 Profile
               </a>
             </li>
             <li>
-              <a class="text-primary font-semibold" @click="${this.logout}">Logout</a>
+              <a
+                href="/notifications"
+                class="flex items-center px-4 py-2 text-primary font-semibold transition"
+              >
+                Notifications
+              </a>
+            </li>
+            <hr class="my-2 border border-base-content/10" />
+            <li>
+              <button
+                @click="${this.logout}"
+                class="flex w-full items-center px-4 py-2 text-error font-semibold transition text-left"
+              >
+                Logout
+              </button>
             </li>
           </ul>
         </div>
