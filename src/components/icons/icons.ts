@@ -155,3 +155,22 @@ export const CloseIcon = (className = 'w-4 h-4 text-primary'): TemplateResult =>
     />
   </svg>
 `;
+
+export const InvitationIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="${className}"
+  >
+    <circle cx="9" cy="8" r="3" />
+    <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+
+    <path d="M18 8v4" />
+    <path d="M16 10h4" />
+  </svg>
+`;

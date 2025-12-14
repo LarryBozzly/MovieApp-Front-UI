@@ -5,7 +5,7 @@ import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, selectNotifications } from '../store/app-store';
 import type { Notification } from '../models/models';
 import { authStore, type AuthState } from '../store/auth-store';
-import { CloseIcon } from '../components/icons/icons';
+import { CloseIcon, InvitationIcon } from '../components/icons/icons';
 
 @customElement('notifications-page')
 export class NotificationsPage extends LitElement {
@@ -33,15 +33,13 @@ export class NotificationsPage extends LitElement {
     }
   `;
 
-  private getNotificationIcon(type: string): string {
-    const iconMap: Record<string, string> = {
-      invitation: '👥',
-      match: '💕',
-      message: '💬',
-      system: '⚙️',
-      alert: '🔔',
-    };
-    return iconMap[type] || '📬';
+  private renderNotificationIcon(type: string) {
+    switch (type) {
+      case 'invitation':
+        return InvitationIcon('w-6 h-6 text-primary');
+      default:
+        return InvitationIcon('w-6 h-6 text-base-content/50');
+    }
   }
 
   private getNotificationColor(type: string): string {
@@ -88,7 +86,7 @@ export class NotificationsPage extends LitElement {
                             n.type
                           )}"
                         >
-                          ${this.getNotificationIcon(n.type)}
+                          ${this.renderNotificationIcon(n.type)}
                         </div>
 
                         <div class="flex-1 min-w-0">
