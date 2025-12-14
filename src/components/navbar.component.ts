@@ -3,9 +3,15 @@ import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { authStore, selectIsAuthorized, selectTag, type AuthState } from '../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { appStore, selectisNavbarVisible, type AppState } from '../store/app-store';
+import {
+  appStore,
+  selectisNavbarVisible,
+  selectNotifications,
+  type AppState,
+} from '../store/app-store';
 import '../components/logo-back.component';
 import '../components/profile-button.component';
+import type { Notification } from '../models/models';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {
@@ -16,6 +22,8 @@ export class NavbarComponent extends LitElement {
   @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible })
   readonly isNavbarVisible!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectNotifications })
+  readonly notifications!: Notification[];
 
   static styles = css`
     ${tailwindStyles}
@@ -32,7 +40,12 @@ export class NavbarComponent extends LitElement {
           <logo-back-component .isAuthorized=${this.isAuthorized}></logo-back-component>
         </div>
         ${this.isAuthorized
-          ? html` <profile-button-component .tag=${this.tag}></profile-button-component> `
+          ? html`
+              <profile-button-component
+                .notifications=${this.notifications}
+                .tag=${this.tag}
+              ></profile-button-component>
+            `
           : ''}
       </div>
     `;

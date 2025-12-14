@@ -3,6 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
+import { type Notification } from '../models/models';
 
 @customElement('invitation-notification-modal-component')
 export class InvitationNotificationModalComponent extends LitElement {
@@ -12,15 +13,15 @@ export class InvitationNotificationModalComponent extends LitElement {
     ${tailwindStyles}
   `;
 
-  @property({ type: String }) tag: string = '';
+  @property({ type: Object }) notification!: Notification;
   @state() private isLoading: boolean = false;
 
   private async acceptInvitation() {
-    const fromUserId = this.authState.tag;
-    if (!fromUserId || !this.tag) return;
+    const tag = this.authState.tag;
+    if (!tag || !this.notification.fromTag || tag !== this.notification.toTag) return;
 
     this.isLoading = true;
-    await this.authState.sendInvitationResponse(this.tag, fromUserId.toString());
+    await this.authState.acceptInvitationResponse(this.notification);
   }
 
   render() {
@@ -29,7 +30,7 @@ export class InvitationNotificationModalComponent extends LitElement {
         <h2 class="text-2xl font-bold">Incoming Invitation</h2>
         <p class="text-sm text-gray-500">
           You have received a movie match invitation from
-          <span class="font-semibold">${this.tag}</span>
+          <span class="font-semibold">${this.notification.fromTag}</span>
           .
         </p>
 

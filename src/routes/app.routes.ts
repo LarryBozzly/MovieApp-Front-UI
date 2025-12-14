@@ -1,5 +1,6 @@
 import type { Route } from '@vaadin/router';
 import { profileViews } from './profile.routes';
+import { notificationViews } from './notification.routes';
 import { homeViews } from './home.routes';
 import { authGuard } from '../guards/auth-guard';
 import { publicGuard } from '../guards/public-guard';
@@ -8,7 +9,7 @@ import '../pages/signup.page';
 import '../pages/verify.page';
 import '../pages/forgot-password.page';
 
-const children: Route[] = [...homeViews, ...profileViews];
+const children: Route[] = [...homeViews, ...profileViews, ...notificationViews];
 
 export const routes: Route[] = [
   {

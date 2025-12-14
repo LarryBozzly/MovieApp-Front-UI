@@ -1,8 +1,9 @@
 import protobuf from 'protobufjs';
 import { appStore } from '../store/app-store';
-import type { WatchlistState, Movie } from '../models/models';
+import type { WatchlistState, Movie, Notification } from '../models/models';
 import { authStore } from '../store/auth-store';
 import ConnectivityService from './connectivity.service';
+import { notificationMapper } from '../utils/notificationMapper';
 
 type EventCallback = (data: any) => void;
 
@@ -87,10 +88,11 @@ export default class WebSocketService {
               appStore.getState().setWatchlistIds(idsRecord);
             }
 
-            if (msg.invitationNotification)
-              await appStore
+            if (msg.getNotificationsResponse) {
+              appStore
                 .getState()
-                .openReceivedInvitationModal(msg.invitationNotification.from);
+                .setNotifications(notificationMapper(msg.getNotificationsResponse.notifications));
+            }
 
             if (msg.startMovieMatch) {
               await appStore.getState().closeModal();
@@ -100,6 +102,13 @@ export default class WebSocketService {
             if (msg.movieMatch) {
               await appStore.getState().closeModal();
               await appStore.getState().openMovieMatchModal(msg.movieMatch.movie);
+            }
+
+            if (msg.error) {
+              await appStore.getState().closeModal();
+              await appStore
+                .getState()
+                .openErrorModal(msg?.error?.message || 'An unknown error occurred.');
             }
 
             this.listeners.forEach((cb) => cb(msg));
@@ -136,8 +145,26 @@ export default class WebSocketService {
     this.send({ invitationRequest: { to: toTag } });
   }
 
-  sendInvitationResponse(toTag: string, fromTag: string) {
-    this.send({ invitationResponse: { to: toTag, from: fromTag } });
+  acceptInvitationResponse(notification: Notification) {
+    this.send({
+      invitationResponse: {
+        to: notification.toTag,
+        from: notification.fromTag,
+        notificationId: notification.id,
+        accepted: true,
+      },
+    });
+  }
+
+  rejectInvitationResponse(notification: Notification) {
+    this.send({
+      invitationResponse: {
+        to: notification.toTag,
+        from: notification.fromTag,
+        notificationId: notification.id,
+        accepted: false,
+      },
+    });
   }
 
   sendMovieSelection(movie: Movie) {
@@ -146,6 +173,10 @@ export default class WebSocketService {
 
   sendMovieRejection(movie: Movie) {
     this.send({ movieRejection: { movie } });
+  }
+
+  sendReadNotificationRequest(notificationId: number) {
+    this.send({ readNotificationRequest: { notificationId } });
   }
 
   close(manual = false) {

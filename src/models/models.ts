@@ -68,6 +68,19 @@ export const MovieMatchDirection = {
 } as const;
 export type MovieMatchDirection = (typeof MovieMatchDirection)[keyof typeof MovieMatchDirection];
 
+export const NotificationType = {
+  INVITATION: 'invitation',
+} as const;
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
+
+export interface Notification {
+  id: number;
+  type: NotificationType;
+  fromTag: string;
+  toTag: string;
+  isRead: boolean;
+}
+
 // app
 export interface LoginRequest {
   email: string;

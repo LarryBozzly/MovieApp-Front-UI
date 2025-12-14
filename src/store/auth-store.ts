@@ -3,6 +3,7 @@ import type {
   LoginRequest,
   LoginResponse,
   Movie,
+  Notification,
   PasswordResetResponse,
   RegisterRequest,
   RegisterResponse,
@@ -55,8 +56,10 @@ export interface AuthState {
   passwordChange: (password: string) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  sendReadNotificationRequest: (notificationId: number) => Promise<void>;
   sendInvitationRequest: (toTag: string) => Promise<void>;
-  sendInvitationResponse: (toTag: string, fromTag: string) => Promise<void>;
+  acceptInvitationResponse: (notification: Notification) => Promise<void>;
+  rejectInvitationResponse: (notification: Notification) => Promise<void>;
   sendMovieSelection: (movie: Movie) => Promise<void>;
   sendMovieRejection: (movie: Movie) => Promise<void>;
   initDeviceVisibilityListener: () => Promise<void>;
@@ -215,6 +218,16 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       setTag(data.data.tag);
     }
   }),
+  sendReadNotificationRequest: createEffect(store, async (deps, _store, notificationId: number) => {
+    const { webSocketService } = deps;
+
+    if (!webSocketService) {
+      console.error('WebSocketService not initialized');
+      return;
+    }
+
+    webSocketService.sendReadNotificationRequest(notificationId);
+  }),
   sendInvitationRequest: createEffect(store, async (deps, _store, toTag: string) => {
     const { webSocketService } = deps;
 
@@ -225,9 +238,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
     webSocketService.sendInvitationRequest(toTag);
   }),
-  sendInvitationResponse: createEffect(
+  acceptInvitationResponse: createEffect(
     store,
-    async (deps, _store, toTag: string, fromTag: string) => {
+    async (deps, _store, notification: Notification) => {
       const { webSocketService } = deps;
 
       if (!webSocketService) {
@@ -235,7 +248,20 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         return;
       }
 
-      webSocketService.sendInvitationResponse(toTag, fromTag);
+      webSocketService.acceptInvitationResponse(notification);
+    }
+  ),
+  rejectInvitationResponse: createEffect(
+    store,
+    async (deps, _store, notification: Notification) => {
+      const { webSocketService } = deps;
+
+      if (!webSocketService) {
+        console.error('WebSocketService not initialized');
+        return;
+      }
+
+      webSocketService.rejectInvitationResponse(notification);
     }
   ),
   sendMovieSelection: createEffect(store, async (deps, _store, movie: Movie) => {

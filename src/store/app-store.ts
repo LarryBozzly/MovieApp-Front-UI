@@ -7,6 +7,7 @@ import {
   type Movie,
   type MovieListResponse,
   type MoviesResponse,
+  type Notification,
 } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
@@ -19,6 +20,7 @@ import '../components/invitation-notification-modal.component';
 import '../components/movie-match-modal.component';
 import '../components/movie-match-result-modal.component';
 import '../components/movie-preview-modal.component';
+import '../components/error-modal.component';
 
 export interface AppState {
   deps?: {
@@ -35,6 +37,7 @@ export interface AppState {
   maxPage: number;
   movies: Movie[];
   watchlistIds: Record<number, WatchlistState>;
+  notifications: Notification[];
   query: string;
   isLoading: boolean;
   storeInit: (deps: Required<AppState>['deps']) => void;
@@ -49,6 +52,7 @@ export interface AppState {
   clearMovies: () => void;
   triggerAbort: () => Promise<void>;
   setWatchlistIds: (ids: Record<number, WatchlistState>) => void;
+  setNotifications: (notifications: Notification[]) => void;
   onInit: () => Promise<void>;
   fetchTrendingMovies: (page: number) => Promise<void>;
   fetchTopRatedMovies: (page: number) => Promise<void>;
@@ -62,10 +66,11 @@ export interface AppState {
   addToWatchlist: (movie: Movie) => Promise<void>;
   removeFromWatchlist: (movie: Movie) => Promise<void>;
   openSendInvitationModal: () => Promise<void>;
-  openReceivedInvitationModal: (fromTag: string) => Promise<void>;
+  openReceivedInvitationModal: (notification: Notification) => Promise<void>;
   openStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
   openMovieMatchModal: (movie: Movie) => Promise<void>;
   openMoviePreviewModal: (movie: Movie) => Promise<void>;
+  openErrorModal: (message: string) => Promise<void>;
   closeModal: () => Promise<void>;
 }
 
@@ -74,6 +79,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   maxPage: 1,
   movies: [],
   watchlistIds: {},
+  notifications: [],
   query: '',
   isLoading: false,
   deps: undefined,
@@ -101,6 +107,8 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         ...ids,
       },
     })),
+  setNotifications: (notifications: Notification[]) =>
+    set((state) => ({ ...state, notifications })),
   onInit: createEffect(store, async (_deps, store) => {
     const { fetchCategoryMovies, setOnInitLoaded, page } = store.getState();
     await fetchCategoryMovies(MovieCategory.TRENDING, page);
@@ -268,10 +276,16 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { modalService } = deps;
     modalService.open({ tag: 'send-invite-modal-component' });
   }),
-  openReceivedInvitationModal: createEffect(store, async (deps, _store, fromTag: string) => {
-    const { modalService } = deps;
-    modalService.open({ tag: 'invitation-notification-modal-component', props: { tag: fromTag } });
-  }),
+  openReceivedInvitationModal: createEffect(
+    store,
+    async (deps, _store, notification: Notification) => {
+      const { modalService } = deps;
+      modalService.open({
+        tag: 'invitation-notification-modal-component',
+        props: { notification },
+      });
+    }
+  ),
   openStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
     const { modalService } = deps;
 
@@ -301,6 +315,18 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       },
     });
   }),
+  openErrorModal: createEffect(store, async (deps, store, message: string) => {
+    const { modalService } = deps;
+    const { closeModal } = store.getState();
+
+    modalService.open({
+      tag: 'error-modal',
+      props: {
+        message,
+        onClose: closeModal,
+      },
+    });
+  }),
   closeModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
     modalService.close();
@@ -317,3 +343,4 @@ export const selectQuery = (state: AppState) => state.query;
 export const selectMaxPage = (state: AppState) => state.maxPage;
 export const selectedCategory = (state: AppState) => state.category;
 export const selectisNavbarVisible = (state: AppState) => state.isNavbarVisible;
+export const selectNotifications = (state: AppState) => state.notifications;

@@ -8,6 +8,7 @@ import {
   selectIsOnInitLoaded,
   selectMaxPage,
   selectMovies,
+  selectNotifications,
   selectPage,
   selectQuery,
   type AppState,
@@ -18,7 +19,7 @@ import '../components/categories.component';
 import '../components/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { MovieCategory, type Movie } from '../models/models';
+import { MovieCategory, type Movie, type Notification } from '../models/models';
 import { authStore, selectTag } from '../store/auth-store';
 
 @customElement('home-page')
@@ -36,6 +37,8 @@ export class HomePage extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible })
   readonly isNavbarVisible!: boolean;
   @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
+  @watchWithSelector({ store: appStore, selector: selectNotifications })
+  readonly notifications!: Notification[];
 
   static styles = css`
     ${tailwindStyles}
@@ -178,6 +181,7 @@ export class HomePage extends LitElement {
           class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}"
         >
           <categories-component
+            .notifications=${this.notifications}
             .isNavbarVisible=${this.isNavbarVisible}
             .tag=${this.tag}
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}

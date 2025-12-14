@@ -15,6 +15,42 @@ message Identify {
 }
 
 // ------------------------------
+// Notification Flow
+// ------------------------------
+
+enum NotificationType {
+  INVITATION = 0;
+}
+
+message Notification {
+  uint32 id = 1;
+  NotificationType type = 2;
+  string fromTag = 3;
+  string toTag = 4;
+  bool isRead = 5;
+}
+
+message GetNotificationsRequest {
+  // Client → Server: Request all notifications
+}
+
+message GetNotificationsResponse {
+  // Server → Client: Return all notifications for the user
+  repeated Notification notifications = 1;
+}
+
+message ReadNotificationRequest {
+  // Client → Server: Mark a notification as read
+  uint32 notificationId = 1;
+}
+
+message ReadNotificationResponse {
+  // Server → Client: Confirmation that notification was marked as read
+  uint32 notificationId = 1;
+  bool success = 2;
+}
+
+// ------------------------------
 // Invitation Flow
 // ------------------------------
 
@@ -23,16 +59,12 @@ message InvitationRequest {
   string to = 1;
 }
 
-message InvitationNotification {
-  // Server → Recipient: You have an invite
-  string from = 1;
-}
-
 message InvitationResponse {
   // Recipient → Server: Accept the invite
-  // Presence of both fields implies acceptance
-  string from = 1; // Recipient's ID
-  string to = 2;   // Original inviter's ID
+  string from = 1; // Recipient's tag
+  string to = 2;   // Original inviter's tag
+  uint32 notificationId = 3;
+  bool accepted = 4;
 }
 
 // ------------------------------
@@ -83,7 +115,6 @@ message WatchlistMoviesUpdate {
   repeated uint32 mediaIds = 1;
 }
 
-
 // ------------------------------
 // Top-Level Envelopes
 // ------------------------------
@@ -96,17 +127,20 @@ message ClientMessage {
     MovieSelection movieSelection = 4;
     MovieRejection movieRejection = 5;
     NoMovieSelected noMovieSelected = 6;
+    GetNotificationsRequest getNotificationsRequest = 7;
+    ReadNotificationRequest readNotificationRequest = 8;
   }
 }
 
 message ServerMessage {
   oneof payload {
     Error error = 1;
-    InvitationNotification invitationNotification = 2;
-    StartMovieMatch startMovieMatch = 3;
-    MovieSelection movieSelection = 4;
-    NoMovieSelected noMovieSelected = 5;
-    MovieMatch movieMatch = 6;
-    WatchlistMoviesUpdate watchlistMoviesUpdate = 7;
+    StartMovieMatch startMovieMatch = 2;
+    MovieSelection movieSelection = 3;
+    NoMovieSelected noMovieSelected = 4;
+    MovieMatch movieMatch = 5;
+    WatchlistMoviesUpdate watchlistMoviesUpdate = 6;
+    GetNotificationsResponse getNotificationsResponse = 7;
+    ReadNotificationResponse readNotificationResponse = 8;
   }
 }

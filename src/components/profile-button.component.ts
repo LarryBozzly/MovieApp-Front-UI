@@ -4,6 +4,8 @@ import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '../store/auth-store';
 import { watch } from 'zustand-lit';
+import type { Notification } from '../models/models';
+import '../ui/notification-badge.component';
 
 @customElement('profile-button-component')
 export class ProfileButtonComponent extends LitElement {
@@ -11,6 +13,7 @@ export class ProfileButtonComponent extends LitElement {
 
   @query('.dropdown-content') private dropdownContainer!: HTMLElement;
   @property() tag: string = '?';
+  @property({ type: Array }) notifications: Notification[] = [];
 
   static styles = css`
     ${tailwindStyles}
@@ -28,6 +31,12 @@ export class ProfileButtonComponent extends LitElement {
     Router.go('/profile');
   }
 
+  private redirectToNotifications(e: Event) {
+    e.stopPropagation();
+    this.dropdownContainer?.blur();
+    Router.go('/notifications');
+  }
+
   render() {
     return html`
       <div class="flex-none">
@@ -35,35 +44,44 @@ export class ProfileButtonComponent extends LitElement {
           <div
             tabindex="0"
             role="button"
-            class="btn w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase"
+            class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"
           >
             ${this.tag?.[0] ?? '?'}
+            <notification-badge-component
+              class="-top-1 -right-1"
+              .count=${this.notifications.length}
+            >
+            </notification-badge-component>
           </div>
           <ul
             tabindex="0"
-            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 custom-shadow"
+            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
           >
             <li>
               <a
                 @click="${this.redirectToProfile}"
-                class="flex items-center px-4 py-2 text-primary font-semibold transition "
+                class="flex items-center px-4 py-2 text-primary font-semibold"
               >
                 Profile
               </a>
             </li>
             <li>
               <a
-                href="/notifications"
-                class="flex items-center px-4 py-2 text-primary font-semibold transition"
+                @click="${this.redirectToNotifications}"
+                class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
-                Notifications
+                <span>Notifications</span>
+
+                ${this.notifications.length > 0
+                  ? html`<span class="w-2 h-2 bg-secondary rounded-full"></span>`
+                  : null}
               </a>
             </li>
             <hr class="my-2 border border-base-content/10" />
             <li>
               <button
                 @click="${this.logout}"
-                class="flex w-full items-center px-4 py-2 text-error font-semibold transition text-left"
+                class="flex w-full items-center px-4 py-2 text-error font-semibold text-left"
               >
                 Logout
               </button>
