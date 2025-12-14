@@ -74,15 +74,15 @@ export class NotificationsPage extends LitElement {
                 </div>
               `
             : html`
-                <div class="bg-base-100 divide-y divide-base-300 rounded-lg overflow-hidden">
-                  ${this.notifications.map(
-                    (n) => html`
+                ${this.notifications.map(
+                  (n) => html`
+                    <div class="bg-base-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                       <div
-                        class="flex items-start gap-4 p-4 hover:bg-base-200 cursor-pointer relative rounded-lg"
+                        class="flex items-start gap-4 p-4 cursor-pointer relative hover:bg-base-200 rounded-xl"
                         @click=${() => this.acceptInvitation(n)}
                       >
                         <div
-                          class="w-12 h-12 flex items-center justify-center rounded-full text-xl ${this.getNotificationColor(
+                          class="w-12 h-12 flex items-center justify-center rounded-full ${this.getNotificationColor(
                             n.type
                           )}"
                         >
@@ -90,13 +90,11 @@ export class NotificationsPage extends LitElement {
                         </div>
 
                         <div class="flex-1 min-w-0">
-                          <div class="flex justify-between items-center">
-                            <h3
-                              class="font-semibold text-base-content ${n.isRead ? '' : 'font-bold'}"
-                            >
-                              ${n.type}
-                            </h3>
-                          </div>
+                          <h3
+                            class="font-semibold text-base-content ${n.isRead ? '' : 'font-bold'}"
+                          >
+                            ${n.type}
+                          </h3>
 
                           <p class="text-base-content/70 text-sm mt-1">
                             You have received a movie match invitation from
@@ -112,9 +110,9 @@ export class NotificationsPage extends LitElement {
                           ${CloseIcon()}
                         </button>
                       </div>
-                    `
-                  )}
-                </div>
+                    </div>
+                  `
+                )}
               `}
         </main>
       </div>
