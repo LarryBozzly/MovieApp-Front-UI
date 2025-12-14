@@ -100,7 +100,7 @@ export class NotificationsPage extends LitElement {
                             </h3>
                           </div>
 
-                          <p class="text-base-content/70 text-sm mt-1 truncate">
+                          <p class="text-base-content/70 text-sm mt-1">
                             You have received a movie match invitation from
                             <span class="font-semibold">${n.fromTag}</span>.
                           </p>
