@@ -174,3 +174,22 @@ export const InvitationIcon = (className = 'w-6 h-6 text-primary'): TemplateResu
     <path d="M16 10h4" />
   </svg>
 `;
+
+export const OutlineBellIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="${className}"
+  >
+    <!-- Bell body -->
+    <path d="M18 16H6c1.5-1.5 2-2.8 2-5V10a4 4 0 1 1 8 0v1c0 2.2.5 3.5 2 5Z" />
+
+    <!-- Bell clapper -->
+    <path d="M10 16a2 2 0 0 0 4 0" />
+  </svg>
+`;

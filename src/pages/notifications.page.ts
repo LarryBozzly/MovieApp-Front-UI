@@ -5,7 +5,7 @@ import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, selectNotifications } from '../store/app-store';
 import type { Notification } from '../models/models';
 import { authStore, type AuthState } from '../store/auth-store';
-import { CloseIcon, InvitationIcon } from '../components/icons/icons';
+import { CloseIcon, InvitationIcon, OutlineBellIcon } from '../components/icons/icons';
 
 @customElement('notifications-page')
 export class NotificationsPage extends LitElement {
@@ -69,8 +69,18 @@ export class NotificationsPage extends LitElement {
         <main class="p-4 max-w-3xl mx-auto space-y-4">
           ${this.notifications.length === 0
             ? html`
-                <div class="alert alert-info rounded-lg">
-                  <span>No notifications yet. Stay tuned!</span>
+                <div class="flex flex-col items-center justify-center py-20 text-center">
+                  <div
+                    class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+                  >
+                    <span class="text-3xl">${OutlineBellIcon('w-10 h-10 text-primary')}</span>
+                  </div>
+
+                  <h2 class="text-lg font-semibold text-base-content">You’re all caught up</h2>
+
+                  <p class="text-sm text-base-content/60 mt-1 max-w-xs">
+                    No notifications right now. When something happens, you’ll see it here.
+                  </p>
                 </div>
               `
             : html`
