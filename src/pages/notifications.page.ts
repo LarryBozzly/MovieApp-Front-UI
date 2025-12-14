@@ -122,7 +122,7 @@ export class NotificationsPage extends LitElement {
 
                         <button
                           @click=${(e: Event) => this.closeNotification(n, e)}
-                          class="absolute top-2 right-2 btn btn-ghost btn-sm text-error rounded-full"
+                          class="absolute top-2 right-2 btn btn-ghost btn-circle text-error"
                           title="Close"
                         >
                           ${CloseIcon()}
