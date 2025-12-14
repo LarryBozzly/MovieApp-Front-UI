@@ -54,12 +54,20 @@ export class NotificationsPage extends LitElement {
   }
 
   private async acceptInvitation(notification: Notification) {
+    appStore
+      .getState()
+      .setNotifications(this.notifications.filter((n) => n.id !== notification.id));
+
     authStore.getState().sendReadNotificationRequest(notification.id);
     await appStore.getState().openReceivedInvitationModal(notification);
   }
 
   private closeNotification(notification: Notification, e: Event) {
+    e.preventDefault();
     e.stopPropagation();
+    appStore
+      .getState()
+      .setNotifications(this.notifications.filter((n) => n.id !== notification.id));
     authStore.getState().rejectInvitationResponse(notification);
   }
 
