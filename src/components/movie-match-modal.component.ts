@@ -57,17 +57,18 @@ export class MovieMatchModalComponent extends LitElement {
     const modalContent = this.closest('.modal-box') as HTMLElement;
     const nudgeTransition = 'transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)';
     const defaultTransition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
+    modalContent.style.willChange = 'transform';
     modalContent.style.transformOrigin = 'bottom center';
     modalContent.style.transition = nudgeTransition;
-    modalContent.style.transform = 'translateX(30px) rotate(10deg)';
+    modalContent.style.transform = 'translate3d(30px, 0, 0) rotate(10deg)';
     setTimeout(() => {
-      modalContent.style.transform = 'translateX(0) rotate(0)';
+      modalContent.style.transform = 'translate3d(0, 0, 0) rotate(0)';
     }, 300);
     setTimeout(() => {
-      modalContent.style.transform = 'translateX(-30px) rotate(-10deg)';
+      modalContent.style.transform = 'translate3d(-30px, 0, 0) rotate(-10deg)';
     }, 600);
     setTimeout(() => {
-      modalContent.style.transform = 'translateX(0) rotate(0)';
+      modalContent.style.transform = 'translate3d(0, 0, 0) rotate(0)';
       modalContent.style.transition = defaultTransition;
     }, 900);
   }
@@ -96,6 +97,7 @@ export class MovieMatchModalComponent extends LitElement {
 
     const container = this as HTMLElement;
     const modalContent = this.closest('.modal-box') as HTMLElement;
+    modalContent.style.willChange = 'transform';
     if (!modalContent) return;
 
     this.manager = new Hammer.Manager(container, {
@@ -104,7 +106,7 @@ export class MovieMatchModalComponent extends LitElement {
     });
 
     const pan = new Hammer.Pan({
-      threshold: 0,
+      threshold: 8,
       direction: Hammer.DIRECTION_HORIZONTAL,
     });
     this.manager.add(pan);
@@ -132,7 +134,7 @@ export class MovieMatchModalComponent extends LitElement {
       if (gestureStartedInOverview && !gestureDecided) {
         const absX = Math.abs(e.deltaX);
         const absY = Math.abs(e.deltaY);
-        const threshold = 8; // pixels to avoid accidental tiny moves
+        const threshold = 8;
         if (absX >= threshold || absY >= threshold) {
           if (absY > absX) {
             // Vertical intent -> ignore Hammer pans for the rest of this gesture
@@ -144,7 +146,6 @@ export class MovieMatchModalComponent extends LitElement {
             // Horizontal intent -> allow Hammer to handle the pan smoothly
             ignorePan = false;
             gestureDecided = true;
-            // Prevent the native scroll when we decide horizontal so the page doesn't fight us
             try {
               e.srcEvent?.preventDefault?.();
             } catch (err) {
@@ -169,7 +170,7 @@ export class MovieMatchModalComponent extends LitElement {
 
       modalContent.style.transition = 'none';
       modalContent.style.transformOrigin = 'bottom center';
-      modalContent.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+      modalContent.style.transform = `translate3d(${currentX}px, 0, 0) rotate(${rotate}deg)`;
 
       if (e.srcEvent?.cancelable) {
         try {
@@ -198,7 +199,7 @@ export class MovieMatchModalComponent extends LitElement {
       if (shouldDismiss) {
         const direction = tempCurrentX > 0 ? 1 : -1;
         modalContent.style.transition = 'transform 0.4s ease-out';
-        modalContent.style.transform = `translateX(${direction * 1000}px) rotate(${direction * 15}deg)`;
+        modalContent.style.transform = `translate3d(${direction * 1000}px, 0, 0) rotate(${direction * 15}deg)`;
 
         setTimeout(() => {
           this.swipe(direction > 0 ? MovieMatchDirection.Like : MovieMatchDirection.Dislike);
@@ -206,7 +207,7 @@ export class MovieMatchModalComponent extends LitElement {
         }, 180);
       } else {
         modalContent.style.transition = 'transform 0.3s cubic-bezier(0.25, 1.25, 0.5, 1)';
-        modalContent.style.transform = 'translateX(0) rotate(0)';
+        modalContent.style.transform = 'translate3d(0, 0, 0) rotate(0)';
       }
 
       // Reset flags for the next gesture
