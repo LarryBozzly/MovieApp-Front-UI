@@ -37,6 +37,12 @@ export class ProfileButtonComponent extends LitElement {
     Router.go('/notifications');
   }
 
+  private redirectToAbout(e: Event) {
+    e.stopPropagation();
+    this.dropdownContainer?.blur();
+    Router.go('/about');
+  }
+
   render() {
     return html`
       <div class="flex-none">
@@ -75,6 +81,14 @@ export class ProfileButtonComponent extends LitElement {
                 ${this.notifications.length > 0
                   ? html`<span class="w-2 h-2 bg-secondary rounded-full"></span>`
                   : null}
+              </a>
+            </li>
+            <li>
+              <a
+                @click="${this.redirectToAbout}"
+                class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
+              >
+                <span>About</span>
               </a>
             </li>
             <hr class="my-2 border border-base-content/10" />
