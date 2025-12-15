@@ -34,6 +34,15 @@ export class ProfilePage extends LitElement {
     await navigator.clipboard.writeText(this.userProfile.tag);
   }
 
+  private formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
   render() {
     return html`
       <div class="scroll-container">
@@ -81,7 +90,9 @@ export class ProfilePage extends LitElement {
                 </div>
                 <div>
                   <p class="text-sm text-base-content/50">Joined</p>
-                  <p class="font-medium text-base-content">${this.userProfile.createdAt}</p>
+                  <p class="font-medium text-base-content">
+                    ${this.formatDate(this.userProfile.createdAt)}
+                  </p>
                 </div>
               </div>
             </div>
