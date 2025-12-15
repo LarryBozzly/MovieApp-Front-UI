@@ -12,7 +12,9 @@ export class ProfilePage extends LitElement {
   readonly userProfile!: UserProfile;
 
   static styles = css`
-    ${tailwindStyles} :host {
+    ${tailwindStyles}
+
+    :host {
       display: block;
       height: 100dvh;
       position: relative;
@@ -49,50 +51,49 @@ export class ProfilePage extends LitElement {
         <main class="p-4 max-w-4xl mx-auto">
           <div class="bg-base-100 shadow-lg rounded-xl p-6 flex flex-col md:flex-row gap-6">
             <!-- Avatar -->
-            <div class="flex-shrink-0">
+            <div class="flex-shrink-0 flex justify-center md:justify-start">
               <div
-                tabindex="0"
-                role="button"
-                class="w-32 h-32 rounded-full shadow-md bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative overflow-hidden"
+                class="w-32 h-32 rounded-full shadow-md bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase flex items-center justify-center text-4xl leading-none"
               >
-                <div class="h-full flex items-center justify-center text-4xl leading-none">
-                  ${this.userProfile.tag?.[0] ?? '?'}
-                </div>
+                ${this.userProfile.tag?.[0] ?? '?'}
               </div>
             </div>
 
             <!-- Profile Info -->
-            <div class="flex-1 flex flex-col justify-between min-w-0">
-              <div class="space-y-2">
-                <h1 class="text-2xl md:text-3xl font-bold text-base-content leading-tight truncate">
-                  ${this.userProfile.id}
-                </h1>
-                <div
-                  class="inline-flex items-center gap-2 rounded-full bg-base-200/80 px-4 py-2 text-sm font-medium text-base-content/80 hover:bg-base-300/80 hover:shadow-sm transition-all duration-200 border border-base-300/50"
-                >
-                  ${TagIcon('w-5 h-5 text-primary')}
-                  <span>${this.userProfile.tag}</span>
-                  <button
-                    class="btn btn-ghost btn-sm btn-circle hover:bg-primary/20 p-1.5"
-                    title="Copy username"
-                    @click="${this.copyTagToClipboard}"
-                    aria-label="Copy username"
+            <div class="flex-1 flex flex-col gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm text-base-content/50">Tag</span>
+                  <div
+                    class="inline-flex items-center gap-2 rounded-full bg-base-200/80 px-2 py-1 text-sm font-medium text-base-content/80 hover:bg-base-300/80 hover:shadow-sm transition-all duration-200 border border-base-300/50 w-fit"
                   >
-                    ${FilledCopyIcon('w-4 h-4 text-primary/80 hover:text-primary')}
-                  </button>
+                    ${TagIcon('w-5 h-5 text-primary')}
+                    <span class="text-base font-semibold text-base-content">
+                      ${this.userProfile.tag}
+                    </span>
+                    <button
+                      class="btn btn-ghost btn-sm btn-circle hover:bg-primary/20 p-1.5"
+                      title="Copy tag"
+                      @click="${this.copyTagToClipboard}"
+                      aria-label="Copy tag"
+                    >
+                      ${FilledCopyIcon('w-4 h-4 text-primary/80 hover:text-primary')}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <p class="text-sm text-base-content/50">Email</p>
-                  <p class="font-medium text-base-content">${this.userProfile.email}</p>
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm text-base-content/50">Email</span>
+                  <span class="font-medium text-base-content break-words whitespace-normal">
+                    ${this.userProfile.email}
+                  </span>
                 </div>
-                <div>
-                  <p class="text-sm text-base-content/50">Joined</p>
-                  <p class="font-medium text-base-content">
+
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm text-base-content/50">Joined</span>
+                  <span class="font-medium text-base-content">
                     ${this.formatDate(this.userProfile.createdAt)}
-                  </p>
+                  </span>
                 </div>
               </div>
             </div>
