@@ -106,7 +106,7 @@ export class MovieMatchModalComponent extends LitElement {
     });
 
     const pan = new Hammer.Pan({
-      threshold: 8,
+      threshold: 0,
       direction: Hammer.DIRECTION_HORIZONTAL,
     });
     this.manager.add(pan);
