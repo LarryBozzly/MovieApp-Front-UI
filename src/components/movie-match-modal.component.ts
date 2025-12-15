@@ -129,7 +129,12 @@ export class MovieMatchModalComponent extends LitElement {
       currentX = 0;
     });
 
+    let lastPanTime = 0;
     this.manager.on('panmove', (e) => {
+      // throttle to ~60fps
+      if (performance.now() - lastPanTime < 16) return; // ~60fps
+      lastPanTime = performance.now();
+
       // If the gesture started in the overview, we need to decide intent.
       if (gestureStartedInOverview && !gestureDecided) {
         const absX = Math.abs(e.deltaX);
