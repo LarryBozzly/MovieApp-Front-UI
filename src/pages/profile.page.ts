@@ -97,21 +97,6 @@ export class ProfilePage extends LitElement {
               </div>
             </div>
           </div>
-
-          <!-- Mock Recent Activity -->
-          <section class="mt-8">
-            <h2 class="text-xl font-bold text-base-content mb-4">Recent Activity</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              ${[1, 2, 3, 4, 5, 6].map(
-                (i) => html`
-                  <div class="card bg-base-100 shadow-md rounded-lg p-4">
-                    <h3 class="font-semibold text-base-content mb-1">Movie ${i}</h3>
-                    <p class="text-sm text-base-content/60">Watched on: 2023-0${i}-1${i}</p>
-                  </div>
-                `
-              )}
-            </div>
-          </section>
         </main>
       </div>
     `;
