@@ -1,7 +1,12 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
-import { MovieCategory, MovieCategoryMap, type Notification } from '../models/models';
+import {
+  MovieCategory,
+  MovieCategoryMap,
+  type Notification,
+  type UserProfile,
+} from '../models/models';
 import { OutlineChevronLeftIcon, SearchIcon } from './icons/icons';
 import '../components/search.component';
 import '../components/profile-button.component';
@@ -45,9 +50,9 @@ export class CategoriesComponent extends LitElement {
   `;
 
   @property() selectedCategory!: MovieCategory;
-  @property() selectIsOnInitLoaded!: boolean;
-  @property() isNavbarVisible!: boolean;
-  @property() tag: string = '?';
+  @property({ type: Boolean }) selectIsOnInitLoaded!: boolean;
+  @property({ type: Boolean }) isNavbarVisible!: boolean;
+  @property({ type: Object }) userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
 
   @state() private searchOpen = false;
@@ -118,7 +123,7 @@ export class CategoriesComponent extends LitElement {
         ${!this.isNavbarVisible
           ? html` <profile-button-component
               .notifications=${this.notifications}
-              .tag=${this.tag}
+              .userProfile=${this.userProfile}
             ></profile-button-component>`
           : ''}
       </div>

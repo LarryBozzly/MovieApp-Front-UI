@@ -9,13 +9,15 @@ import {
 } from './icons/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '../store/app-store';
-import { authStore, selectTag, type AuthState } from '../store/auth-store';
+import { authStore, selectUserProfile, type AuthState } from '../store/auth-store';
+import type { UserProfile } from '../models/models';
 
 @customElement('invite-fab')
 export class InviteFab extends LitElement {
   @watch(appStore) appState!: AppState;
   @watch(authStore) authState!: AuthState;
-  @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
+  @watchWithSelector({ store: authStore, selector: selectUserProfile })
+  readonly userProfile!: UserProfile;
 
   @state() private isOpen = false;
 
@@ -45,7 +47,7 @@ export class InviteFab extends LitElement {
 
   private async copyTagToClipboard(e: Event) {
     e.stopPropagation();
-    await navigator.clipboard.writeText(this.tag);
+    await navigator.clipboard.writeText(this.userProfile.tag);
     this.isOpen = false;
   }
 
@@ -99,7 +101,7 @@ export class InviteFab extends LitElement {
               class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300 pointer-events-none"
             >
               ${TagIcon(tagClass)}
-              <span>${this.tag}</span>
+              <span>${this.userProfile.tag}</span>
             </div>
 
             <button

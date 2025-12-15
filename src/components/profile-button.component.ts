@@ -4,7 +4,7 @@ import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '../store/auth-store';
 import { watch } from 'zustand-lit';
-import type { Notification } from '../models/models';
+import type { Notification, UserProfile } from '../models/models';
 import '../ui/notification-badge.component';
 
 @customElement('profile-button-component')
@@ -12,7 +12,7 @@ export class ProfileButtonComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
   @query('.dropdown-content') private dropdownContainer!: HTMLElement;
-  @property() tag: string = '?';
+  @property() userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
 
   static styles = css`
@@ -52,7 +52,7 @@ export class ProfileButtonComponent extends LitElement {
             role="button"
             class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"
           >
-            ${this.tag?.[0] ?? '?'}
+            ${this.userProfile.tag?.[0] ?? '?'}
             <notification-badge-component
               class="-top-1 -right-1"
               .count=${this.notifications.length}

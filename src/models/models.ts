@@ -89,11 +89,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  data: {
-    id: number;
-    email: string;
-    tag: string;
-  };
+  data: UserProfile;
   message: string;
 }
 export interface RegisterRequest {
@@ -164,4 +160,11 @@ export interface MovieListResponse {
   poster_path: string | null;
   total_pages: number;
   total_results: number;
+}
+
+export interface UserProfile {
+  id: number;
+  email: string;
+  tag: string;
+  createdAt: string;
 }

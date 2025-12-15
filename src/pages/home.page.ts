@@ -19,8 +19,8 @@ import '../components/categories.component';
 import '../components/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { MovieCategory, type Movie, type Notification } from '../models/models';
-import { authStore, selectTag } from '../store/auth-store';
+import { MovieCategory, type Movie, type Notification, type UserProfile } from '../models/models';
+import { authStore, selectUserProfile } from '../store/auth-store';
 
 @customElement('home-page')
 export class HomePage extends LitElement {
@@ -36,7 +36,8 @@ export class HomePage extends LitElement {
   readonly selectIsOnInitLoaded!: boolean;
   @watchWithSelector({ store: appStore, selector: selectisNavbarVisible })
   readonly isNavbarVisible!: boolean;
-  @watchWithSelector({ store: authStore, selector: selectTag }) readonly tag!: string;
+  @watchWithSelector({ store: authStore, selector: selectUserProfile })
+  readonly userProfile!: UserProfile;
   @watchWithSelector({ store: appStore, selector: selectNotifications })
   readonly notifications!: Notification[];
 
@@ -183,7 +184,7 @@ export class HomePage extends LitElement {
           <categories-component
             .notifications=${this.notifications}
             .isNavbarVisible=${this.isNavbarVisible}
-            .tag=${this.tag}
+            .userProfile=${this.userProfile}
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
             .selectedCategory=${this.selectedCategory}
             @onCategoryChanged=${this.onCategoryChanged}

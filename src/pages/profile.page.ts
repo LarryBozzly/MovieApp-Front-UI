@@ -1,19 +1,16 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
-
-interface MockProfile {
-  name: string;
-  username: string;
-  email: string;
-  joined: string;
-  avatar: string;
-  bio: string;
-  favoriteGenres: string[];
-}
+import { watchWithSelector } from 'zustand-lit';
+import { authStore, selectUserProfile } from '../store/auth-store';
+import { FilledCopyIcon, TagIcon } from '../components/icons/icons';
+import type { UserProfile } from '../models/models';
 
 @customElement('profile-page')
 export class ProfilePage extends LitElement {
+  @watchWithSelector({ store: authStore, selector: selectUserProfile })
+  readonly userProfile!: UserProfile;
+
   static styles = css`
     ${tailwindStyles} :host {
       display: block;
@@ -32,15 +29,10 @@ export class ProfilePage extends LitElement {
     }
   `;
 
-  private mockProfile: MockProfile = {
-    name: 'John Doe',
-    username: 'johndoe',
-    email: 'john@example.com',
-    joined: '2021-06-15',
-    avatar: 'https://i.pravatar.cc/150?img=12',
-    bio: 'Movie enthusiast and weekend critic. Love sci-fi and thrillers!',
-    favoriteGenres: ['Action', 'Sci-Fi', 'Thriller', 'Drama'],
-  };
+  private async copyTagToClipboard(e: Event) {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(this.userProfile.tag);
+  }
 
   render() {
     return html`
@@ -49,38 +41,47 @@ export class ProfilePage extends LitElement {
           <div class="bg-base-100 shadow-lg rounded-xl p-6 flex flex-col md:flex-row gap-6">
             <!-- Avatar -->
             <div class="flex-shrink-0">
-              <img
-                src="${this.mockProfile.avatar}"
-                alt="Avatar of ${this.mockProfile.name}"
-                class="w-32 h-32 rounded-full object-cover shadow-md"
-              />
+              <div
+                tabindex="0"
+                role="button"
+                class="w-32 h-32 rounded-full shadow-md bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative overflow-hidden"
+              >
+                <div class="h-full flex items-center justify-center text-4xl leading-none">
+                  ${this.userProfile.tag?.[0] ?? '?'}
+                </div>
+              </div>
             </div>
 
             <!-- Profile Info -->
-            <div class="flex-1 flex flex-col justify-between">
-              <div>
-                <h1 class="text-2xl font-bold text-base-content">${this.mockProfile.name}</h1>
-                <p class="text-sm text-base-content/50">@${this.mockProfile.username}</p>
-                <p class="mt-2 text-base-content">${this.mockProfile.bio}</p>
+            <div class="flex-1 flex flex-col justify-between min-w-0">
+              <div class="space-y-2">
+                <h1 class="text-2xl md:text-3xl font-bold text-base-content leading-tight truncate">
+                  ${this.userProfile.id}
+                </h1>
+                <div
+                  class="inline-flex items-center gap-2 rounded-full bg-base-200/80 px-4 py-2 text-sm font-medium text-base-content/80 hover:bg-base-300/80 hover:shadow-sm transition-all duration-200 border border-base-300/50"
+                >
+                  ${TagIcon('w-5 h-5 text-primary')}
+                  <span>${this.userProfile.tag}</span>
+                  <button
+                    class="btn btn-ghost btn-sm btn-circle hover:bg-primary/20 p-1.5"
+                    title="Copy username"
+                    @click="${this.copyTagToClipboard}"
+                    aria-label="Copy username"
+                  >
+                    ${FilledCopyIcon('w-4 h-4 text-primary/80 hover:text-primary')}
+                  </button>
+                </div>
               </div>
 
               <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <p class="text-sm text-base-content/50">Email</p>
-                  <p class="font-medium text-base-content">${this.mockProfile.email}</p>
+                  <p class="font-medium text-base-content">${this.userProfile.email}</p>
                 </div>
                 <div>
                   <p class="text-sm text-base-content/50">Joined</p>
-                  <p class="font-medium text-base-content">${this.mockProfile.joined}</p>
-                </div>
-              </div>
-
-              <div class="mt-4">
-                <p class="text-sm text-base-content/50 mb-1">Favorite Genres</p>
-                <div class="flex flex-wrap gap-2">
-                  ${this.mockProfile.favoriteGenres.map(
-                    (genre) => html` <span class="badge badge-outline">${genre}</span> `
-                  )}
+                  <p class="font-medium text-base-content">${this.userProfile.createdAt}</p>
                 </div>
               </div>
             </div>

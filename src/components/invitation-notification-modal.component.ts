@@ -17,8 +17,13 @@ export class InvitationNotificationModalComponent extends LitElement {
   @state() private isLoading: boolean = false;
 
   private async acceptInvitation() {
-    const tag = this.authState.tag;
-    if (!tag || !this.notification.fromTag || tag !== this.notification.toTag) return;
+    const hasValidTag = this.authState.userProfile.tag !== '';
+    if (
+      !hasValidTag ||
+      !this.notification.fromTag ||
+      this.authState.userProfile.tag !== this.notification.toTag
+    )
+      return;
 
     this.isLoading = true;
     await this.authState.acceptInvitationResponse(this.notification);

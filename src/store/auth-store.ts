@@ -7,6 +7,7 @@ import type {
   PasswordResetResponse,
   RegisterRequest,
   RegisterResponse,
+  UserProfile,
   VerifyResponse,
 } from '../models/models';
 import type HttpService from '../services/http.service';
@@ -34,7 +35,7 @@ export interface AuthState {
   isForgottenPasswordSent: boolean;
   isVerifiedPasswordCodeSent: boolean;
   isPasswordChanged: boolean;
-  tag: string;
+  userProfile: UserProfile;
   isWSConnected: boolean;
   error: Error | null;
   storeInit: (deps: Required<AuthState>['deps']) => void;
@@ -42,7 +43,7 @@ export interface AuthState {
   setError: (error: Error | null) => void;
   setLoading: (loading: boolean) => void;
   setWSConnected: (isWSConnected: boolean) => void;
-  setTag: (tag: string) => void;
+  setUserProfile: (userProfile: UserProfile) => void;
   setIsVerified: (isVerified: boolean) => void;
   setIsRegistered: (isRegistered: boolean) => void;
   setIsForgottenPasswordSent: (isForgottenPasswordSent: boolean) => void;
@@ -74,7 +75,12 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   isVerifiedPasswordCodeSent: false,
   isPasswordChanged: false,
   deps: undefined,
-  tag: '',
+  userProfile: {
+    id: 0,
+    email: '',
+    tag: '',
+    createdAt: '',
+  },
   isWSConnected: false,
   error: null,
   // reducers
@@ -82,7 +88,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   setLoading: (isLoading: boolean) => set({ isLoading }),
   setError: (error: Error | null) => set({ error }),
   setWSConnected: (isWSConnected: boolean) => set({ isWSConnected }),
-  setTag: (tag: string) => set({ tag }),
+  setUserProfile: (userProfile: UserProfile) => set({ userProfile }),
   setIsVerified: (isVerified: boolean) => set({ isVerified }),
   setIsRegistered: (isRegistered: boolean) => set({ isRegistered }),
   setIsForgottenPasswordSent: (isForgottenPasswordSent: boolean) =>
@@ -94,7 +100,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   // effects
   login: createEffect(store, async (deps, store, loginData) => {
     const { httpService, authService, webSocketService } = deps;
-    const { setLoading, setAuthorization, setTag, setError } = store.getState();
+    const { setLoading, setAuthorization, setUserProfile, setError } = store.getState();
 
     setLoading(true);
 
@@ -112,7 +118,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     if (isAuthorized) {
       authService.startRefreshTimer();
       setError(null);
-      setTag(data.data.tag);
+      setUserProfile(data.data);
       Router.go('/');
     }
   }),
@@ -197,7 +203,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   }),
   refresh: createEffect(store, async (deps, store) => {
     const { httpService, webSocketService, authService } = deps;
-    const { setLoading, setAuthorization, setTag, setError, logout } = store.getState();
+    const { setLoading, setAuthorization, setUserProfile, setError, logout } = store.getState();
 
     setLoading(true);
 
@@ -215,7 +221,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     if (data) {
       authService.startRefreshTimer();
       setAuthorization(true);
-      setTag(data.data.tag);
+      setUserProfile(data.data);
     }
   }),
   sendReadNotificationRequest: createEffect(store, async (deps, _store, notificationId: number) => {
@@ -313,5 +319,5 @@ export const selectIsVerifiedPasswordCodeSent = (state: AuthState) =>
   state.isVerifiedPasswordCodeSent;
 export const selectisPasswordChanged = (state: AuthState) => state.isPasswordChanged;
 export const selectError = (state: AuthState) => state.error;
-export const selectTag = (state: AuthState) => state.tag;
+export const selectUserProfile = (state: AuthState) => state.userProfile;
 export const selectIsWSConnected = (state: AuthState) => state.isWSConnected;
