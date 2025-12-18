@@ -76,9 +76,7 @@ export type NotificationType = (typeof NotificationType)[keyof typeof Notificati
 export interface Notification {
   id: number;
   type: NotificationType;
-  fromTag: string;
-  toTag: string;
-  isRead: boolean;
+  message: string;
 }
 
 // app

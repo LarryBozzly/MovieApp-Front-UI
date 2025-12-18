@@ -108,16 +108,8 @@ export class NotificationsPage extends LitElement {
                         </div>
 
                         <div class="flex-1 min-w-0">
-                          <h3
-                            class="font-semibold text-base-content ${n.isRead ? '' : 'font-bold'}"
-                          >
-                            ${n.type}
-                          </h3>
-
-                          <p class="text-base-content/70 text-sm mt-1">
-                            You have received a movie match invitation from
-                            <span class="font-semibold">${n.fromTag}</span>.
-                          </p>
+                          <h3 class="text-base-content font-bold">${n.type}</h3>
+                          <p class="text-base-content/70 text-sm mt-1">${n.message}</p>
                         </div>
 
                         <button

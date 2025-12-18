@@ -12,7 +12,7 @@ export class ProfileButtonComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
   @query('.dropdown-content') private dropdownContainer!: HTMLElement;
-  @property() userProfile!: UserProfile;
+  @property({ type: Object }) userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
 
   static styles = css`

@@ -25,9 +25,7 @@ enum NotificationType {
 message Notification {
   uint32 id = 1;
   NotificationType type = 2;
-  string fromTag = 3;
-  string toTag = 4;
-  bool isRead = 5;
+  string message = 3;
 }
 
 message GetNotificationsRequest {
@@ -61,10 +59,8 @@ message InvitationRequest {
 
 message InvitationResponse {
   // Recipient → Server: Accept the invite
-  string from = 1; // Recipient's tag
-  string to = 2;   // Original inviter's tag
-  uint32 notificationId = 3;
-  bool accepted = 4;
+  uint32 notificationId = 1;
+  bool accepted = 2;
 }
 
 // ------------------------------

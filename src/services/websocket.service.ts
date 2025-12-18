@@ -148,8 +148,6 @@ export default class WebSocketService {
   acceptInvitationResponse(notification: Notification) {
     this.send({
       invitationResponse: {
-        to: notification.toTag,
-        from: notification.fromTag,
         notificationId: notification.id,
         accepted: true,
       },
@@ -159,8 +157,6 @@ export default class WebSocketService {
   rejectInvitationResponse(notification: Notification) {
     this.send({
       invitationResponse: {
-        to: notification.toTag,
-        from: notification.fromTag,
         notificationId: notification.id,
         accepted: false,
       },
