@@ -63,22 +63,22 @@ body {
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0px,
-    black 5px,
-    black calc(100% - 5px),
+    black 7px,
+    black calc(100% - 7px),
     transparent 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0px,
-    black 5px,
-    black calc(100% - 5px),
+    black 7px,
+    black calc(100% - 7px),
     transparent 100%
   );
 }
 
 .scroll-fade > :first-child {
-  margin-left: 5px;
+  margin-left: 7px;
 }
 .scroll-fade > :last-child {
-  margin-right: 5px;
+  margin-right: 7px;
 }
