@@ -54,6 +54,7 @@ export class CategoriesComponent extends LitElement {
   @property({ type: Boolean }) isNavbarVisible!: boolean;
   @property({ type: Object }) userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
+  @property() query!: string;
 
   @state() private searchOpen = false;
 
@@ -69,6 +70,11 @@ export class CategoriesComponent extends LitElement {
         composed: true,
       })
     );
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.searchOpen = this.query.length > 0;
   }
 
   private openSearch() {
@@ -116,7 +122,7 @@ export class CategoriesComponent extends LitElement {
                 <button class="btn btn-ghost btn-circle" @click=${this.closeSearch}>
                   ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
                 </button>
-                <search-component></search-component>
+                <search-component .query=${this.query}></search-component>
               </div>
             `
           : ''}

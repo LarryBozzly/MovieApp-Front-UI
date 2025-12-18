@@ -187,6 +187,7 @@ export class HomePage extends LitElement {
             .userProfile=${this.userProfile}
             .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
             .selectedCategory=${this.selectedCategory}
+            .query=${this.query}
             @onCategoryChanged=${this.onCategoryChanged}
             @onSearchInput=${this.onSearchInput}
           ></categories-component>

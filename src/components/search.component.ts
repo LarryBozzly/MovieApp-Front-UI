@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { tailwindStyles } from '../utils/app.constants';
-import { watch, watchWithSelector } from 'zustand-lit';
-import { appStore, selectQuery, type AppState } from '../store/app-store';
+import { watch } from 'zustand-lit';
+import { appStore, type AppState } from '../store/app-store';
 import { MovieCategory } from '../models/models';
 import { debounce } from '../utils/debounce';
 import { SearchIcon } from './icons/icons';
@@ -11,7 +11,7 @@ import { SearchIcon } from './icons/icons';
 @customElement('search-component')
 export class SearchComponent extends LitElement {
   @watch(appStore) appState!: AppState;
-  @watchWithSelector({ store: appStore, selector: selectQuery }) readonly query!: string;
+  @property() query!: string;
 
   static styles = css`
     ${tailwindStyles}
