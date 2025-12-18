@@ -15,8 +15,8 @@ export class MoviesListComponent extends LitElement {
     ${tailwindStyles}
   `;
 
-  @property() movies: Movie[] = [];
-  @property() isLoading!: boolean;
+  @property({ type: Array }) movies: Movie[] = [];
+  @property({ type: Boolean }) isLoading!: boolean;
 
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A';

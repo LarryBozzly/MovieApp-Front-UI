@@ -15,38 +15,6 @@ import '../components/profile-button.component';
 export class CategoriesComponent extends LitElement {
   static styles = css`
     ${tailwindStyles}
-    /* Hide scrollbar but keep scroll functionality */
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    .scrollbar-hide {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-    }
-
-    .scroll-fade {
-      -webkit-mask-image: linear-gradient(
-        to right,
-        transparent 0px,
-        black 5px,
-        black calc(100% - 5px),
-        transparent 100%
-      );
-      mask-image: linear-gradient(
-        to right,
-        transparent 0px,
-        black 5px,
-        black calc(100% - 5px),
-        transparent 100%
-      );
-    }
-
-    .scroll-fade > :first-child {
-      margin-left: 5px;
-    }
-    .scroll-fade > :last-child {
-      margin-right: 5px;
-    }
   `;
 
   @property() selectedCategory!: MovieCategory;

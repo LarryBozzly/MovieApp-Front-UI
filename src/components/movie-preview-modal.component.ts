@@ -12,7 +12,7 @@ export class MoviePreviewModal extends LitElement {
   `;
 
   @property({ type: Object }) movie!: Movie;
-  @property({ type: Function }) onClose!: () => void;
+  @property() onClose!: () => void;
 
   private disableContextMenu(e: Event) {
     e.preventDefault();
@@ -55,7 +55,7 @@ export class MoviePreviewModal extends LitElement {
           </h3>
 
           <div class="flex gap-2 overflow-hidden whitespace-nowrap flex-shrink-0">
-            <genre-badges .genreIds=${this.movie.genre_ids} .limit=${10}></genre-badges>
+            <genre-badges .genreIds=${this.movie.genre_ids}></genre-badges>
           </div>
 
           <div
