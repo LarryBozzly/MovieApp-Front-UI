@@ -10,7 +10,7 @@ export class MovieMatchResultModal extends LitElement {
   `;
 
   @property({ type: Object }) movie!: Movie;
-  @property({ type: Function }) onClose!: () => void;
+  @property() onClose!: () => void;
   @state() private canClose = false;
 
   firstUpdated() {
@@ -40,11 +40,13 @@ export class MovieMatchResultModal extends LitElement {
             </span>
           </h3>
 
-          <div class="flex gap-2 mt-1 overflow-x-auto whitespace-nowrap flex-shrink-0">
+          <div
+            class="flex gap-2 mt-1 overflow-x-auto scrollbar-hide whitespace-nowrap flex-shrink-0 px-1"
+          >
             ${this.movie.genre_ids.map(
               (id) => html`
                 <span
-                  class="badge badge-outline text-xs border-base-content/40 text-base-content/80"
+                  class="badge badge-outline text-xs border-base-content/40 text-base-content/80 flex-shrink-0"
                 >
                   ${MovieGenreMap.get(id)}
                 </span>
