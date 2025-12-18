@@ -15,7 +15,7 @@ export class GenreBadges extends LitElement {
 
   @property({ type: Array }) genreIds: number[] = [];
   @property({ type: Number }) maxVisible: number = 2;
-
+  @property({ type: Boolean }) scrollable!: boolean;
   @state() private expanded = false;
 
   private toggleExpanded() {
@@ -23,6 +23,24 @@ export class GenreBadges extends LitElement {
   }
 
   render() {
+    if (this.scrollable) {
+      // Scrollable version
+      return html`
+        <div class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap">
+          ${this.genreIds.map(
+            (id) => html`
+              <span
+                class="badge badge-outline bg-base-200/60 text-base-content/70 text-xs flex-shrink-0"
+              >
+                ${MovieGenreMap.get(id)}
+              </span>
+            `
+          )}
+        </div>
+      `;
+    }
+
+    // Non-scrollable version with "+N more"
     const visibleGenres = this.expanded ? this.genreIds : this.genreIds.slice(0, this.maxVisible);
     const hiddenCount = this.genreIds.length - visibleGenres.length;
 

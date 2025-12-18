@@ -55,7 +55,7 @@ export class MoviePreviewModal extends LitElement {
           </h3>
 
           <div class="flex gap-2 overflow-hidden whitespace-nowrap flex-shrink-0">
-            <genre-badges .genreIds=${this.movie.genre_ids}></genre-badges>
+            <genre-badges .genreIds=${this.movie.genre_ids} .scrollable=${true}></genre-badges>
           </div>
 
           <div

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieGenreMap, type Movie } from '../models/models';
+import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 
 @customElement('movie-match-result-modal')
@@ -43,15 +43,7 @@ export class MovieMatchResultModal extends LitElement {
           <div
             class="flex gap-2 mt-1 overflow-x-auto scrollbar-hide whitespace-nowrap flex-shrink-0 px-1"
           >
-            ${this.movie.genre_ids.map(
-              (id) => html`
-                <span
-                  class="badge badge-outline text-xs border-base-content/40 text-base-content/80 flex-shrink-0"
-                >
-                  ${MovieGenreMap.get(id)}
-                </span>
-              `
-            )}
+            <genre-badges .genreIds=${this.movie.genre_ids} .scrollable=${true}></genre-badges>
           </div>
 
           <p class="mt-2 flex-1 overflow-y-auto pr-1 text-base-content/80">
