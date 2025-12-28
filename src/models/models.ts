@@ -86,6 +86,11 @@ export interface LoginRequest {
   remember: boolean;
 }
 
+export interface UpdateTagResponse {
+  data: UserProfile;
+  message: string;
+}
+
 export interface LoginResponse {
   data: UserProfile;
   message: string;

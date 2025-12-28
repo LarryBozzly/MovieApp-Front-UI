@@ -56,6 +56,21 @@ class HttpService {
     return response.json();
   }
 
+  async patch<T>(endpoint: string, body: unknown, options?: { signal?: AbortSignal }): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: 'PATCH',
+      headers: this.getHeaders(),
+      credentials: 'include',
+      body: JSON.stringify(body),
+      signal: options?.signal,
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || `Request failed: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
   async delete<T>(endpoint: string, options?: { signal?: AbortSignal }): Promise<T> {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'DELETE',

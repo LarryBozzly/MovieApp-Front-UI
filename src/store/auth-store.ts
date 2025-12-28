@@ -7,6 +7,7 @@ import type {
   PasswordResetResponse,
   RegisterRequest,
   RegisterResponse,
+  UpdateTagResponse,
   UserProfile,
   VerifyResponse,
 } from '../models/models';
@@ -57,6 +58,7 @@ export interface AuthState {
   passwordChange: (password: string) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  updateTag: (newTag: string) => Promise<void>;
   sendReadNotificationRequest: (notificationId: number) => Promise<void>;
   sendInvitationRequest: (toTag: string) => Promise<void>;
   acceptInvitationResponse: (notification: Notification) => Promise<void>;
@@ -222,6 +224,24 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       authService.startRefreshTimer();
       setAuthorization(true);
       setUserProfile(data.data);
+    }
+  }),
+  updateTag: createEffect(store, async (deps, store, tag) => {
+    const { httpService } = deps;
+    const { setLoading, setError } = store.getState();
+
+    setLoading(true);
+    setError(null);
+
+    const { data, error } = await tryCatch(
+      httpService.patch<UpdateTagResponse>('/users/tag', { tag })
+    );
+
+    setLoading(false);
+    setError(error);
+
+    if (data) {
+      store.getState().setUserProfile(data.data);
     }
   }),
   sendReadNotificationRequest: createEffect(store, async (deps, _store, notificationId: number) => {

@@ -3,8 +3,9 @@ import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
 import { authStore, selectUserProfile } from '../store/auth-store';
-import { FilledCopyIcon, TagIcon } from '../components/icons/icons';
+import { FilledCopyIcon, PencilEditIcon } from '../components/icons/icons';
 import type { UserProfile } from '../models/models';
+import { appStore } from '../store/app-store';
 
 @customElement('profile-page')
 export class ProfilePage extends LitElement {
@@ -36,6 +37,13 @@ export class ProfilePage extends LitElement {
     await navigator.clipboard.writeText(this.userProfile.tag);
   }
 
+  private handleEditTag(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    appStore.getState().openEditTagModal(this.userProfile.tag);
+  }
+
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -62,34 +70,45 @@ export class ProfilePage extends LitElement {
             <!-- Profile Info -->
             <div class="flex-1 flex flex-col gap-6">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div class="flex flex-col gap-1">
-                  <span class="text-sm text-base-content/50">Tag</span>
+                <!-- Tag Section -->
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-base-content/50">Tag</span>
+                    <button
+                      class="btn btn-ghost btn-sm gap-1.5"
+                      title="Edit tag"
+                      @click="${this.handleEditTag}"
+                      aria-label="Edit tag"
+                    >
+                      ${PencilEditIcon('w-4 h-4 text-primary/80')}
+                      <span class="text-sm text-primary/80">Edit</span>
+                    </button>
+                  </div>
                   <div
-                    class="inline-flex items-center gap-2 rounded-full bg-base-200/80 px-2 py-1 text-sm font-medium text-base-content/80 hover:bg-base-300/80 hover:shadow-sm transition-all duration-200 border border-base-300/50 w-fit"
+                    class="inline-flex items-center gap-2 rounded-full bg-base-200/80 px-3 py-1.5 text-sm font-medium text-base-content/80 border border-base-300/50 w-fit"
                   >
-                    ${TagIcon('w-5 h-5 text-primary')}
                     <span class="text-base font-semibold text-base-content">
                       ${this.userProfile.tag}
                     </span>
                     <button
-                      class="btn btn-ghost btn-sm btn-circle hover:bg-primary/20 p-1.5"
+                      class="btn btn-ghost btn-sm btn-circle"
                       title="Copy tag"
                       @click="${this.copyTagToClipboard}"
                       aria-label="Copy tag"
                     >
-                      ${FilledCopyIcon('w-4 h-4 text-primary/80 hover:text-primary')}
+                      ${FilledCopyIcon('w-4 h-4 text-primary/80')}
                     </button>
                   </div>
                 </div>
 
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-2">
                   <span class="text-sm text-base-content/50">Email</span>
                   <span class="font-medium text-base-content break-words whitespace-normal">
                     ${this.userProfile.email}
                   </span>
                 </div>
 
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-2">
                   <span class="text-sm text-base-content/50">Joined</span>
                   <span class="font-medium text-base-content">
                     ${this.formatDate(this.userProfile.createdAt)}

@@ -9,7 +9,7 @@ export class ErrorModal extends LitElement {
   `;
 
   @property({ type: String }) message: string = 'An unexpected error occurred.';
-  @property({ type: Function }) onClose!: () => void;
+  @property() onClose!: () => void;
 
   render() {
     return html`
