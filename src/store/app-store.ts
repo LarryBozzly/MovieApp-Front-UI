@@ -15,6 +15,7 @@ import type { AuthState } from './auth-store';
 import { tryCatch } from '../utils/try-catch';
 import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
+import type BottomSheetService from '../services/bottom-sheet.service';
 import '../components/send-invite-modal.component';
 import '../components/invitation-notification-modal.component';
 import '../components/movie-match-modal.component';
@@ -29,6 +30,7 @@ export interface AppState {
     authService: AuthService;
     authStore: StoreApi<AuthState>;
     modalService: ModalService;
+    bottomSheetService: BottomSheetService;
   };
   globalAbortController: AbortController;
   category: MovieCategory | undefined;
