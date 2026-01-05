@@ -262,6 +262,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         props: { version: data.version },
       });
     }
+    // Update local storage with the latest version
   }),
   addToWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
     const { httpService } = deps;
