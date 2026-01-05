@@ -68,7 +68,6 @@ export interface AppState {
     page: number,
     query?: string
   ) => Promise<void>;
-  fetchAppVersion: () => Promise<void>;
   addToWatchlist: (movie: Movie) => Promise<void>;
   removeFromWatchlist: (movie: Movie) => Promise<void>;
   openSendInvitationModal: () => Promise<void>;
@@ -117,8 +116,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   setNotifications: (notifications: Notification[]) =>
     set((state) => ({ ...state, notifications })),
   onInit: createEffect(store, async (_deps, store) => {
-    const { fetchCategoryMovies, fetchAppVersion, setOnInitLoaded, page } = store.getState();
-    await fetchAppVersion();
+    const { fetchCategoryMovies, setOnInitLoaded, page } = store.getState();
     await fetchCategoryMovies(MovieCategory.TRENDING, page);
     setOnInitLoaded(true);
   }),
@@ -237,32 +235,6 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setMaxPage(data?.total_pages ?? 1);
     const movies = data?.items ?? [];
     setMovies(movies);
-  }),
-  fetchAppVersion: createEffect(store, async (deps, store) => {
-    const { bottomSheetService } = deps;
-    const { setLoading } = store.getState();
-    setLoading(true);
-
-    const { data } = await tryCatch(
-      (async () => {
-        const res = await fetch('/version/version.json', { cache: 'no-cache' });
-        if (!res.ok) return null;
-        return res.json() as Promise<VersionResponse>;
-      })()
-    );
-    setLoading(false);
-
-    if (!data?.version) return;
-
-    const localVersion = localStorage.getItem('app-version');
-
-    if (localVersion !== data.version) {
-      bottomSheetService.open({
-        tag: 'version-update-modal-component',
-        props: { version: data.version },
-      });
-    }
-    // Update local storage with the latest version
   }),
   addToWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
     const { httpService } = deps;
