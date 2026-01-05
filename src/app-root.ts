@@ -10,9 +10,9 @@ import AuthService from './services/auth.service';
 import { authStore } from './store/auth-store';
 import WebSocketService from './services/websocket.service';
 import ModalService from './services/modal.service';
-import BottomSheetService from './services/bottom-sheet.service';
 import DeviceInfoService from './services/device-info.service';
 import ConnectivityService from './services/connectivity.service';
+import AppVersionService from './services/app-version.service';
 import './components/loading-overlay.component';
 
 @customElement('app-root')
@@ -46,7 +46,7 @@ export class AppRoot extends LitElement {
       authService: AuthService.getInstance(),
       authStore,
       modalService: ModalService.getInstance(),
-      bottomSheetService: new BottomSheetService(),
+      appVersionService: AppVersionService.getInstance(),
     });
   }
 
@@ -58,6 +58,7 @@ export class AppRoot extends LitElement {
       deviceInfoService: new DeviceInfoService(),
       modalService: ModalService.getInstance(),
       connectivityService: ConnectivityService.getInstance(),
+      appVersionService: AppVersionService.getInstance(),
     });
   }
 

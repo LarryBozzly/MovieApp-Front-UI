@@ -15,7 +15,7 @@ import type { AuthState } from './auth-store';
 import { tryCatch } from '../utils/try-catch';
 import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
-import type BottomSheetService from '../services/bottom-sheet.service';
+import type AppVersionService from '../services/app-version.service';
 import '../components/send-invite-modal.component';
 import '../components/invitation-notification-modal.component';
 import '../components/movie-match-modal.component';
@@ -31,7 +31,7 @@ export interface AppState {
     authService: AuthService;
     authStore: StoreApi<AuthState>;
     modalService: ModalService;
-    bottomSheetService: BottomSheetService;
+    appVersionService: AppVersionService;
   };
   globalAbortController: AbortController;
   category: MovieCategory | undefined;
@@ -114,9 +114,11 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     })),
   setNotifications: (notifications: Notification[]) =>
     set((state) => ({ ...state, notifications })),
-  onInit: createEffect(store, async (_deps, store) => {
-    const { fetchCategoryMovies, setOnInitLoaded, page } = store.getState();
+  onInit: createEffect(store, async (deps, store) => {
+    const { appVersionService, modalService } = deps;
+    const { fetchCategoryMovies, setOnInitLoaded, closeModal, page } = store.getState();
     await fetchCategoryMovies(MovieCategory.TRENDING, page);
+    await appVersionService.checkAndShowUpdateModal(modalService, closeModal);
     setOnInitLoaded(true);
   }),
   triggerAbort: createEffect(store, async (_deps, store) => {

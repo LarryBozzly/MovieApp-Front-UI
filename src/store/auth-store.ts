@@ -20,6 +20,7 @@ import type WebSocketService from '../services/websocket.service';
 import type DeviceInfoService from '../services/device-info.service';
 import type ConnectivityService from '../services/connectivity.service';
 import type ModalService from '../services/modal.service';
+import type AppVersionService from '../services/app-version.service';
 import { env } from '../config';
 
 export interface AuthState {
@@ -30,6 +31,7 @@ export interface AuthState {
     deviceInfoService: DeviceInfoService;
     connectivityService: ConnectivityService;
     modalService: ModalService;
+    appVersionService: AppVersionService;
   };
   isAuthorized: boolean;
   isLoading: boolean;
@@ -314,8 +316,14 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     webSocketService.sendMovieRejection(movie);
   }),
   initDeviceVisibilityListener: createEffect(store, async (deps, store) => {
-    const { deviceInfoService, webSocketService, authService, connectivityService, modalService } =
-      deps;
+    const {
+      deviceInfoService,
+      webSocketService,
+      authService,
+      connectivityService,
+      appVersionService,
+      modalService,
+    } = deps;
     const { refresh, closeModal } = store.getState();
 
     deviceInfoService.onVisibilityChange(async (isForeground) => {
@@ -329,16 +337,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       }
       if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet())) {
         refresh();
-        // handle refresh and then check for version update
-        // if new version, show modal
-        const version = await connectivityService.fetchAppVersion();
-        const localVersion = localStorage.getItem('app-version');
-        if (localVersion !== version) {
-          modalService.open({
-            tag: 'version-update-modal-component',
-            props: { version, onClose: closeModal },
-          });
-        }
+        await appVersionService.checkAndShowUpdateModal(modalService, closeModal);
       }
     });
   }),
