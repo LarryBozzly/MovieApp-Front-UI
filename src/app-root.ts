@@ -45,7 +45,7 @@ export class AppRoot extends LitElement {
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
       authService: AuthService.getInstance(),
       authStore,
-      modalService: new ModalService(),
+      modalService: ModalService.getInstance(),
       bottomSheetService: new BottomSheetService(),
     });
   }
@@ -56,6 +56,7 @@ export class AppRoot extends LitElement {
       authService: AuthService.getInstance(),
       webSocketService: new WebSocketService(),
       deviceInfoService: new DeviceInfoService(),
+      modalService: ModalService.getInstance(),
       connectivityService: ConnectivityService.getInstance(),
     });
   }

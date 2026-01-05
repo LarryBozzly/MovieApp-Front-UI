@@ -1,4 +1,6 @@
 import { env } from '../config';
+import type { VersionResponse } from '../models/models';
+import { tryCatch } from '../utils/try-catch';
 
 class ConnectivityService {
   private static instance: ConnectivityService;
@@ -126,6 +128,18 @@ class ConnectivityService {
       // Clear the cached promise so a new call can start a new check.
       this.currentPromise = null;
     }
+  }
+
+  public async fetchAppVersion(): Promise<string | null> {
+    const { data } = await tryCatch(
+      (async () => {
+        const res = await fetch('/version/version.json', { cache: 'no-cache' });
+        if (!res.ok) return null;
+        return res.json() as Promise<VersionResponse>;
+      })()
+    );
+
+    return data?.version ?? null;
   }
 }
 

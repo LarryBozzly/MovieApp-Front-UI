@@ -9,11 +9,12 @@ type ModalContent =
       useProperties?: boolean;
     };
 
-export default class ModalService {
+class ModalService {
+  private static instance: ModalService;
   private modal: HTMLDialogElement;
   private contentContainer: HTMLElement;
 
-  constructor() {
+  private constructor() {
     // Create modal structure dynamically if not present
     let modal = document.getElementById('global-modal') as HTMLDialogElement;
 
@@ -55,6 +56,13 @@ export default class ModalService {
 
     this.modal = modal;
     this.contentContainer = contentContainer;
+  }
+
+  public static getInstance(): ModalService {
+    if (!ModalService.instance) {
+      ModalService.instance = new ModalService();
+    }
+    return ModalService.instance;
   }
 
   open(content: ModalContent): void {
@@ -109,3 +117,5 @@ export default class ModalService {
     this.modal.close();
   }
 }
+
+export default ModalService;

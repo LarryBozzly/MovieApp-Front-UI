@@ -19,6 +19,7 @@ import { createEffect } from '../utils/create-effect.functions';
 import type WebSocketService from '../services/websocket.service';
 import type DeviceInfoService from '../services/device-info.service';
 import type ConnectivityService from '../services/connectivity.service';
+import type ModalService from '../services/modal.service';
 import { env } from '../config';
 
 export interface AuthState {
@@ -28,6 +29,7 @@ export interface AuthState {
     webSocketService: WebSocketService;
     deviceInfoService: DeviceInfoService;
     connectivityService: ConnectivityService;
+    modalService: ModalService;
   };
   isAuthorized: boolean;
   isLoading: boolean;
@@ -66,6 +68,7 @@ export interface AuthState {
   sendMovieSelection: (movie: Movie) => Promise<void>;
   sendMovieRejection: (movie: Movie) => Promise<void>;
   initDeviceVisibilityListener: () => Promise<void>;
+  closeModal: () => Promise<void>;
 }
 
 export const authStore = createStore<AuthState>((set, _get, store) => ({
@@ -311,8 +314,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     webSocketService.sendMovieRejection(movie);
   }),
   initDeviceVisibilityListener: createEffect(store, async (deps, store) => {
-    const { deviceInfoService, webSocketService, authService, connectivityService } = deps;
-    const { refresh } = store.getState();
+    const { deviceInfoService, webSocketService, authService, connectivityService, modalService } =
+      deps;
+    const { refresh, closeModal } = store.getState();
 
     deviceInfoService.onVisibilityChange(async (isForeground) => {
       const hasRefreshTokenFlag = authService.hasRefreshTokenFlag();
@@ -323,9 +327,23 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
         webSocketService.close(true);
         authService.stopRefreshTimer();
       }
-      if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet()))
+      if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet())) {
         refresh();
+        // handle refresh and then check for version update
+        const version = await connectivityService.fetchAppVersion();
+        const localVersion = localStorage.getItem('app-version');
+        if (localVersion !== version) {
+          modalService.open({
+            tag: 'version-update-modal-component',
+            props: { version, onClose: closeModal },
+          });
+        }
+      }
     });
+  }),
+  closeModal: createEffect(store, async (deps, _store) => {
+    const { modalService } = deps;
+    modalService.close();
   }),
 }));
 

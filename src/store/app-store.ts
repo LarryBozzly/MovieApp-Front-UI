@@ -8,7 +8,6 @@ import {
   type MovieListResponse,
   type MoviesResponse,
   type Notification,
-  type VersionResponse,
 } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
