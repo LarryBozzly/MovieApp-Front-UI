@@ -167,6 +167,10 @@ export default class BottomSheetService {
       touchAction: 'pan-y',
       userSelect: 'none',
       willChange: 'transform', // improve performance
+      paddingBottom: 'env(safe-area-inset-bottom)',
+      paddingLeft: 'env(safe-area-inset-left)',
+      paddingRight: 'env(safe-area-inset-right)',
+      boxSizing: 'border-box',
     });
   }
 

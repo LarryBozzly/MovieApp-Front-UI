@@ -3,6 +3,10 @@ interface Dates {
   minimum: string;
 }
 
+export interface VersionResponse {
+  version: string;
+}
+
 export interface MoviesResponse {
   dates: Dates;
   page: number;
