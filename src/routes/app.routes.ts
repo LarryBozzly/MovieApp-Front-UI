@@ -38,4 +38,8 @@ export const routes: Route[] = [
     component: 'forgot-password-page',
     action: publicGuard,
   },
+  {
+    path: '(.*)',
+    redirect: '/',
+  },
 ];
