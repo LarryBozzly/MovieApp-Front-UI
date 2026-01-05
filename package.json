@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
+    "prebuild": "node scripts/generate-version.js",
     "build": "tsc && vite build --mode production",
     "preview": "vite preview --mode production",
     "lint": "prettier --write \"src/**/*.{ts,js}\""
