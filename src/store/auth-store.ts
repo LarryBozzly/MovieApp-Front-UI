@@ -330,6 +330,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet())) {
         refresh();
         // handle refresh and then check for version update
+        // if new version, show modal
         const version = await connectivityService.fetchAppVersion();
         const localVersion = localStorage.getItem('app-version');
         if (localVersion !== version) {
