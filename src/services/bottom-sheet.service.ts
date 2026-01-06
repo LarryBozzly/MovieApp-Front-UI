@@ -166,7 +166,7 @@ export default class BottomSheetService {
       boxShadow: '0 -8px 24px rgba(0,0,0,0.15)',
       touchAction: 'pan-y',
       userSelect: 'none',
-      willChange: 'transform', // improve performance
+      willChange: 'transform',
       paddingBottom: 'env(safe-area-inset-bottom)',
       paddingLeft: 'env(safe-area-inset-left)',
       paddingRight: 'env(safe-area-inset-right)',
