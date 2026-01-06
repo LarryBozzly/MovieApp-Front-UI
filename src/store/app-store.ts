@@ -118,7 +118,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { appVersionService, modalService } = deps;
     const { fetchCategoryMovies, setOnInitLoaded, closeModal, page } = store.getState();
     await fetchCategoryMovies(MovieCategory.TRENDING, page);
-    await appVersionService.checkAndShowUpdateModal(modalService, closeModal);
+    appVersionService.checkAndShowUpdateModal(modalService, closeModal);
     setOnInitLoaded(true);
   }),
   triggerAbort: createEffect(store, async (_deps, store) => {
