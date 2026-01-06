@@ -337,7 +337,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       }
       if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet())) {
         refresh();
-        await appVersionService.checkAndShowUpdateModal(modalService, closeModal);
+        appVersionService.checkAndShowUpdateModal(modalService, closeModal);
       }
     });
   }),
