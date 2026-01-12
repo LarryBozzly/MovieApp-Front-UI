@@ -8,7 +8,11 @@ import type { StoreApi } from 'zustand/vanilla';
  */
 export function createEffect<TState extends { deps?: any }, TArgs extends any[], TReturn = void>(
   store: StoreApi<TState>,
-  effect: (deps: Required<TState>['deps'], store: StoreApi<TState>, ...args: TArgs) => Promise<TReturn>
+  effect: (
+    deps: Required<TState>['deps'],
+    store: StoreApi<TState>,
+    ...args: TArgs
+  ) => Promise<TReturn>
 ): (...args: TArgs) => Promise<TReturn>;
 
 /**
