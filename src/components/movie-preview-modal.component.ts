@@ -105,11 +105,7 @@ export class MoviePreviewModal extends LitElement {
               aria-label="Play trailer"
               @click=${this.handlePlayClick}
             >
-              <div
-                class="w-16 h-16 rounded-full bg-primary-content/80 text-base-content flex items-center justify-center"
-              >
-                ${PlayIcon('w-16 h-16')}
-              </div>
+              ${PlayIcon('w-16 h-16 text-primary')}
             </button>
           `}
     `;
