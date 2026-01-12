@@ -42,6 +42,8 @@ export class MoviePreviewModal extends LitElement {
     e.stopPropagation();
     this.isLoadingTrailer = true;
     this.trailerKey = await appStore.getState().fetchMovieTrailer(this.movie.id);
+
+    if (!this.trailerKey) this.isLoadingTrailer = false;
   }
 
   private handleImageError(event: Event) {
