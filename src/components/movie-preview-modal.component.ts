@@ -1,9 +1,10 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import './genre-badges.component';
-import { NoImageIcon } from './icons/icons';
+import { NoImageIcon, PlayIcon } from './icons/icons';
+import { appStore } from '../store/app-store';
 
 @customElement('movie-preview-modal')
 export class MoviePreviewModal extends LitElement {
@@ -13,11 +14,32 @@ export class MoviePreviewModal extends LitElement {
 
   @property({ type: Object }) movie!: Movie;
   @property() onClose!: () => void;
+  @state() private trailerKey: string | undefined = undefined;
+
+  private closeHandler = () => {
+    this.trailerKey = undefined;
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.closest('dialog')?.addEventListener('close', this.closeHandler);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.closest('dialog')?.removeEventListener('close', this.closeHandler);
+  }
 
   private disableContextMenu(e: Event) {
     e.preventDefault();
     e.stopPropagation();
     return false;
+  }
+
+  private async handlePlayClick(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.trailerKey = await appStore.getState().fetchMovieTrailer(this.movie.id);
   }
 
   private handleImageError(event: Event) {
@@ -32,19 +54,56 @@ export class MoviePreviewModal extends LitElement {
     svg.setAttribute('class', 'w-full h-64 text-base-content/40 bg-base-200 select-none');
     img.replaceWith(svg);
   }
+
+  private get trailerEmbedUrl(): string | null {
+    if (!this.trailerKey) return null;
+    return `https://www.youtube.com/embed/${this.trailerKey}`;
+  }
+
+  private renderFigureContent() {
+    if (this.trailerEmbedUrl) {
+      return html`
+        <iframe
+          class="w-full h-full"
+          src="${this.trailerEmbedUrl}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      `;
+    }
+
+    return html`
+      <img
+        draggable="false"
+        src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
+        alt="${this.movie.title}"
+        class="w-full h-full object-contain select-none"
+        @contextmenu=${this.disableContextMenu}
+        @error=${this.handleImageError}
+      />
+
+      <button
+        class="absolute inset-0 flex items-center justify-center opacity-75 cursor-pointer"
+        aria-label="Play trailer"
+        @click=${this.handlePlayClick}
+      >
+        <div
+          class="w-16 h-16 rounded-full bg-primary-content/80 text-base-content flex items-center justify-center"
+        >
+          ${PlayIcon('w-16 h-16')}
+        </div>
+      </button>
+    `;
+  }
   render() {
     return html`
       <div
         class="max-height-modal p-6 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
-        <img
-          draggable="false"
-          src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
-          alt="${this.movie.title}"
-          class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
-          @contextmenu=${this.disableContextMenu}
-          @error=${this.handleImageError}
-        />
+        <figure class="relative w-full h-64 flex-shrink-0 bg-base-200 rounded-lg overflow-hidden">
+          ${this.renderFigureContent()}
+        </figure>
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
           <h3 class="text-2xl font-semibold flex-shrink-0">

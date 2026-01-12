@@ -8,6 +8,9 @@ import {
   type MovieListResponse,
   type MoviesResponse,
   type Notification,
+  type MovieVideosResponse,
+  VideoSite,
+  VideoType,
 } from '../models/models';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
@@ -61,6 +64,7 @@ export interface AppState {
   fetchTrendingMovies: (page: number) => Promise<void>;
   fetchTopRatedMovies: (page: number) => Promise<void>;
   fetchWatchlistMovies: (page: number) => Promise<void>;
+  fetchMovieTrailer: (movieId: number) => Promise<string | undefined>;
   fetchFindMovie: (page: number, query: string) => Promise<void>;
   fetchCategoryMovies: (
     category: MovieCategory | undefined,
@@ -236,6 +240,28 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setMaxPage(data?.total_pages ?? 1);
     const movies = data?.items ?? [];
     setMovies(movies);
+  }),
+  fetchMovieTrailer: createEffect(store, async (deps, store, movieId: number) => {
+    const { httpService } = deps;
+    const { setLoading, globalAbortController } = store.getState();
+    setLoading(true);
+
+    const { data, error } = await tryCatch(
+      httpService.get<MovieVideosResponse>(
+        `/movie/${movieId}/videos`,
+        {},
+        {
+          signal: globalAbortController.signal,
+        }
+      )
+    );
+    if (error?.name === ERROR_NAMES.ABORT) return;
+
+    setLoading(false);
+
+    return data?.results?.find(
+      (video) => video.site === VideoSite.YouTube && video.type === VideoType.Trailer
+    )?.key;
   }),
   addToWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
     const { httpService } = deps;

@@ -31,6 +31,40 @@ export interface Movie {
   vote_average: number | null;
   vote_count: number;
   percentage_popularity: number;
+  videos?: MovieVideo[];
+}
+
+export const VideoSite = {
+  YouTube: 'YouTube',
+  Vimeo: 'Vimeo',
+} as const;
+export type VideoSite = (typeof VideoSite)[keyof typeof VideoSite];
+
+export const VideoType = {
+  Trailer: 'Trailer',
+  Teaser: 'Teaser',
+  Clip: 'Clip',
+  Featurette: 'Featurette',
+  Unknown: 'Unknown',
+} as const;
+export type VideoType = (typeof VideoType)[keyof typeof VideoType];
+
+export interface MovieVideo {
+  id: string;
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: VideoSite;
+  size: number;
+  type: VideoType;
+  official: boolean;
+  published_at: string;
+}
+
+export interface MovieVideosResponse {
+  id: number;
+  results: MovieVideo[];
 }
 
 export const MovieGenre = {

@@ -39,7 +39,7 @@ class ModalService {
       closeForm.method = 'dialog';
 
       const closeButton = document.createElement('button');
-      closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-2 top-2';
+      closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-90';
       closeButton.textContent = '✕';
 
       closeForm.appendChild(closeButton);
