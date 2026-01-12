@@ -19,6 +19,7 @@ export class MoviePreviewModal extends LitElement {
 
   private closeHandler = () => {
     this.trailerKey = undefined;
+    this.isLoadingTrailer = false;
   };
 
   connectedCallback() {
