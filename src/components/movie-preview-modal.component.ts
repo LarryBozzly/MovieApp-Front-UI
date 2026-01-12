@@ -15,6 +15,7 @@ export class MoviePreviewModal extends LitElement {
   @property({ type: Object }) movie!: Movie;
   @property() onClose!: () => void;
   @state() private trailerKey: string | undefined = undefined;
+  @state() private isLoadingTrailer: boolean = false;
 
   private closeHandler = () => {
     this.trailerKey = undefined;
@@ -39,6 +40,7 @@ export class MoviePreviewModal extends LitElement {
   private async handlePlayClick(e: Event) {
     e.preventDefault();
     e.stopPropagation();
+    this.isLoadingTrailer = true;
     this.trailerKey = await appStore.getState().fetchMovieTrailer(this.movie.id);
   }
 
@@ -69,7 +71,15 @@ export class MoviePreviewModal extends LitElement {
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
+          @load=${() => (this.isLoadingTrailer = false)}
         ></iframe>
+        ${this.isLoadingTrailer
+          ? html`
+              <div class="absolute inset-0 flex items-center justify-center bg-black">
+                <span class="loading loading-spinner loading-lg"></span>
+              </div>
+            `
+          : ''}
       `;
     }
 
@@ -83,17 +93,25 @@ export class MoviePreviewModal extends LitElement {
         @error=${this.handleImageError}
       />
 
-      <button
-        class="absolute inset-0 flex items-center justify-center opacity-75 cursor-pointer"
-        aria-label="Play trailer"
-        @click=${this.handlePlayClick}
-      >
-        <div
-          class="w-16 h-16 rounded-full bg-primary-content/80 text-base-content flex items-center justify-center"
-        >
-          ${PlayIcon('w-16 h-16')}
-        </div>
-      </button>
+      ${this.isLoadingTrailer
+        ? html`
+            <div class="absolute inset-0 flex items-center justify-center bg-base-100/80">
+              <span class="loading loading-spinner loading-lg"></span>
+            </div>
+          `
+        : html`
+            <button
+              class="absolute inset-0 flex items-center justify-center opacity-75 cursor-pointer"
+              aria-label="Play trailer"
+              @click=${this.handlePlayClick}
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-primary-content/80 text-base-content flex items-center justify-center"
+              >
+                ${PlayIcon('w-16 h-16')}
+              </div>
+            </button>
+          `}
     `;
   }
   render() {
