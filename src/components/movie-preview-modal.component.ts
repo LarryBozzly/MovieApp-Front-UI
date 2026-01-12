@@ -59,7 +59,7 @@ export class MoviePreviewModal extends LitElement {
 
   private get trailerEmbedUrl(): string | null {
     if (!this.trailerKey) return null;
-    return `https://www.youtube.com/embed/${this.trailerKey}`;
+    return `https://www.youtube.com/embed/${this.trailerKey}?autoplay=1`;
   }
 
   private renderFigureContent() {
