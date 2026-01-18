@@ -16,6 +16,7 @@ export class MoviePreviewModal extends LitElement {
 
   @state() private showContent = true;
 
+  // Close handler to reset content visibility when the dialog is closed
   private closeHandler = () => {
     this.showContent = false;
   };
