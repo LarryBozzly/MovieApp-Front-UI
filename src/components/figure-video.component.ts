@@ -46,55 +46,52 @@ export class FigureVideoComponent extends LitElement {
   }
 
   render() {
-    if (this.trailerKey) {
-      return html`
-        <figure class="relative w-full h-64 flex-shrink-0 bg-base-200 rounded-lg overflow-hidden">
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/${this.trailerKey}?autoplay=1"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            @load=${() => (this.isLoadingTrailer = false)}
-          ></iframe>
-
-          ${this.isLoadingTrailer
-            ? html`
-                <div class="absolute inset-0 flex items-center justify-center bg-black">
-                  <span class="loading loading-spinner loading-lg"></span>
-                </div>
-              `
-            : ''}
-        </figure>
-      `;
-    }
+    const isTrailer = !!this.trailerKey;
 
     return html`
       <figure class="relative w-full h-64 flex-shrink-0 bg-base-200 rounded-lg overflow-hidden">
-        <img
-          draggable="false"
-          src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
-          alt="${this.movie.title}"
-          class="w-full h-full object-contain select-none"
-          @contextmenu=${this.disableContextMenu}
-          @error=${this.handleImageError}
-        />
-
+        ${isTrailer
+          ? html`
+              <iframe
+                class="w-full h-full"
+                src="https://www.youtube.com/embed/${this.trailerKey}?autoplay=1"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                @load=${() => (this.isLoadingTrailer = false)}
+              ></iframe>
+            `
+          : html`
+              <img
+                draggable="false"
+                src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
+                alt="${this.movie.title}"
+                class="w-full h-full object-contain select-none"
+                @contextmenu=${this.disableContextMenu}
+                @error=${this.handleImageError}
+              />
+            `}
         ${this.isLoadingTrailer
           ? html`
-              <div class="absolute inset-0 flex items-center justify-center bg-base-100/80">
+              <div
+                class="absolute inset-0 flex items-center justify-center ${isTrailer
+                  ? 'bg-black'
+                  : 'bg-base-100/80'}"
+              >
                 <span class="loading loading-spinner loading-lg"></span>
               </div>
             `
-          : html`
-              <button
-                class="absolute inset-0 flex items-center justify-center opacity-75 cursor-pointer"
-                aria-label="Play trailer"
-                @click=${this.handlePlayClick}
-              >
-                ${PlayIcon('w-16 h-16 text-primary')}
-              </button>
-            `}
+          : !isTrailer
+            ? html`
+                <button
+                  class="absolute inset-0 flex items-center justify-center opacity-75 cursor-pointer"
+                  aria-label="Play trailer"
+                  @click=${this.handlePlayClick}
+                >
+                  ${PlayIcon('w-16 h-16 text-primary')}
+                </button>
+              `
+            : ''}
       </figure>
     `;
   }
