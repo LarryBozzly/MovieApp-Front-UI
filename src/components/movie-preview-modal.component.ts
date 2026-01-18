@@ -3,8 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { type Movie } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
 import './genre-badges.component';
-import { NoImageIcon, PlayIcon } from './icons/icons';
-import { appStore } from '../store/app-store';
+import './figure-video.component';
 
 @customElement('movie-preview-modal')
 export class MoviePreviewModal extends LitElement {
@@ -14,12 +13,11 @@ export class MoviePreviewModal extends LitElement {
 
   @property({ type: Object }) movie!: Movie;
   @property() onClose!: () => void;
-  @state() private trailerKey: string | undefined = undefined;
-  @state() private isLoadingTrailer: boolean = false;
+
+  @state() private showContent = true;
 
   private closeHandler = () => {
-    this.trailerKey = undefined;
-    this.isLoadingTrailer = false;
+    this.showContent = false;
   };
 
   connectedCallback() {
@@ -32,95 +30,14 @@ export class MoviePreviewModal extends LitElement {
     this.closest('dialog')?.removeEventListener('close', this.closeHandler);
   }
 
-  private disableContextMenu(e: Event) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-
-  private async handlePlayClick(e: Event) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.isLoadingTrailer = true;
-    this.trailerKey = await appStore.getState().fetchMovieTrailer(this.movie.id);
-
-    if (!this.trailerKey) this.isLoadingTrailer = false;
-  }
-
-  private handleImageError(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const img = event.target as HTMLImageElement;
-    const svg = new DOMParser().parseFromString(
-      NoImageIcon().strings.join(''),
-      'image/svg+xml'
-    ).documentElement;
-    svg.setAttribute('class', 'w-full h-64 text-base-content/40 bg-base-200 select-none');
-    img.replaceWith(svg);
-  }
-
-  private get trailerEmbedUrl(): string | null {
-    if (!this.trailerKey) return null;
-    return `https://www.youtube.com/embed/${this.trailerKey}?autoplay=1`;
-  }
-
-  private renderFigureContent() {
-    if (this.trailerEmbedUrl) {
-      return html`
-        <iframe
-          class="w-full h-full"
-          src="${this.trailerEmbedUrl}"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-          @load=${() => (this.isLoadingTrailer = false)}
-        ></iframe>
-        ${this.isLoadingTrailer
-          ? html`
-              <div class="absolute inset-0 flex items-center justify-center bg-black">
-                <span class="loading loading-spinner loading-lg"></span>
-              </div>
-            `
-          : ''}
-      `;
-    }
-
-    return html`
-      <img
-        draggable="false"
-        src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
-        alt="${this.movie.title}"
-        class="w-full h-full object-contain select-none"
-        @contextmenu=${this.disableContextMenu}
-        @error=${this.handleImageError}
-      />
-
-      ${this.isLoadingTrailer
-        ? html`
-            <div class="absolute inset-0 flex items-center justify-center bg-base-100/80">
-              <span class="loading loading-spinner loading-lg"></span>
-            </div>
-          `
-        : html`
-            <button
-              class="absolute inset-0 flex items-center justify-center opacity-75 cursor-pointer"
-              aria-label="Play trailer"
-              @click=${this.handlePlayClick}
-            >
-              ${PlayIcon('w-16 h-16 text-primary')}
-            </button>
-          `}
-    `;
-  }
   render() {
+    if (!this.showContent) return html``;
+
     return html`
       <div
         class="max-height-modal p-6 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
-        <figure class="relative w-full h-64 flex-shrink-0 bg-base-200 rounded-lg overflow-hidden">
-          ${this.renderFigureContent()}
-        </figure>
+        <figure-video-component .movie=${this.movie}></figure-video-component>
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
           <h3 class="text-2xl font-semibold flex-shrink-0">
