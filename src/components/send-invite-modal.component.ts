@@ -33,7 +33,7 @@ export class SendInviteModalComponent extends LitElement {
         <h2 class="text-2xl font-bold">Send Invitation</h2>
         <p class="text-sm text-gray-500">Enter the user tag to send a movie match invitation.</p>
 
-        <form @submit=${this.sendInvite}>
+        <form @submit=${this.sendInvite} autocomplete="off">
           <div class="form-control">
             <input
               autocapitalize="none"
