@@ -15,7 +15,8 @@ export class SendInviteModalComponent extends LitElement {
   @state() private tag: string = '';
 
   private handleInput(e: Event) {
-    this.tag = (e.target as HTMLInputElement).value;
+    const value = (e.target as HTMLInputElement).value;
+    this.tag = value.trim();
   }
 
   private async sendInvite(event: Event) {
