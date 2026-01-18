@@ -36,6 +36,11 @@ export class SendInviteModalComponent extends LitElement {
         <form @submit=${this.sendInvite}>
           <div class="form-control">
             <input
+              autocapitalize="none"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              inputmode="text"
               type="text"
               class="input input-bordered w-full"
               placeholder="User Tag"
