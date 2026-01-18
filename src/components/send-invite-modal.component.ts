@@ -15,16 +15,16 @@ export class SendInviteModalComponent extends LitElement {
   @state() private tag: string = '';
 
   private handleInput(e: Event) {
-    const value = (e.target as HTMLInputElement).value;
-    this.tag = value.trim();
+    this.tag = (e.target as HTMLInputElement).value;
   }
 
   private async sendInvite(event: Event) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!this.tag.trim()) return;
-    await this.authState.sendInvitationRequest(this.tag);
+    const trimmedTag = this.tag.trim();
+    if (!trimmedTag) return;
+    await this.authState.sendInvitationRequest(trimmedTag);
   }
 
   render() {
