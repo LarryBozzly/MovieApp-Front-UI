@@ -6,6 +6,7 @@ import { authStore, selectUserProfile } from '../store/auth-store';
 import { FilledCopyIcon, PencilEditIcon } from '../components/icons/icons';
 import type { UserProfile } from '../models/models';
 import { appStore } from '../store/app-store';
+import '../components/invite-fab.component';
 
 @customElement('profile-page')
 export class ProfilePage extends LitElement {
@@ -118,6 +119,7 @@ export class ProfilePage extends LitElement {
             </div>
           </div>
         </main>
+        <invite-fab></invite-fab>
       </div>
     `;
   }

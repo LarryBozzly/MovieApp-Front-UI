@@ -6,6 +6,7 @@ import { appStore, selectNotifications } from '../store/app-store';
 import type { Notification } from '../models/models';
 import { authStore, type AuthState } from '../store/auth-store';
 import { CloseIcon, InvitationIcon, OutlineBellIcon } from '../components/icons/icons';
+import '../components/invite-fab.component';
 
 @customElement('notifications-page')
 export class NotificationsPage extends LitElement {
@@ -125,6 +126,7 @@ export class NotificationsPage extends LitElement {
                 )}
               `}
         </main>
+        <invite-fab></invite-fab>
       </div>
     `;
   }
