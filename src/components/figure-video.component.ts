@@ -61,7 +61,6 @@ export class FigureVideoComponent extends LitElement {
     super.updated(changedProperties);
 
     if (changedProperties.has('movie')) {
-      console.log('FigureVideoComponent: movie changed', this.movie);
       this.isLoadingTrailer = false;
       this.trailerKey = undefined;
     }
@@ -78,7 +77,7 @@ export class FigureVideoComponent extends LitElement {
                 class="w-full h-full"
                 src="https://www.youtube.com/embed/${this.trailerKey}?autoplay=1"
                 frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="autoplay; encrypted-media"
                 allowfullscreen
                 @load=${() => (this.isLoadingTrailer = false)}
               ></iframe>
