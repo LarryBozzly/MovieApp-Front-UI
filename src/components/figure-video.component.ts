@@ -23,6 +23,11 @@ export class FigureVideoComponent extends LitElement {
     return false;
   }
 
+  private getPosterUrl(movie: Movie): string {
+    // Matches the size used in the render method ('w500')
+    return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  }
+
   private handleImageError(event: Event) {
     event.preventDefault();
     event.stopPropagation();
@@ -39,10 +44,27 @@ export class FigureVideoComponent extends LitElement {
   private async handlePlayClick(e: Event) {
     e.preventDefault();
     e.stopPropagation();
-    this.isLoadingTrailer = true;
-    this.trailerKey = await appStore.getState().fetchMovieTrailer(this.movie.id);
 
-    if (!this.trailerKey) this.isLoadingTrailer = false;
+    const movieId = this.movie.id;
+
+    this.isLoadingTrailer = true;
+    const trailerKey = await appStore.getState().fetchMovieTrailer(movieId);
+
+    /* here we check if the movieId matches to prevent race conditions */
+    if (this.movie.id !== movieId) return;
+
+    this.trailerKey = trailerKey;
+    if (!trailerKey) this.isLoadingTrailer = false;
+  }
+
+  protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('movie')) {
+      console.log('FigureVideoComponent: movie changed', this.movie);
+      this.isLoadingTrailer = false;
+      this.trailerKey = undefined;
+    }
   }
 
   render() {
@@ -64,7 +86,7 @@ export class FigureVideoComponent extends LitElement {
           : html`
               <img
                 draggable="false"
-                src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
+                src="${this.getPosterUrl(this.movie)}"
                 alt="${this.movie.title}"
                 class="w-full h-full object-contain select-none"
                 @contextmenu=${this.disableContextMenu}

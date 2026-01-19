@@ -289,12 +289,6 @@ export class MovieMatchModalComponent extends LitElement {
     this.cleanupFns.push(() => target.removeEventListener(type, listener, options));
   };
 
-  private disableContextMenu(e: Event) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-
   render() {
     const movie = this.currentMovie;
 
@@ -311,13 +305,7 @@ export class MovieMatchModalComponent extends LitElement {
       <div
         class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]"
       >
-        <img
-          draggable="false"
-          src="${this.getPosterUrl(movie)}"
-          alt="${movie.title}"
-          class="w-full h-64 object-contain bg-base-200 flex-shrink-0 select-none"
-          @contextmenu=${this.disableContextMenu}
-        />
+        <figure-video-component .movie=${movie}></figure-video-component>
 
         <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
           <div>
