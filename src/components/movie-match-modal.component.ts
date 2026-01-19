@@ -20,6 +20,7 @@ export class MovieMatchModalComponent extends LitElement {
   private manager!: HammerManager;
   @property({ type: Array }) movies: Movie[] = [];
   @state() private currentIndex = 0;
+  @state() private isSwiping = false;
 
   private get currentMovie(): Movie | undefined {
     return this.movies[this.currentIndex];
@@ -127,6 +128,7 @@ export class MovieMatchModalComponent extends LitElement {
       gestureDecided = false;
       ignorePan = false;
       currentX = 0;
+      this.isSwiping = true;
     });
 
     let lastPanTime = 0;
@@ -185,6 +187,7 @@ export class MovieMatchModalComponent extends LitElement {
     });
 
     this.manager.on('panend', (e) => {
+      this.isSwiping = false;
       // At panend we only proceed if we didn't ignore the pan
       if (gestureStartedInOverview && ignorePan) {
         // Reset flags and do nothing (native scroll handled it)
@@ -250,12 +253,14 @@ export class MovieMatchModalComponent extends LitElement {
         gestureStartedInOverview = false;
         gestureDecided = false;
         ignorePan = false;
+        this.isSwiping = false;
       });
 
       this.addToCleanup(window, 'touchend', () => {
         gestureStartedInOverview = false;
         gestureDecided = false;
         ignorePan = false;
+        this.isSwiping = false;
       });
     }
 
@@ -305,7 +310,11 @@ export class MovieMatchModalComponent extends LitElement {
       <div
         class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]"
       >
-        <figure-video-component class="pt-7.5 px-4" .movie=${movie}></figure-video-component>
+        <figure-video-component
+          class="pt-7.5 px-4"
+          .movie=${movie}
+          style=${this.isSwiping ? 'pointer-events: none;' : ''}
+        ></figure-video-component>
 
         <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
           <div>
