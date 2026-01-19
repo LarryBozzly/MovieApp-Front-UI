@@ -17,10 +17,17 @@ export class MovieMatchModalComponent extends LitElement {
   `;
 
   private cleanupFns: (() => void)[] = [];
+  private dialogRef?: HTMLDialogElement;
   private manager!: HammerManager;
   @property({ type: Array }) movies: Movie[] = [];
   @state() private currentIndex = 0;
   @state() private isSwiping = false;
+
+  private closeHandler = () => {
+    // Reset content visibility when the dialog is closed
+    this.currentIndex = Number.MAX_SAFE_INTEGER;
+    this.currentIndex = 0;
+  };
 
   private get currentMovie(): Movie | undefined {
     return this.movies[this.currentIndex];
@@ -272,14 +279,20 @@ export class MovieMatchModalComponent extends LitElement {
     }
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.dialogRef = this.closest('dialog') ?? undefined;
+    this.dialogRef?.addEventListener('close', this.closeHandler);
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
+    this.dialogRef?.removeEventListener('close', this.closeHandler);
+    this.dialogRef = undefined;
     this.cleanupFns.forEach((fn) => {
       try {
         fn();
-      } catch {
-        /* ignore */
-      }
+      } catch {}
     });
     this.cleanupFns = [];
   }

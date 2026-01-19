@@ -13,6 +13,7 @@ export class MoviePreviewModal extends LitElement {
 
   @property({ type: Object }) movie!: Movie;
   @property() onClose!: () => void;
+  private dialogRef?: HTMLDialogElement;
 
   @state() private showContent = true;
 
@@ -23,12 +24,14 @@ export class MoviePreviewModal extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.closest('dialog')?.addEventListener('close', this.closeHandler);
+    this.dialogRef = this.closest('dialog') ?? undefined;
+    this.dialogRef?.addEventListener('close', this.closeHandler);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.closest('dialog')?.removeEventListener('close', this.closeHandler);
+    this.dialogRef?.removeEventListener('close', this.closeHandler);
+    this.dialogRef = undefined;
   }
 
   render() {
