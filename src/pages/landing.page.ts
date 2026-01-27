@@ -225,3 +225,8 @@ export class LandingPage extends LitElement {
     `;
   }
 }
+declare global {
+  interface HTMLElementTagNameMap {
+    'landing-page': LandingPage;
+  }
+}
