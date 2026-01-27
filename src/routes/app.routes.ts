@@ -11,7 +11,6 @@ import '../pages/verify.page';
 import '../pages/forgot-password.page';
 import '../pages/landing.page';
 
-
 const children: Route[] = [...homeViews, ...profileViews, ...notificationViews, ...aboutViews];
 
 export const routes: Route[] = [
