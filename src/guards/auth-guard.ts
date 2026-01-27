@@ -26,7 +26,7 @@ export async function authGuard(context: RouteContext, commands: Commands) {
       .filter((route) => route.action === publicGuard)
       .map((route) => route.path);
     if (!publicPaths.includes(context.pathname)) {
-      return commands.redirect('/login');
+      return commands.redirect('/home');
     }
     return undefined;
   }

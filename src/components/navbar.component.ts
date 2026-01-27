@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import {
   authStore,
@@ -31,9 +31,29 @@ export class NavbarComponent extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectNotifications })
   readonly notifications!: Notification[];
 
+  @state() private path = window.location.pathname;
+
   static styles = css`
     ${tailwindStyles}
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('popstate', this.handleRouteChange);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('popstate', this.handleRouteChange);
+  }
+
+  private handleRouteChange = () => {
+    this.path = window.location.pathname;
+  };
+
+  private get isHomePage() {
+    return this.path === '/home' || this.path === '/home/';
+  }
 
   render() {
     return html`
@@ -52,7 +72,9 @@ export class NavbarComponent extends LitElement {
                 .userProfile=${this.userProfile}
               ></profile-button-component>
             `
-          : ''}
+          : this.isHomePage
+            ? html` <a href="/login" class="btn btn-primary rounded-full no-underline"> Login </a> `
+            : ''}
       </div>
     `;
   }

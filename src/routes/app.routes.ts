@@ -9,6 +9,8 @@ import '../pages/login.page';
 import '../pages/signup.page';
 import '../pages/verify.page';
 import '../pages/forgot-password.page';
+import '../pages/landing.page';
+
 
 const children: Route[] = [...homeViews, ...profileViews, ...notificationViews, ...aboutViews];
 
@@ -17,6 +19,11 @@ export const routes: Route[] = [
     path: '',
     children,
     action: authGuard,
+  },
+  {
+    path: '/home',
+    component: 'landing-page',
+    action: publicGuard,
   },
   {
     path: '/login',
