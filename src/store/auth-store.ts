@@ -21,7 +21,9 @@ import type DeviceInfoService from '../services/device-info.service';
 import type ConnectivityService from '../services/connectivity.service';
 import type ModalService from '../services/modal.service';
 import type AppVersionService from '../services/app-version.service';
+import type BroadcastChannelService from '../services/broadcast-channel.service';
 import { env } from '../config';
+import { AuthChannelEvent } from '../models/models';
 
 export interface AuthState {
   deps?: {
@@ -32,6 +34,7 @@ export interface AuthState {
     connectivityService: ConnectivityService;
     modalService: ModalService;
     appVersionService: AppVersionService;
+    authChannelService: BroadcastChannelService<AuthChannelEvent>;
   };
   isAuthorized: boolean;
   isLoading: boolean;
@@ -70,6 +73,7 @@ export interface AuthState {
   sendMovieSelection: (movie: Movie) => Promise<void>;
   sendMovieRejection: (movie: Movie) => Promise<void>;
   initDeviceVisibilityListener: () => Promise<void>;
+  initCrossTabListener: () => Promise<void>;
   closeModal: () => Promise<void>;
 }
 
@@ -106,7 +110,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   setAuthorization: (status: boolean) => set({ isAuthorized: status }),
   // effects
   login: createEffect(store, async (deps, store, loginData) => {
-    const { httpService, authService, webSocketService } = deps;
+    const { httpService, authService, webSocketService, authChannelService } = deps;
     const { setLoading, setAuthorization, setUserProfile, setError } = store.getState();
 
     setLoading(true);
@@ -123,6 +127,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     await webSocketService.connect(env.VITE_WS_URL, token);
 
     if (isAuthorized) {
+      authChannelService.postMessage(AuthChannelEvent.LOGIN);
       authService.startRefreshTimer();
       setError(null);
       setUserProfile(data.data);
@@ -195,7 +200,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     setTimeout(() => Router.go('/'), 3000);
   }),
   logout: createEffect(store, async (deps, store) => {
-    const { httpService, webSocketService, authService } = deps;
+    const { httpService, webSocketService, authService, authChannelService } = deps;
     const { setLoading, setAuthorization } = store.getState();
 
     setLoading(true);
@@ -205,6 +210,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     webSocketService.close(true);
     authService.stopRefreshTimer();
     authService.clearAllCookies();
+    authChannelService.postMessage(AuthChannelEvent.LOGOUT);
 
     Router.go('/login');
   }),
@@ -338,6 +344,14 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet())) {
         refresh();
         appVersionService.checkAndShowUpdateModal(modalService, closeModal);
+      }
+    });
+  }),
+  initCrossTabListener: createEffect(store, async (deps) => {
+    const { authChannelService } = deps;
+    authChannelService.onMessage((data) => {
+      if (data === AuthChannelEvent.LOGIN || data === AuthChannelEvent.LOGOUT) {
+        window.location.reload();
       }
     });
   }),

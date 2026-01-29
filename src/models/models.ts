@@ -33,6 +33,16 @@ export interface Movie {
   percentage_popularity: number;
   videos?: MovieVideo[];
 }
+export const BroadcastChannelType = {
+  AUTH_CHANNEL: 'auth_channel',
+} as const;
+export type BroadcastChannelType = (typeof BroadcastChannelType)[keyof typeof BroadcastChannelType];
+
+export const AuthChannelEvent = {
+  LOGIN: 'login',
+  LOGOUT: 'logout',
+} as const;
+export type AuthChannelEvent = (typeof AuthChannelEvent)[keyof typeof AuthChannelEvent];
 
 export const VideoSite = {
   YouTube: 'YouTube',

@@ -13,6 +13,8 @@ import ModalService from './services/modal.service';
 import DeviceInfoService from './services/device-info.service';
 import ConnectivityService from './services/connectivity.service';
 import AppVersionService from './services/app-version.service';
+import BroadcastChannelService from './services/broadcast-channel.service';
+import { AuthChannelEvent, BroadcastChannelType } from './models/models';
 import './components/loading-overlay.component';
 
 @customElement('app-root')
@@ -59,6 +61,9 @@ export class AppRoot extends LitElement {
       modalService: ModalService.getInstance(),
       connectivityService: ConnectivityService.getInstance(),
       appVersionService: AppVersionService.getInstance(),
+      authChannelService: BroadcastChannelService.getInstance<AuthChannelEvent>(
+        BroadcastChannelType.AUTH_CHANNEL
+      ),
     });
   }
 
@@ -70,6 +75,7 @@ export class AppRoot extends LitElement {
     this.initAppStore();
 
     authStore.getState().initDeviceVisibilityListener();
+    authStore.getState().initCrossTabListener();
   }
 
   disconnectedCallback() {
