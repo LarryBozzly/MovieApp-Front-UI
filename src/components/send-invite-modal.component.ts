@@ -3,11 +3,13 @@ import { customElement, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
+import ToastService from '../services/toast-service';
 
 @customElement('send-invite-modal-component')
 export class SendInviteModalComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
+  private readonly invitationMessage = 'Invitation sent.';
   static styles = css`
     ${tailwindStyles}
   `;
@@ -25,6 +27,7 @@ export class SendInviteModalComponent extends LitElement {
     const trimmedTag = this.tag.trim();
     if (!trimmedTag) return;
     await this.authState.sendInvitationRequest(trimmedTag);
+    ToastService.getInstance().show(this.invitationMessage, { type: 'success' });
   }
 
   render() {
