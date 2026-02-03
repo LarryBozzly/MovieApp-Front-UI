@@ -58,6 +58,8 @@ export class MovieMatchModalComponent extends LitElement {
     if (changedProperties.has('currentIndex')) {
       // Trigger pre-fetch for the movie *after* the one we just swiped to
       this.prefetchNextImage();
+      const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement | null;
+      if (overview) overview.scrollTop = 0;
     }
   }
 

@@ -44,6 +44,11 @@ class AppVersionService {
 
     const localVersion = localStorage.getItem('app-version');
 
+    if (!localVersion) {
+      localStorage.setItem('app-version', version);
+      return;
+    }
+
     if (localVersion !== version) {
       modalService.open({
         tag: 'version-update-modal-component',

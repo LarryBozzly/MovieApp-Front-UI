@@ -22,6 +22,18 @@ export class GenreBadges extends LitElement {
     this.expanded = !this.expanded;
   }
 
+  protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
+    super.updated(changedProperties);
+
+    if (
+      changedProperties.has('genreIds') ||
+      changedProperties.has('maxVisible') ||
+      changedProperties.has('scrollable')
+    ) {
+      this.expanded = false;
+    }
+  }
+
   render() {
     if (this.scrollable) {
       // Scrollable version
