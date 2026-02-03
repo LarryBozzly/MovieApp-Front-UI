@@ -11,6 +11,7 @@ import {
   type MovieVideosResponse,
   VideoSite,
   VideoType,
+  NotificationType,
 } from '../models/models';
 import type { ToastType } from '../services/toast-service';
 import type HttpService from '../services/http.service';
@@ -74,6 +75,7 @@ export interface AppState {
     page: number,
     query?: string
   ) => Promise<void>;
+  updateNotifications: (newNotifications: Notification[]) => Promise<void>;
   addToWatchlist: (movie: Movie) => Promise<void>;
   removeFromWatchlist: (movie: Movie) => Promise<void>;
   openSendInvitationModal: () => Promise<void>;
@@ -267,6 +269,23 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       (video) => video.site === VideoSite.YouTube && video.type === VideoType.Trailer
     )?.key;
   }),
+  updateNotifications: createEffect(
+    store,
+    async (deps, store, newNotifications: Notification[]) => {
+      const { toastService } = deps;
+      const { setNotifications, notifications } = store.getState();
+
+      const existingIds = new Set(notifications.map((notification) => notification.id));
+      const hasInvitation = newNotifications.some(
+        (notification) =>
+          !existingIds.has(notification.id) && notification.type === NotificationType.INVITATION
+      );
+
+      if (hasInvitation) toastService.show('You have new invitations.', { type: 'info' });
+
+      setNotifications(newNotifications);
+    }
+  ),
   addToWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
     const { httpService } = deps;
     const { setLoading, setWatchlistIds } = store.getState();
