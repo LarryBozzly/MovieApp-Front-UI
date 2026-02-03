@@ -9,14 +9,14 @@ import ToastService from '../services/toast-service';
 export class SendInviteModalComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
-  private readonly toastService = ToastService.getInstance();
-  private readonly invitationMessage = 'Invitation sent.';
   static styles = css`
     ${tailwindStyles}
   `;
 
   @state() private tag: string = '';
-
+  private readonly toastService = ToastService.getInstance();
+  private readonly invitationMessage = 'Invitation sent.';
+  
   private handleInput(e: Event) {
     this.tag = (e.target as HTMLInputElement).value;
   }
