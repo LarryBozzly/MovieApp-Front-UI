@@ -9,6 +9,7 @@ import ToastService from '../services/toast-service';
 export class SendInviteModalComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
+  private readonly toastService = ToastService.getInstance();
   private readonly invitationMessage = 'Invitation sent.';
   static styles = css`
     ${tailwindStyles}
@@ -27,7 +28,7 @@ export class SendInviteModalComponent extends LitElement {
     const trimmedTag = this.tag.trim();
     if (!trimmedTag) return;
     await this.authState.sendInvitationRequest(trimmedTag);
-    ToastService.getInstance().show(this.invitationMessage, { type: 'success' });
+    this.toastService.show(this.invitationMessage, { type: 'success' });
   }
 
   render() {
