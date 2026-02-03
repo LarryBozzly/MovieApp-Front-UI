@@ -12,6 +12,7 @@ import {
   VideoSite,
   VideoType,
 } from '../models/models';
+import type { ToastType } from '../services/toast-service';
 import type HttpService from '../services/http.service';
 import type AuthService from '../services/auth.service';
 import type { AuthState } from './auth-store';
@@ -19,6 +20,7 @@ import { tryCatch } from '../utils/try-catch';
 import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
 import type AppVersionService from '../services/app-version.service';
+import type ToastService from '../services/toast-service';
 import '../components/send-invite-modal.component';
 import '../components/invitation-notification-modal.component';
 import '../components/movie-match-modal.component';
@@ -35,6 +37,7 @@ export interface AppState {
     authStore: StoreApi<AuthState>;
     modalService: ModalService;
     appVersionService: AppVersionService;
+    toastService: ToastService;
   };
   globalAbortController: AbortController;
   category: MovieCategory | undefined;
@@ -81,6 +84,7 @@ export interface AppState {
   openEditTagModal: (tag: string) => Promise<void>;
   openErrorModal: (message: string) => Promise<void>;
   closeModal: () => Promise<void>;
+  showToast: (message: string, type: ToastType) => Promise<void>;
 }
 
 export const appStore = createStore<AppState>((set, _get, store) => ({
@@ -375,6 +379,10 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   closeModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
     modalService.close();
+  }),
+  showToast: createEffect(store, async (deps, _store, message: string, type: ToastType) => {
+    const { toastService } = deps;
+    toastService.show(message, { type });
   }),
 }));
 

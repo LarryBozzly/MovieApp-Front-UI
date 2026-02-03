@@ -1,4 +1,4 @@
-type ToastType = 'info' | 'success' | 'warning' | 'error';
+export type ToastType = 'info' | 'success' | 'warning' | 'error';
 
 type ToastContent =
   | string
@@ -14,26 +14,55 @@ interface ToastOptions {
   duration?: number; // ms
 }
 
-export default class ToastService {
+class ToastService {
+  private static instance: ToastService;
   private container: HTMLElement;
 
-  constructor() {
-    let container = document.querySelector('.toast.toast-top.toast-end') as HTMLElement;
+  private constructor() {
+    let container = document.querySelector('.toast.toast-bottom.toast-center') as HTMLElement;
 
     if (!container) {
       container = document.createElement('div');
-      container.className = 'toast toast-top toast-end';
+      container.className = 'toast toast-bottom toast-center';
+      container.style.zIndex = '500';
       document.body.appendChild(container);
     }
 
     this.container = container;
   }
 
+  public static getInstance(): ToastService {
+    if (!ToastService.instance) {
+      ToastService.instance = new ToastService();
+    }
+    return ToastService.instance;
+  }
+
+  private getAlertClass(type: ToastType): string {
+    switch (type) {
+      case 'success':
+        return 'alert alert-success';
+      case 'warning':
+        return 'alert alert-warning';
+      case 'error':
+        return 'alert alert-error';
+      case 'info':
+      default:
+        return 'alert alert-info';
+    }
+  }
+
   show(content: ToastContent, options: ToastOptions = {}): void {
     const { type = 'info', duration = 3000 } = options;
 
     const toast = document.createElement('div');
-    toast.className = `alert alert-${type}`;
+    toast.className = `${this.getAlertClass(type)} shadow-lg`;
+
+    // Mobile-friendly animation setup
+    toast.style.opacity = '0';
+    toast.style.transform = 'translate3d(0, 20px, 0)'; // GPU
+    toast.style.willChange = 'opacity, transform';
+    toast.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
 
     let element: HTMLElement | null = null;
 
@@ -68,8 +97,26 @@ export default class ToastService {
 
     this.container.appendChild(toast);
 
+    // Trigger enter animation
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translate3d(0, 0, 0)';
+    });
+
+    // Remove after duration with exit animation
     setTimeout(() => {
-      toast.remove();
+      // start exit
+      toast.style.opacity = '0';
+      toast.style.transform = 'translate3d(0, 20px, 0)';
+
+      // remove only after transition ends
+      const removeListener = () => {
+        toast.remove();
+        toast.removeEventListener('transitionend', removeListener);
+      };
+      toast.addEventListener('transitionend', removeListener);
     }, duration);
   }
 }
+
+export default ToastService;
