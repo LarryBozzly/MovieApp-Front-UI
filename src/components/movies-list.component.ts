@@ -23,7 +23,7 @@ export class MoviesListComponent extends LitElement {
     return new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric' });
   }
 
-  private async handleHeartClick(event: Event, movie: Movie): Promise<void> {
+  private async handleWatchlistClick(event: Event, movie: Movie): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
 
@@ -122,7 +122,7 @@ export class MoviesListComponent extends LitElement {
                   </span>
 
                   <button
-                    @click=${(event: Event) => this.handleHeartClick(event, movie)}
+                    @click=${(event: Event) => this.handleWatchlistClick(event, movie)}
                     class="ml-auto focus:outline-none"
                     title="Toggle watchlist"
                     ?disabled=${this.watchlistIds[movie.id]?.isLoading}

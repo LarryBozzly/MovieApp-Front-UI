@@ -22,14 +22,6 @@ import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
 import type AppVersionService from '../services/app-version.service';
 import type ToastService from '../services/toast-service';
-import '../components/send-invite-modal.component';
-import '../components/invitation-notification-modal.component';
-import '../components/movie-match-modal.component';
-import '../components/movie-match-result-modal.component';
-import '../components/movie-preview-modal.component';
-import '../components/error-modal.component';
-import '../components/edit-tag-modal.component';
-import '../components/version-update-modal.component';
 
 export interface AppState {
   deps?: {
@@ -330,12 +322,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   }),
   openSendInvitationModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
+    await import('../components/send-invite-modal.component');
     modalService.open({ tag: 'send-invite-modal-component' });
   }),
   openReceivedInvitationModal: createEffect(
     store,
     async (deps, _store, notification: Notification) => {
       const { modalService } = deps;
+      await import('../components/invitation-notification-modal.component');
       modalService.open({
         tag: 'invitation-notification-modal-component',
         props: { notification },
@@ -345,12 +339,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   openStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
     const { modalService } = deps;
 
+    await import('../components/movie-match-modal.component');
     modalService.open({ tag: 'movie-match-modal-component', props: { movies } });
   }),
   openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie) => {
     const { modalService } = deps;
     const { closeModal } = store.getState();
 
+    await import('../components/movie-match-result-modal.component');
     modalService.open({
       tag: 'movie-match-result-modal',
       props: {
@@ -363,6 +359,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { modalService } = deps;
     const { closeModal } = store.getState();
 
+    await import('../components/movie-preview-modal.component');
     modalService.open({
       tag: 'movie-preview-modal',
       props: {
@@ -375,6 +372,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { modalService } = deps;
     const { closeModal } = store.getState();
 
+    await import('../components/edit-tag-modal.component');
     modalService.open({
       tag: 'edit-tag-modal-component',
       props: {
@@ -387,6 +385,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { modalService } = deps;
     const { closeModal } = store.getState();
 
+    await import('../components/error-modal.component');
     modalService.open({
       tag: 'error-modal',
       props: {

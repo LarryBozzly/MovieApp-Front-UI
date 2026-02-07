@@ -1,16 +1,21 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieMatchDirection, type Movie } from '../models/models';
+import { MovieMatchDirection, type Movie, type WatchlistState } from '../models/models';
 import { tailwindStyles } from '../utils/app.constants';
-import { watch } from 'zustand-lit';
+import { watch, watchWithSelector } from 'zustand-lit';
 import { authStore, type AuthState } from '../store/auth-store';
 import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
 import './genre-badges.component';
+import './figure-video.component';
 import Hammer from 'hammerjs';
+import { appStore, selectWatchlistIds } from '../store/app-store';
+import { FilledBookmarkIcon, OutlineBookmarkIcon } from './icons/icons.ts';
 
 @customElement('movie-match-modal-component')
 export class MovieMatchModalComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
+  @watchWithSelector({ store: appStore, selector: selectWatchlistIds })
+  readonly watchlistIds!: Record<number, WatchlistState>;
 
   static styles = css`
     ${tailwindStyles}
@@ -309,6 +314,24 @@ export class MovieMatchModalComponent extends LitElement {
     this.cleanupFns.push(() => target.removeEventListener(type, listener, options));
   };
 
+  private async handleWatchlistClick(event: Event, movie: Movie): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { addToWatchlist, removeFromWatchlist } = appStore.getState();
+    const isWatchlisted = Boolean(this.watchlistIds[movie.id]?.isWatchlist);
+
+    await (isWatchlisted ? removeFromWatchlist(movie) : addToWatchlist(movie));
+  }
+
+  private renderWatchlistIcon(movie: Movie) {
+    const watchlistItem = this.watchlistIds[movie.id];
+    if (watchlistItem?.isLoading)
+      return html` <span class="loading loading-spinner w-5 h-5 text-primary"></span> `;
+    const isWatchlisted = Boolean(watchlistItem?.isWatchlist);
+    return isWatchlisted ? FilledBookmarkIcon() : OutlineBookmarkIcon();
+  }
+
   render() {
     const movie = this.currentMovie;
 
@@ -333,12 +356,22 @@ export class MovieMatchModalComponent extends LitElement {
 
         <div class="p-4 flex flex-col flex-1 gap-3 overflow-hidden">
           <div>
-            <h3 class="text-xl font-bold text-base-content">
-              ${movie.title}
-              <span class="text-base-content/60 text-sm">
-                (${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})
-              </span>
-            </h3>
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-xl font-bold text-base-content">
+                ${movie.title}
+                <span class="text-base-content/60 text-sm">
+                  (${movie.release_date ? new Date(movie.release_date).getFullYear() : ''})
+                </span>
+              </h3>
+              <button
+                @click=${(event: Event) => this.handleWatchlistClick(event, movie)}
+                class="shrink-0 focus:outline-none"
+                title="Toggle watchlist"
+                ?disabled=${this.watchlistIds[movie.id]?.isLoading}
+              >
+                ${this.renderWatchlistIcon(movie)}
+              </button>
+            </div>
             <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
               <genre-badges .genreIds=${movie.genre_ids} .scrollable=${false}></genre-badges>
             </div>
