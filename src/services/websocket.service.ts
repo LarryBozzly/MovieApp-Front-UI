@@ -91,7 +91,9 @@ export default class WebSocketService {
             if (msg.getNotificationsResponse) {
               appStore
                 .getState()
-                .updateNotifications(notificationMapper(msg.getNotificationsResponse.notifications));
+                .updateNotifications(
+                  notificationMapper(msg.getNotificationsResponse.notifications)
+                );
             }
 
             if (msg.startMovieMatch) {

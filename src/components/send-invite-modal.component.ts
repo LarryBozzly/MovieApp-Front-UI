@@ -16,7 +16,7 @@ export class SendInviteModalComponent extends LitElement {
   @state() private tag: string = '';
   private readonly toastService = ToastService.getInstance();
   private readonly invitationMessage = 'Invitation sent.';
-  
+
   private handleInput(e: Event) {
     this.tag = (e.target as HTMLInputElement).value;
   }
