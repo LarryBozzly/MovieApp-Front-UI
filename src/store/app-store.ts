@@ -22,6 +22,7 @@ import { createEffect } from '../utils/create-effect.functions';
 import type ModalService from '../services/modal.service';
 import type AppVersionService from '../services/app-version.service';
 import type ToastService from '../services/toast-service';
+import type OnboardingService from '../services/onboarding.service';
 
 export interface AppState {
   deps?: {
@@ -29,6 +30,7 @@ export interface AppState {
     authService: AuthService;
     authStore: StoreApi<AuthState>;
     modalService: ModalService;
+    onboardingService : OnboardingService;
     appVersionService: AppVersionService;
     toastService: ToastService;
   };
