@@ -1,10 +1,18 @@
 class DeviceInfoService {
   private listeners: Set<(isForeground: boolean) => void> = new Set();
+  private static instance: DeviceInfoService;
 
   constructor() {
     if (typeof document !== 'undefined') {
       document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
+  }
+
+  public static getInstance(): DeviceInfoService {
+    if (!DeviceInfoService.instance) {
+      DeviceInfoService.instance = new DeviceInfoService();
+    }
+    return DeviceInfoService.instance;
   }
 
   /** Returns true if the app is currently in the foreground */

@@ -59,7 +59,7 @@ export class AppRoot extends LitElement {
       httpService: new HttpService(env.MOVIEDB_API_BASE_URL),
       authService: AuthService.getInstance(),
       webSocketService: new WebSocketService(),
-      deviceInfoService: new DeviceInfoService(),
+      deviceInfoService: DeviceInfoService.getInstance(),
       modalService: ModalService.getInstance(),
       connectivityService: ConnectivityService.getInstance(),
       appVersionService: AppVersionService.getInstance(),
