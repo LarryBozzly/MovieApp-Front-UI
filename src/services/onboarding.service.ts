@@ -14,6 +14,7 @@ class OnboardingService {
   private styleEl?: HTMLStyleElement;
   private interactionBlocker?: (event: Event) => void;
   private proxyClickHandlers: Map<string, (event: Event) => void> = new Map();
+  private internalStepRefresh = false;
   private currentStep: number = 0;
   private readonly onboardingStateKey = 'onboardingState';
 
@@ -68,6 +69,10 @@ class OnboardingService {
           },
           onStepChange: (stepIndex) => {
             this.persistCurrentStep(stepIndex);
+            if (this.internalStepRefresh) {
+              this.internalStepRefresh = false;
+              return;
+            }
             this.handleStepChange();
           },
           onClose: () => {
@@ -153,7 +158,7 @@ class OnboardingService {
         title: 'Action Menu',
         description:
           'Here are your available actions: scroll to top, copy your tag, or invite a friend to join you.',
-        position: 'left',
+        position: 'top',
         action: 'observe',
         highlight: true,
         skipable: false,
@@ -162,7 +167,7 @@ class OnboardingService {
         target: '#onboarding-target-invite-send',
         title: 'Invite a Friend',
         description: 'Use this button to send an invite and start matching movies together.',
-        position: 'left',
+        position: 'top',
         action: 'observe',
         highlight: true,
         skipable: false,
@@ -358,18 +363,37 @@ class OnboardingService {
     this.setOnboardingState({ ...state, currentStep: stepIndex });
   }
 
-  private handleStepChange(): void {
-    appStore.getState().closeModal();
+  private async handleStepChange(): Promise<void> {
+    await appStore.getState().closeModal();
     this.setOnboardingStepAttr(this.currentStep);
     this.applyBackdropZIndex(this.currentStep);
+    if (
+      this.currentStep === 0 ||
+      this.currentStep === 1 ||
+      this.currentStep === 4 ||
+      this.currentStep === 5
+    ) {
+      this.closeInviteFabMenu();
+    }
     if (this.currentStep === 2 || this.currentStep === 3) {
       this.openInviteFabMenu();
+      await this.syncAfterLayout(() => {
+        const inviteFab = this.resolveShadowElement(
+          'app-root',
+          '#outlet',
+          'home-page',
+          'invite-fab'
+        );
+        return this.getInviteFabMenu(inviteFab);
+      });
     }
     if (this.currentStep === 4) {
-      appStore.getState().openSendInvitationModal();
+      await appStore.getState().openSendInvitationModal();
+      await this.syncAfterLayout(() => this.getInviteModal());
     }
     if (this.currentStep === 5) {
-      appStore.getState().openStartMovieMatchModal(MOCK_MOVIES);
+      await appStore.getState().openStartMovieMatchModal(MOCK_MOVIES);
+      await this.syncAfterLayout(() => this.getInviteModal());
     }
   }
 
@@ -461,11 +485,59 @@ class OnboardingService {
 
   private openInviteFabMenu(): void {
     const inviteFab = this.resolveShadowElement('app-root', '#outlet', 'home-page', 'invite-fab');
+    if (!inviteFab) return;
+    // Don't toggle closed if menu is already open.
+    if (this.getInviteFabMenu(inviteFab)) return;
     const button = this.getInviteFabButton(inviteFab);
     if (!button) return;
     button.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, composed: true }));
-    // allow layout to update, then re-sync proxy for the menu
-    window.setTimeout(() => this.buildSteps(), 50);
+  }
+
+  private closeInviteFabMenu(): void {
+    const inviteFab = this.resolveShadowElement('app-root', '#outlet', 'home-page', 'invite-fab');
+    if (!inviteFab) return;
+    // Don't toggle open if menu is already closed.
+    if (!this.getInviteFabMenu(inviteFab)) return;
+    const button = this.getInviteFabButton(inviteFab);
+    if (!button) return;
+    button.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, composed: true }));
+  }
+
+  private async syncAfterLayout(
+    resolver: () => HTMLElement | null,
+    timeoutMs: number = 1200
+  ): Promise<void> {
+    await this.waitForVisibleElement(resolver, timeoutMs);
+    this.buildSteps();
+    window.requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+    this.forceCurrentStepRefresh();
+  }
+
+  private waitForVisibleElement(
+    resolver: () => HTMLElement | null,
+    timeoutMs: number
+  ): Promise<HTMLElement | null> {
+    const startedAt = Date.now();
+    return new Promise((resolve) => {
+      const tick = () => {
+        const el = resolver();
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) return resolve(el);
+        }
+        if (Date.now() - startedAt >= timeoutMs) return resolve(null);
+        window.requestAnimationFrame(tick);
+      };
+      tick();
+    });
+  }
+
+  private forceCurrentStepRefresh(): void {
+    if (!this.onboarding?.isActive()) return;
+    this.internalStepRefresh = true;
+    this.onboarding.goToStep(this.currentStep);
   }
 }
 

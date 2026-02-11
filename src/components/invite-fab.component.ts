@@ -83,41 +83,43 @@ export class InviteFab extends LitElement {
     return html`
       <div class="relative">
         <!-- FAB menu -->
-        <div
-          class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen
-            ? 'flex'
-            : 'hidden'} pointer-events-none"
-        >
-          <button
-            class="btn btn-circle btn-lg pointer-events-auto"
-            @click="${this.sendInvitationRequest}"
-          >
-            ${OutlinePaperPlaneIcon(iconClass)}
-          </button>
+        ${this.isOpen
+          ? html`
+              <div
+                class="absolute bottom-16 right-0 flex flex-col items-end space-y-2 pointer-events-none"
+              >
+                <button
+                  class="btn btn-circle btn-lg pointer-events-auto"
+                  @click="${this.sendInvitationRequest}"
+                >
+                  ${OutlinePaperPlaneIcon(iconClass)}
+                </button>
 
-          <!-- Tag + Copy -->
-          <div class="flex items-center gap-2 self-start pointer-events-none">
-            <div
-              class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300 pointer-events-none"
-            >
-              ${TagIcon(tagClass)}
-              <span>${this.userProfile.tag}</span>
-            </div>
+                <!-- Tag + Copy -->
+                <div class="flex items-center gap-2 self-start pointer-events-none">
+                  <div
+                    class="flex items-center gap-2 bg-base-200 px-3 py-1 rounded-full border border-base-300 pointer-events-none"
+                  >
+                    ${TagIcon(tagClass)}
+                    <span>${this.userProfile.tag}</span>
+                  </div>
 
-            <button
-              class="btn btn-circle btn-lg pointer-events-auto"
-              @click="${this.copyTagToClipboard}"
-            >
-              ${FilledCopyIcon(iconClass)}
-            </button>
-          </div>
-          <button
-            class="btn btn-circle btn-lg pointer-events-auto"
-            @click="${this.scrollToTopSmooth}"
-          >
-            ${OutlineChevronUpIcon(iconClass)}
-          </button>
-        </div>
+                  <button
+                    class="btn btn-circle btn-lg pointer-events-auto"
+                    @click="${this.copyTagToClipboard}"
+                  >
+                    ${FilledCopyIcon(iconClass)}
+                  </button>
+                </div>
+                <button
+                  class="btn btn-circle btn-lg pointer-events-auto"
+                  @click="${this.scrollToTopSmooth}"
+                >
+                  ${OutlineChevronUpIcon(iconClass)}
+                </button>
+              </div>
+            `
+          : null}
         <!-- FAB button -->
         <button class="btn btn-circle btn-lg btn-primary" @pointerup="${this.toggleFab}">
           <svg
