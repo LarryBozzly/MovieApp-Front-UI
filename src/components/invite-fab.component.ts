@@ -84,9 +84,9 @@ export class InviteFab extends LitElement {
       <div class="relative">
         <!-- FAB menu -->
         <div
-          class="absolute flex bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen
-            ? 'visible'
-            : 'invisible'} pointer-events-none"
+          class="absolute bottom-16 right-0 flex-col items-end space-y-2 ${this.isOpen
+            ? 'flex'
+            : 'hidden'} pointer-events-none"
         >
           <button
             class="btn btn-circle btn-lg pointer-events-auto"
