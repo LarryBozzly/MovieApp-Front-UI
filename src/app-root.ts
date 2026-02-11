@@ -64,6 +64,7 @@ export class AppRoot extends LitElement {
       deviceInfoService: DeviceInfoService.getInstance(),
       modalService: ModalService.getInstance(),
       connectivityService: ConnectivityService.getInstance(),
+      onboardingService: OnboardingService.getInstance(),
       appVersionService: AppVersionService.getInstance(),
       authChannelService: BroadcastChannelService.getInstance<AuthChannelEvent>(
         BroadcastChannelType.AUTH_CHANNEL

@@ -24,6 +24,7 @@ import type AppVersionService from '../services/app-version.service';
 import type BroadcastChannelService from '../services/broadcast-channel.service';
 import { env } from '../config';
 import { AuthChannelEvent } from '../models/models';
+import type OnboardingService from '../services/onboarding.service';
 
 export interface AuthState {
   deps?: {
@@ -32,6 +33,7 @@ export interface AuthState {
     webSocketService: WebSocketService;
     deviceInfoService: DeviceInfoService;
     connectivityService: ConnectivityService;
+    onboardingService: OnboardingService;
     modalService: ModalService;
     appVersionService: AppVersionService;
     authChannelService: BroadcastChannelService<AuthChannelEvent>;
@@ -329,6 +331,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       connectivityService,
       appVersionService,
       modalService,
+      onboardingService,
     } = deps;
     const { refresh, closeModal } = store.getState();
 
@@ -344,6 +347,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       if (hasRefreshTokenFlag && isForeground && (await connectivityService.waitForInternet())) {
         refresh();
         appVersionService.checkAndShowUpdateModal(modalService, closeModal);
+        if (onboardingService.isOnboardingActive()) onboardingService.startOnboarding();
       }
     });
   }),

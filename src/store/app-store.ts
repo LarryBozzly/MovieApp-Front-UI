@@ -30,7 +30,7 @@ export interface AppState {
     authService: AuthService;
     authStore: StoreApi<AuthState>;
     modalService: ModalService;
-    onboardingService : OnboardingService;
+    onboardingService: OnboardingService;
     appVersionService: AppVersionService;
     toastService: ToastService;
   };
@@ -119,11 +119,12 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   setNotifications: (notifications: Notification[]) =>
     set((state) => ({ ...state, notifications })),
   onInit: createEffect(store, async (deps, store) => {
-    const { appVersionService, modalService } = deps;
+    const { appVersionService, modalService, onboardingService } = deps;
     const { fetchCategoryMovies, setOnInitLoaded, closeModal, page } = store.getState();
     await fetchCategoryMovies(MovieCategory.TRENDING, page);
     appVersionService.checkAndShowUpdateModal(modalService, closeModal);
     setOnInitLoaded(true);
+    onboardingService.startOnboarding();
   }),
   triggerAbort: createEffect(store, async (_deps, store) => {
     const { globalAbortController } = store.getState();
