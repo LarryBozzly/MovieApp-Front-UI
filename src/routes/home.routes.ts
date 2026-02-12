@@ -1,4 +1,3 @@
-// Ensure components are imported so they register.
 import type { Route } from '@vaadin/router';
 import '../pages/home.page';
 
