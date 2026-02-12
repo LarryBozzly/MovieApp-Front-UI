@@ -15,14 +15,23 @@
     "noEmit": true,
     "baseUrl": "./",
     "paths": {
+      "@ui": ["src/ui"],
       "@ui/*": ["src/ui/*"],
+      "@services": ["src/services"],
       "@services/*": ["src/services/*"],
+      "@guards": ["src/guards"],
       "@guards/*": ["src/guards/*"],
+      "@store": ["src/store"],
       "@store/*": ["src/store/*"],
+      "@config": ["src/config"],
       "@config/*": ["src/config/*"],
+      "@utils": ["src/utils"],
       "@utils/*": ["src/utils/*"],
+      "@pages": ["src/pages"],
       "@pages/*": ["src/pages/*"],
+      "@routes": ["src/routes"],
       "@routes/*": ["src/routes/*"],
+      "@models": ["src/models"],
       "@models/*": ["src/models/*"]
     },
 

@@ -1,24 +1,24 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { router } from './routes';
-import './ui/components/navbar.component';
-import './ui/modals';
-import { tailwindStyles } from './utils/app.constants';
-import { env } from './config';
-import { appStore } from './store/app-store';
-import HttpService from './services/http.service';
-import AuthService from './services/auth.service';
-import { authStore } from './store/auth-store';
-import WebSocketService from './services/websocket.service';
-import ModalService from './services/modal.service';
-import DeviceInfoService from './services/device-info.service';
-import ConnectivityService from './services/connectivity.service';
-import AppVersionService from './services/app-version.service';
-import BroadcastChannelService from './services/broadcast-channel.service';
+import { router } from '@routes';
+import '@ui/components/navbar.component';
+import '@ui/modals';
+import { tailwindStyles } from '@utils/app.constants';
+import { env } from '@config';
+import { appStore } from '@store/app-store';
+import HttpService from '@services/http.service';
+import AuthService from '@services/auth.service';
+import { authStore } from '@store/auth-store';
+import WebSocketService from '@services/websocket.service';
+import ModalService from '@services/modal.service';
+import DeviceInfoService from '@services/device-info.service';
+import ConnectivityService from '@services/connectivity.service';
+import AppVersionService from '@services/app-version.service';
+import BroadcastChannelService from '@services/broadcast-channel.service';
 import { AuthChannelEvent, BroadcastChannelType } from './models/models';
-import './ui/components/loading-overlay.component';
-import ToastService from './services/toast-service';
-import OnboardingService from './services/onboarding.service';
+import '@ui/components/loading-overlay.component';
+import ToastService from '@services/toast-service';
+import OnboardingService from '@services/onboarding.service';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
