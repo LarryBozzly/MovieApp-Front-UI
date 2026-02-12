@@ -8,7 +8,8 @@
     "prebuild": "node scripts/generate-version.js",
     "build": "tsc && vite build --mode production",
     "preview": "vite preview --mode production",
-    "lint": "prettier --write \"src/**/*.{ts,js}\""
+    "lint:fix": "prettier --write \"src/**/*.{ts,js}\"",
+    "lint:check": "prettier --check \"src/**/*.{ts,js}\""
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",

@@ -14,8 +14,8 @@ import {
   selectNotifications,
   type AppState,
 } from '../store/app-store';
-import '../components/logo-back.component';
-import '../components/profile-button.component';
+import '../ui/logo-back.component';
+import '../ui/profile-button.component';
 import type { Notification, UserProfile } from '../models/models';
 
 @customElement('navbar-component')

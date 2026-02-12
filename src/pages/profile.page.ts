@@ -3,10 +3,10 @@ import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
 import { authStore, selectUserProfile } from '../store/auth-store';
-import { FilledCopyIcon, PencilEditIcon } from '../components/icons/icons';
+import { FilledCopyIcon, PencilEditIcon } from '../ui/icons/icons';
 import type { UserProfile } from '../models/models';
 import { appStore } from '../store/app-store';
-import '../components/invite-fab.component';
+import '../ui/invite-fab.component';
 
 @customElement('profile-page')
 export class ProfilePage extends LitElement {

@@ -14,9 +14,9 @@ import {
   type AppState,
 } from '../store/app-store';
 
-import '../components/movies-list.component';
-import '../components/categories.component';
-import '../components/invite-fab.component';
+import '../ui/movies-list.component';
+import '../ui/categories.component';
+import '../ui/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { MovieCategory, type Movie, type Notification, type UserProfile } from '../models/models';

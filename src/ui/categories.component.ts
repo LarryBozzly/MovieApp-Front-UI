@@ -8,8 +8,8 @@ import {
   type UserProfile,
 } from '../models/models';
 import { OutlineChevronLeftIcon, SearchIcon } from './icons/icons';
-import '../components/search.component';
-import '../components/profile-button.component';
+import '../ui/search.component';
+import '../ui/profile-button.component';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {

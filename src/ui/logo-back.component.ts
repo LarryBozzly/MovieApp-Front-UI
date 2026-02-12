@@ -2,7 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { Router } from '@vaadin/router';
-import { OutlineChevronLeftIcon } from '../components/icons/icons';
+import { OutlineChevronLeftIcon } from '../ui/icons/icons';
 import { routes } from '../routes/app.routes';
 import { publicGuard } from '../guards/public-guard';
 import { authGuard } from '../guards/auth-guard';
@@ -13,7 +13,7 @@ export class LogoBackComponent extends LitElement {
     ${tailwindStyles}
   `;
 
-  @property() isAuthorized!: boolean;
+  @property({ type: Boolean }) isAuthorized!: boolean;
   @state() private path = window.location.pathname;
 
   connectedCallback() {

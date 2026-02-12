@@ -1,8 +1,8 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { router } from './routes';
-import './components/navbar.component';
-import './components/modals';
+import './ui/navbar.component';
+import './ui/modals';
 import { tailwindStyles } from './utils/app.constants';
 import { env } from './config';
 import { appStore } from './store/app-store';
@@ -16,7 +16,7 @@ import ConnectivityService from './services/connectivity.service';
 import AppVersionService from './services/app-version.service';
 import BroadcastChannelService from './services/broadcast-channel.service';
 import { AuthChannelEvent, BroadcastChannelType } from './models/models';
-import './components/loading-overlay.component';
+import './ui/loading-overlay.component';
 import ToastService from './services/toast-service';
 import OnboardingService from './services/onboarding.service';
 
