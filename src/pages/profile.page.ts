@@ -6,7 +6,7 @@ import { authStore, selectUserProfile } from '../store/auth-store';
 import { FilledCopyIcon, PencilEditIcon } from '../ui/icons/icons';
 import type { UserProfile } from '../models/models';
 import { appStore } from '../store/app-store';
-import '../ui/invite-fab.component';
+import '../ui/components/invite-fab.component';
 
 @customElement('profile-page')
 export class ProfilePage extends LitElement {

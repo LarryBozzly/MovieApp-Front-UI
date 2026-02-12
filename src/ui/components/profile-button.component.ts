@@ -1,10 +1,10 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '../../utils/app.constants';
 import { Router } from '@vaadin/router';
-import { authStore, type AuthState } from '../store/auth-store';
+import { authStore, type AuthState } from '../../store/auth-store';
 import { watch } from 'zustand-lit';
-import type { Notification, UserProfile } from '../models/models';
+import type { Notification, UserProfile } from '../../models/models';
 import './notification-badge.component';
 
 @customElement('profile-button-component')

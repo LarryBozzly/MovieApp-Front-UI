@@ -1,22 +1,22 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '../../utils/app.constants';
 import {
   authStore,
   selectIsAuthorized,
   selectUserProfile,
   type AuthState,
-} from '../store/auth-store';
+} from '../../store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 import {
   appStore,
   selectisNavbarVisible,
   selectNotifications,
   type AppState,
-} from '../store/app-store';
-import '../ui/logo-back.component';
-import '../ui/profile-button.component';
-import type { Notification, UserProfile } from '../models/models';
+} from '../../store/app-store';
+import '../components/logo-back.component';
+import '../components/profile-button.component';
+import type { Notification, UserProfile } from '../../models/models';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {

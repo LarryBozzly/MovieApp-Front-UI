@@ -1,16 +1,16 @@
 import { LitElement, html, css } from 'lit';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '../../utils/app.constants';
 import { customElement, state } from 'lit/decorators.js';
 import {
   OutlinePaperPlaneIcon,
   FilledCopyIcon,
   OutlineChevronUpIcon,
   TagIcon,
-} from './icons/icons';
+} from '../icons/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { appStore, type AppState } from '../store/app-store';
-import { authStore, selectUserProfile, type AuthState } from '../store/auth-store';
-import type { UserProfile } from '../models/models';
+import { appStore, type AppState } from '../../store/app-store';
+import { authStore, selectUserProfile, type AuthState } from '../../store/auth-store';
+import type { UserProfile } from '../../models/models';
 
 @customElement('invite-fab')
 export class InviteFab extends LitElement {

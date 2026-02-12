@@ -2,8 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { type Movie } from '../../models/models';
 import { tailwindStyles } from '../../utils/app.constants';
-import '../genre-badges.component';
-import '../figure-video.component';
+import '../components/genre-badges.component';
+import '../components/figure-video.component';
 
 @customElement('movie-preview-modal')
 export class MoviePreviewModal extends LitElement {

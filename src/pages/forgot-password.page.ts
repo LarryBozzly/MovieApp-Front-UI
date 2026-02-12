@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { watch, watchWithSelector } from 'zustand-lit';
-import '../ui/movies-list.component';
+import '../ui/components/movies-list.component';
 import { tailwindStyles } from '../utils/app.constants';
 import {
   authStore,
