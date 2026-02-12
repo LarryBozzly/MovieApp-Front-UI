@@ -1,6 +1,6 @@
-import ConnectivityService from '../services/connectivity.service';
-import { authStore } from '../store/auth-store';
-import { pauseAppUntilOnline } from './pause-app-until-online';
+import ConnectivityService from '@services/connectivity.service';
+import { authStore } from '@store/auth-store';
+import { pauseAppUntilOnline } from '@utils/pause-app-until-online';
 
 /**
  * Executes the provided async function (e.g., authStore.refresh) only if

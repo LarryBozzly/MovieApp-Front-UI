@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieGenreMap } from '../../models/models';
+import { MovieGenreMap } from '@models/models';
 
 @customElement('genre-badges')
 export class GenreBadges extends LitElement {

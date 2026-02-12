@@ -1,14 +1,14 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { MovieMatchDirection, type Movie, type WatchlistState } from '../../models/models.ts';
-import { tailwindStyles } from '../../utils/app.constants.ts';
+import { tailwindStyles } from '@utils/app.constants.ts';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { authStore, type AuthState } from '../../store/auth-store.ts';
-import { getPopularityClasses } from '../../utils/popularity-ui-classes.functions.ts';
-import '../components/genre-badges.component.ts';
-import '../components/figure-video.component.ts';
+import { authStore, type AuthState } from '@store/auth-store.ts';
+import { getPopularityClasses } from '@utils/popularity-ui-classes.functions.ts';
+import '@ui/components/genre-badges.component.ts';
+import '@ui/components/figure-video.component.ts';
 import Hammer from 'hammerjs';
-import { appStore, selectWatchlistIds } from '../../store/app-store.ts';
+import { appStore, selectWatchlistIds } from '@store/app-store.ts';
 import { FilledBookmarkIcon, OutlineBookmarkIcon } from '@ui/icons';
 
 @customElement('movie-match-modal-component')

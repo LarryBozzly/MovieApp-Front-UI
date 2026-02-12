@@ -1,13 +1,13 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
 import {
   authStore,
   selectIsAuthorized,
   selectIsLoading,
   selectIsWSConnected,
-} from '../../store/auth-store';
+} from '@store/auth-store';
 
 @customElement('loading-overlay-component')
 export class LoadingOverlayComponent extends LitElement {

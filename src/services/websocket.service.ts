@@ -1,9 +1,9 @@
 import protobuf from 'protobufjs';
-import { appStore } from '../store/app-store';
-import type { WatchlistState, Movie, Notification } from '../models/models';
-import { authStore } from '../store/auth-store';
-import ConnectivityService from './connectivity.service';
-import { notificationMapper } from '../utils/notificationMapper';
+import { appStore } from '@store/app-store';
+import type { WatchlistState, Movie, Notification } from '@models/models';
+import { authStore } from '@store/auth-store';
+import ConnectivityService from '@services/connectivity.service';
+import { notificationMapper } from '@utils/notificationMapper';
 
 type EventCallback = (data: any) => void;
 

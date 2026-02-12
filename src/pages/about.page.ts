@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
-import '../ui/components/invite-fab.component';
+import { tailwindStyles } from '@utils/app.constants';
+import '@ui/components/invite-fab.component';
 
 @customElement('about-page')
 export class AboutPage extends LitElement {

@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { tailwindStyles } from '../utils/app.constants';
-import { authStore, selectError, selectIsLoading, type AuthState } from '../store/auth-store';
+import { tailwindStyles } from '@utils/app.constants';
+import { authStore, selectError, selectIsLoading, type AuthState } from '@store/auth-store';
 
 @customElement('login-page')
 export class LoginPage extends LitElement {

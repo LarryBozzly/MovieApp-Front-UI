@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { watch } from 'zustand-lit';
-import { authStore, type AuthState } from '../../store/auth-store';
-import { type Notification } from '../../models/models';
+import { authStore, type AuthState } from '@store/auth-store';
+import { type Notification } from '@models/models';
 
 @customElement('invitation-notification-modal-component')
 export class InvitationNotificationModalComponent extends LitElement {

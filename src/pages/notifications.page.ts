@@ -1,12 +1,12 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { appStore, selectNotifications } from '../store/app-store';
-import type { Notification } from '../models/models';
-import { authStore, type AuthState } from '../store/auth-store';
+import { appStore, selectNotifications } from '@store/app-store';
+import type { Notification } from '@models/models';
+import { authStore, type AuthState } from '@store/auth-store';
 import { CloseIcon, InvitationIcon, OutlineBellIcon } from '@ui/icons';
-import '../ui/components/invite-fab.component';
+import '@ui/components/invite-fab.component';
 
 @customElement('notifications-page')
 export class NotificationsPage extends LitElement {

@@ -1,5 +1,5 @@
 import type { Route } from '@vaadin/router';
-import '../pages/profile.page';
+import '@pages/profile.page';
 
 export const profileViews: Route[] = [
   {

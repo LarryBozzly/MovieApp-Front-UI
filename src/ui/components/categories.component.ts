@@ -1,15 +1,15 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import {
   MovieCategory,
   MovieCategoryMap,
   type Notification,
   type UserProfile,
-} from '../../models/models';
+} from '@models/models';
 import { OutlineChevronLeftIcon, SearchIcon } from '@ui/icons';
-import '../components/search.component';
-import '../components/profile-button.component';
+import '@ui/components/search.component';
+import '@ui/components/profile-button.component';
 
 @customElement('categories-component')
 export class CategoriesComponent extends LitElement {

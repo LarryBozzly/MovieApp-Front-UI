@@ -6,17 +6,17 @@ import {
   selectIsAuthorized,
   selectUserProfile,
   type AuthState,
-} from '../../store/auth-store';
+} from '@store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 import {
   appStore,
   selectisNavbarVisible,
   selectNotifications,
   type AppState,
-} from '../../store/app-store';
-import '../components/logo-back.component';
-import '../components/profile-button.component';
-import type { Notification, UserProfile } from '../../models/models';
+} from '@store/app-store';
+import '@ui/components/logo-back.component';
+import '@ui/components/profile-button.component';
+import type { Notification, UserProfile } from '@models/models';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {

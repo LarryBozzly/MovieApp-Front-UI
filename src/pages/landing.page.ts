@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 
 @customElement('landing-page')
 export class LandingPage extends LitElement {

@@ -1,5 +1,5 @@
-import AuthService from '../services/auth.service';
-import ConnectivityService from '../services/connectivity.service';
+import AuthService from '@services/auth.service';
+import ConnectivityService from '@services/connectivity.service';
 
 /**
  * Enters a "purgatory" mode:

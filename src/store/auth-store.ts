@@ -10,21 +10,21 @@ import type {
   UpdateTagResponse,
   UserProfile,
   VerifyResponse,
-} from '../models/models';
-import type HttpService from '../services/http.service';
-import type AuthService from '../services/auth.service';
-import { tryCatch } from '../utils/try-catch';
+} from '@models/models';
+import type HttpService from '@services/http.service';
+import type AuthService from '@services/auth.service';
+import { tryCatch } from '@utils/try-catch';
 import { Router } from '@vaadin/router';
-import { createEffect } from '../utils/create-effect.functions';
-import type WebSocketService from '../services/websocket.service';
-import type DeviceInfoService from '../services/device-info.service';
-import type ConnectivityService from '../services/connectivity.service';
-import type ModalService from '../services/modal.service';
-import type AppVersionService from '../services/app-version.service';
+import { createEffect } from '@utils/create-effect.functions';
+import type WebSocketService from '@services/websocket.service';
+import type DeviceInfoService from '@services/device-info.service';
+import type ConnectivityService from '@services/connectivity.service';
+import type ModalService from '@services/modal.service';
+import type AppVersionService from '@services/app-version.service';
 import type BroadcastChannelService from '../services/broadcast-channel.service';
-import { env } from '../config';
-import { AuthChannelEvent } from '../models/models';
-import type OnboardingService from '../services/onboarding.service';
+import { env } from '@config';
+import { AuthChannelEvent } from '@models/models';
+import type OnboardingService from '@services/onboarding.service';
 
 export interface AuthState {
   deps?: {

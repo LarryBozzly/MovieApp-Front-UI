@@ -1,9 +1,9 @@
 import type { Commands, RouteContext } from '@vaadin/router';
-import AuthService from '../services/auth.service';
-import { authStore } from '../store/auth-store';
-import { safeRefresh } from '../utils/safe-refresh';
-import { routes } from '../routes/app.routes';
-import { publicGuard } from './public-guard';
+import AuthService from '@services/auth.service';
+import { authStore } from '@store/auth-store';
+import { safeRefresh } from '@utils/safe-refresh';
+import { routes } from '@routes/app.routes';
+import { publicGuard } from '@guards/public-guard';
 
 export async function authGuard(context: RouteContext, commands: Commands) {
   const authService = await AuthService.getInstance();

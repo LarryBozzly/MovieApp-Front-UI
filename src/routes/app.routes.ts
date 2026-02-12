@@ -1,15 +1,15 @@
 import type { Route } from '@vaadin/router';
 import { profileViews } from './profile.routes';
-import { notificationViews } from './notification.routes';
-import { homeViews } from './home.routes';
-import { aboutViews } from './about.routes';
-import { authGuard } from '../guards/auth-guard';
-import { publicGuard } from '../guards/public-guard';
-import '../pages/login.page';
-import '../pages/signup.page';
-import '../pages/verify.page';
-import '../pages/forgot-password.page';
-import '../pages/landing.page';
+import { notificationViews } from '@routes/notification.routes';
+import { homeViews } from '@routes/home.routes';
+import { aboutViews } from '@routes/about.routes';
+import { authGuard } from '@guards/auth-guard';
+import { publicGuard } from '@guards/public-guard';
+import '@pages/login.page';
+import '@pages/signup.page';
+import '@pages/verify.page';
+import '@pages/forgot-password.page';
+import '@pages/landing.page';
 
 const children: Route[] = [...homeViews, ...profileViews, ...notificationViews, ...aboutViews];
 

@@ -1,4 +1,4 @@
-import { NotificationType, type Notification } from '../models/models';
+import { NotificationType, type Notification } from '@models/models';
 
 export function notificationMapper(notifications: unknown[]): Notification[] {
   if (!Array.isArray(notifications)) return [];

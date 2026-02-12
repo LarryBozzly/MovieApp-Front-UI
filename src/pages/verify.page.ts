@@ -1,13 +1,13 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import {
   authStore,
   selectError,
   selectIsLoading,
   selectIsVerified,
   type AuthState,
-} from '../store/auth-store';
+} from '@store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 
 @customElement('verify-page')

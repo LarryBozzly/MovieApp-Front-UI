@@ -14,13 +14,13 @@ import {
   type AppState,
 } from '../store/app-store';
 
-import '../ui/components/movies-list.component';
-import '../ui/components/categories.component';
-import '../ui/components/invite-fab.component';
+import '@ui/components/movies-list.component';
+import '@ui/components/categories.component';
+import '@ui/components/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { MovieCategory, type Movie, type Notification, type UserProfile } from '../models/models';
-import { authStore, selectUserProfile } from '../store/auth-store';
+import { MovieCategory, type Movie, type Notification, type UserProfile } from '@models/models';
+import { authStore, selectUserProfile } from '@store/auth-store';
 
 @customElement('home-page')
 export class HomePage extends LitElement {

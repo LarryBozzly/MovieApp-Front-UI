@@ -1,6 +1,6 @@
 import { Guida, type OnboardingStep } from 'guida.js';
-import { appStore } from '../store/app-store';
-import { MOCK_MOVIES } from '../utils/app.constants';
+import { appStore } from '@store/app-store';
+import { MOCK_MOVIES } from '@utils/app.constants';
 
 interface OnboardingState {
   seen: boolean;

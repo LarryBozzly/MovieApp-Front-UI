@@ -1,8 +1,8 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state, property } from 'lit/decorators.js';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { authStore, selectError, selectIsLoading, type AuthState } from '../../store/auth-store';
+import { authStore, selectError, selectIsLoading, type AuthState } from '@store/auth-store';
 
 @customElement('edit-tag-modal-component')
 export class EditTagModalComponent extends LitElement {

@@ -1,6 +1,6 @@
-import type { VersionResponse } from '../models/models';
-import { tryCatch } from '../utils/try-catch';
-import type ModalService from './modal.service';
+import type { VersionResponse } from '@models/models';
+import { tryCatch } from '@utils/try-catch';
+import type ModalService from '@services/modal.service';
 
 class AppVersionService {
   private static instance: AppVersionService;

@@ -12,17 +12,17 @@ import {
   VideoSite,
   VideoType,
   NotificationType,
-} from '../models/models';
-import type { ToastType } from '../services/toast-service';
-import type HttpService from '../services/http.service';
-import type AuthService from '../services/auth.service';
-import type { AuthState } from './auth-store';
-import { tryCatch } from '../utils/try-catch';
-import { createEffect } from '../utils/create-effect.functions';
-import type ModalService from '../services/modal.service';
-import type AppVersionService from '../services/app-version.service';
-import type ToastService from '../services/toast-service';
-import type OnboardingService from '../services/onboarding.service';
+} from '@models/models';
+import type { ToastType } from '@services/toast-service';
+import type HttpService from '@services/http.service';
+import type AuthService from '@services/auth.service';
+import type { AuthState } from '@store/auth-store';
+import { tryCatch } from '@utils/try-catch';
+import { createEffect } from '@utils/create-effect.functions';
+import type ModalService from '@services/modal.service';
+import type AppVersionService from '@services/app-version.service';
+import type ToastService from '@services/toast-service';
+import type OnboardingService from '@services/onboarding.service';
 
 export interface AppState {
   deps?: {

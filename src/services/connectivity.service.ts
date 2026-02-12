@@ -1,4 +1,4 @@
-import { env } from '../config';
+import { env } from '@config';
 
 class ConnectivityService {
   private static instance: ConnectivityService;

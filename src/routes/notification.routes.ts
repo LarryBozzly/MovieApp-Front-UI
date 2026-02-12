@@ -1,5 +1,5 @@
 import type { Route } from '@vaadin/router';
-import '../pages/notifications.page';
+import '@pages/notifications.page';
 
 export const notificationViews: Route[] = [
   {

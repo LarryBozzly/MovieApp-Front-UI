@@ -1,5 +1,5 @@
-import { authStore } from '../store/auth-store';
-import { safeRefresh } from '../utils/safe-refresh';
+import { authStore } from '@store/auth-store';
+import { safeRefresh } from '@utils/safe-refresh';
 
 class AuthService {
   private static instance: AuthService;

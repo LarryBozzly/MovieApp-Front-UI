@@ -1,6 +1,6 @@
 import { unsafeCSS } from 'lit';
 import globalStyles from '../index.css?inline';
-import type { Movie } from '../models/models';
+import type { Movie } from '@models/models';
 
 export const tailwindStyles = unsafeCSS(globalStyles);
 

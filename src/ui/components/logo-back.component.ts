@@ -1,11 +1,11 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { OutlineChevronLeftIcon } from '@ui/icons';
-import { routes } from '../../routes/app.routes';
-import { publicGuard } from '../../guards/public-guard';
-import { authGuard } from '../../guards/auth-guard';
+import { routes } from '@routes/app.routes';
+import { publicGuard } from '@guards/public-guard';
+import { authGuard } from '@guards/auth-guard';
 
 @customElement('logo-back-component')
 export class LogoBackComponent extends LitElement {
