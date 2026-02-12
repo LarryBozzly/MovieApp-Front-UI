@@ -326,6 +326,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   openSendInvitationModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
     await import('../components/send-invite-modal.component');
+    await customElements.whenDefined('send-invite-modal-component');
     modalService.open({ tag: 'send-invite-modal-component' });
   }),
   openReceivedInvitationModal: createEffect(
