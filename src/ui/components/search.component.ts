@@ -1,12 +1,12 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { tailwindStyles } from '../../utils/app.constants';
+import { tailwindStyles } from '@utils/app.constants';
 import { watch } from 'zustand-lit';
-import { appStore, type AppState } from '../../store/app-store';
-import { MovieCategory } from '../../models/models';
-import { debounce } from '../../utils/debounce';
-import { SearchIcon } from '../icons/icons';
+import { appStore, type AppState } from '@store/app-store';
+import { MovieCategory } from '@models/models';
+import { debounce } from '@utils/debounce';
+import { SearchIcon } from '@ui/icons/icons';
 
 @customElement('search-component')
 export class SearchComponent extends LitElement {

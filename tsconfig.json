@@ -13,6 +13,18 @@
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "baseUrl": "./",
+    "paths": {
+      "@ui/*": ["src/ui/*"],
+      "@services/*": ["src/services/*"],
+      "@guards/*": ["src/guards/*"],
+      "@store/*": ["src/store/*"],
+      "@config/*": ["src/config/*"],
+      "@utils/*": ["src/utils/*"],
+      "@pages/*": ["src/pages/*"],
+      "@routes/*": ["src/routes/*"],
+      "@models/*": ["src/models/*"]
+    },
 
     /* Linting */
     "strict": true,
