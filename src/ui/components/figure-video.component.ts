@@ -1,7 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '../../utils/app.constants';
-import { NoImageIcon, PlayIcon } from '../icons/icons';
+import { NoImageIcon, PlayIcon } from '@ui/icons';
 import type { Movie } from '../../models/models';
 import { appStore } from '../../store/app-store';
 

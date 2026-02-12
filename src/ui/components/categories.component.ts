@@ -7,7 +7,7 @@ import {
   type Notification,
   type UserProfile,
 } from '../../models/models';
-import { OutlineChevronLeftIcon, SearchIcon } from '../icons/icons';
+import { OutlineChevronLeftIcon, SearchIcon } from '@ui/icons';
 import '../components/search.component';
 import '../components/profile-button.component';
 

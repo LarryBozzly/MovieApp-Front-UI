@@ -9,7 +9,7 @@ import '../components/genre-badges.component.ts';
 import '../components/figure-video.component.ts';
 import Hammer from 'hammerjs';
 import { appStore, selectWatchlistIds } from '../../store/app-store.ts';
-import { FilledBookmarkIcon, OutlineBookmarkIcon } from '../icons/icons.ts';
+import { FilledBookmarkIcon, OutlineBookmarkIcon } from '@ui/icons';
 
 @customElement('movie-match-modal-component')
 export class MovieMatchModalComponent extends LitElement {

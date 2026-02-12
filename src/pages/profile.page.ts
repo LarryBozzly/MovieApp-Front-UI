@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
 import { authStore, selectUserProfile } from '../store/auth-store';
-import { FilledCopyIcon, PencilEditIcon } from '../ui/icons/icons';
+import { FilledCopyIcon, PencilEditIcon } from '@ui/icons';
 import type { UserProfile } from '../models/models';
 import { appStore } from '../store/app-store';
 import '../ui/components/invite-fab.component';

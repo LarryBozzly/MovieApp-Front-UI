@@ -6,7 +6,7 @@ import { watch } from 'zustand-lit';
 import { appStore, type AppState } from '@store/app-store';
 import { MovieCategory } from '@models/models';
 import { debounce } from '@utils/debounce';
-import { SearchIcon } from '@ui/icons/icons';
+import { SearchIcon } from '@ui/icons';
 
 @customElement('search-component')
 export class SearchComponent extends LitElement {

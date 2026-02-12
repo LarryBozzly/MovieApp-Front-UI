@@ -6,7 +6,7 @@ import {
   FilledCopyIcon,
   OutlineChevronUpIcon,
   TagIcon,
-} from '../icons/icons';
+} from '@ui/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '../../store/app-store';
 import { authStore, selectUserProfile, type AuthState } from '../../store/auth-store';

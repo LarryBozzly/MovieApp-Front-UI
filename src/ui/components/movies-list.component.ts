@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { WatchlistState, Movie } from '../../models/models.ts';
 import { tailwindStyles } from '../../utils/app.constants.ts';
 import { getPopularityClasses } from '../../utils/popularity-ui-classes.functions.ts';
-import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon } from '../icons/icons.ts';
+import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon } from '@ui/icons';
 import { appStore, selectWatchlistIds } from '../../store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
