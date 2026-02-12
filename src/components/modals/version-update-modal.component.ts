@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '../../utils/app.constants';
 
 @customElement('version-update-modal-component')
 export class VersionUpdateModalComponent extends LitElement {

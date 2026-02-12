@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { tailwindStyles } from '../utils/app.constants';
+import { tailwindStyles } from '../../utils/app.constants';
 import { watch } from 'zustand-lit';
-import { authStore, type AuthState } from '../store/auth-store';
-import ToastService from '../services/toast-service';
+import { authStore, type AuthState } from '../../store/auth-store';
+import ToastService from '../../services/toast-service';
 
 @customElement('send-invite-modal-component')
 export class SendInviteModalComponent extends LitElement {

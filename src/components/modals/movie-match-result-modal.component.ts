@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { type Movie } from '../models/models';
-import { tailwindStyles } from '../utils/app.constants';
+import { type Movie } from '../../models/models';
+import { tailwindStyles } from '../../utils/app.constants';
 
 @customElement('movie-match-result-modal')
 export class MovieMatchResultModal extends LitElement {

@@ -1,15 +1,15 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieMatchDirection, type Movie, type WatchlistState } from '../models/models';
-import { tailwindStyles } from '../utils/app.constants';
+import { MovieMatchDirection, type Movie, type WatchlistState } from '../../models/models.ts';
+import { tailwindStyles } from '../../utils/app.constants.ts';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { authStore, type AuthState } from '../store/auth-store';
-import { getPopularityClasses } from '../utils/popularity-ui-classes.functions';
-import './genre-badges.component';
-import './figure-video.component';
+import { authStore, type AuthState } from '../../store/auth-store.ts';
+import { getPopularityClasses } from '../../utils/popularity-ui-classes.functions.ts';
+import '../genre-badges.component.ts';
+import '../figure-video.component.ts';
 import Hammer from 'hammerjs';
-import { appStore, selectWatchlistIds } from '../store/app-store';
-import { FilledBookmarkIcon, OutlineBookmarkIcon } from './icons/icons.ts';
+import { appStore, selectWatchlistIds } from '../../store/app-store.ts';
+import { FilledBookmarkIcon, OutlineBookmarkIcon } from '../icons/icons.ts';
 
 @customElement('movie-match-modal-component')
 export class MovieMatchModalComponent extends LitElement {
