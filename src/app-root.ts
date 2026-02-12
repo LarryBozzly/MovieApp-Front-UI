@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { router } from './routes';
 import './components/navbar.component';
+import './components/modals';
 import { tailwindStyles } from './utils/app.constants';
 import { env } from './config';
 import { appStore } from './store/app-store';
