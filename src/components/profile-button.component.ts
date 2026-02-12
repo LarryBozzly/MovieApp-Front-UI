@@ -5,7 +5,7 @@ import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '../store/auth-store';
 import { watch } from 'zustand-lit';
 import type { Notification, UserProfile } from '../models/models';
-import '../ui/notification-badge.component';
+import './notification-badge.component';
 
 @customElement('profile-button-component')
 export class ProfileButtonComponent extends LitElement {
