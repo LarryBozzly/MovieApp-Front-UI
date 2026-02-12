@@ -5,3 +5,4 @@ import './movie-match-result-modal.component';
 import './movie-preview-modal.component';
 import './edit-tag-modal.component';
 import './error-modal.component';
+import './version-update-modal.component';

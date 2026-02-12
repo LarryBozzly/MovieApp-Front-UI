@@ -50,7 +50,6 @@ class AppVersionService {
     }
 
     if (localVersion !== version) {
-      await import('../components/modals/version-update-modal.component');
       modalService.open({
         tag: 'version-update-modal-component',
         props: { version, onClose },
