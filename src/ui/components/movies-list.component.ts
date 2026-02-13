@@ -78,12 +78,11 @@ export class MoviesListComponent extends LitElement {
         class="grid bg-base-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-0 px-4 pb-4"
       >
         ${this.movies.map(
-          (movie) => html`
+          (movie, index) => html`
             <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
               <figure class="flex-shrink-0">
                 <img
-                  fetchpriority="high"
-                  decoding="async"
+                  fetchpriority=${index < 6 ? 'high' : 'auto'}
                   @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
                   draggable="false"
                   class="h-64 object-contain select-none cursor-pointer"
