@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
+import { ref } from 'lit/directives/ref.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '@store/auth-store';
@@ -11,7 +12,7 @@ import '@ui/components/notification-badge.component';
 export class ProfileButtonComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
-  @query('.dropdown-content') private dropdownContainer!: HTMLElement;
+  private dropdownButton: HTMLElement | undefined;
   @property({ type: Object }) userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
 
@@ -21,25 +22,25 @@ export class ProfileButtonComponent extends LitElement {
 
   private async logout(e: Event) {
     e.stopPropagation();
-    this.dropdownContainer?.blur();
+    this.dropdownButton?.blur();
     await this.authState.logout();
   }
 
   private redirectToProfile(e: Event) {
     e.stopPropagation();
-    this.dropdownContainer?.blur();
+    this.dropdownButton?.blur();
     Router.go('/profile');
   }
 
   private redirectToNotifications(e: Event) {
     e.stopPropagation();
-    this.dropdownContainer?.blur();
+    this.dropdownButton?.blur();
     Router.go('/notifications');
   }
 
   private redirectToAbout(e: Event) {
     e.stopPropagation();
-    this.dropdownContainer?.blur();
+    this.dropdownButton?.blur();
     Router.go('/about');
   }
 
@@ -50,6 +51,7 @@ export class ProfileButtonComponent extends LitElement {
           <div
             tabindex="0"
             role="button"
+            ${ref((el) => (this.dropdownButton = el as HTMLElement))}
             class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"
           >
             ${this.userProfile.tag?.[0] ?? '?'}
@@ -65,7 +67,7 @@ export class ProfileButtonComponent extends LitElement {
           >
             <li>
               <a
-                @click="${this.redirectToProfile}"
+                @pointerup="${this.redirectToProfile}"
                 class="flex items-center px-4 py-2 text-primary font-semibold"
               >
                 Profile
@@ -73,7 +75,7 @@ export class ProfileButtonComponent extends LitElement {
             </li>
             <li>
               <a
-                @click="${this.redirectToNotifications}"
+                @pointerup="${this.redirectToNotifications}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>Notifications</span>
@@ -85,7 +87,7 @@ export class ProfileButtonComponent extends LitElement {
             </li>
             <li>
               <a
-                @click="${this.redirectToAbout}"
+                @pointerup="${this.redirectToAbout}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>About</span>
@@ -94,7 +96,7 @@ export class ProfileButtonComponent extends LitElement {
             <hr class="my-2 border border-base-content/10" />
             <li>
               <button
-                @click="${this.logout}"
+                @pointerup="${this.logout}"
                 class="flex w-full items-center px-4 py-2 text-error font-semibold text-left"
               >
                 Logout
