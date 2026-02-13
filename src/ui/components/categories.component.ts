@@ -63,7 +63,10 @@ export class CategoriesComponent extends LitElement {
       <div class="p-2 h-16 flex items-center gap-3 w-full">
         ${!this.searchOpen
           ? html`
-              <button class="btn btn-ghost btn-circle" ${ghostTap(() => this.openSearch())}>
+              <button
+                class="btn btn-ghost btn-circle border-none"
+                ${ghostTap(() => this.openSearch())}
+              >
                 ${SearchIcon('w-6 h-6 text-primary')}
               </button>
               <div
@@ -88,7 +91,10 @@ export class CategoriesComponent extends LitElement {
         ${this.searchOpen
           ? html`
               <div class="flex flex-row gap-2 w-full">
-                <button class="btn btn-ghost btn-circle" ${ghostTap(() => this.closeSearch())}>
+                <button
+                  class="btn btn-ghost btn-circle border-none"
+                  ${ghostTap(() => this.closeSearch())}
+                >
                   ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
                 </button>
                 <search-component .query=${this.query}></search-component>
