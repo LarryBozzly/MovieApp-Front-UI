@@ -82,3 +82,28 @@ body {
 .scroll-fade > :last-child {
   margin-right: 7px;
 }
+
+/* Ghost tap styles */
+.ghost-only-active {
+  -webkit-tap-highlight-color: transparent;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  --ghost-press-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 9%);
+}
+/* Default: disable hover on touch devices to avoid stuck hover */
+.ghost-only-active:hover {
+  background-color: transparent !important;
+}
+/* Pressed state for touch */
+.ghost-only-active:active {
+  background-color: var(--ghost-press-bg) !important;
+}
+.ghost-only-active.is-pressed {
+  background-color: var(--ghost-press-bg) !important;
+}
+/* Enable hover only on devices that can hover */
+@media (hover: hover) and (pointer: fine) {
+  .ghost-only-active:hover {
+    background-color: var(--ghost-press-bg) !important;
+  }
+}
