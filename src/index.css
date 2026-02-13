@@ -89,6 +89,14 @@ body {
   outline: 0 !important;
   outline-offset: 0 !important;
   --ghost-press-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 9%);
+  transition-property: background-color !important;
+  transition-duration: 280ms !important;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1) !important;
+}
+.ghost-only-active:focus,
+.ghost-only-active:focus-visible {
+  outline: 0 !important;
+  box-shadow: none !important;
 }
 /* Default: disable hover on touch devices to avoid stuck hover */
 .ghost-only-active:hover {
