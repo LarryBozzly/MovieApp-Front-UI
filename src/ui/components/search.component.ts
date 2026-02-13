@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ref } from 'lit/directives/ref.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { watch } from 'zustand-lit';
 import { appStore, type AppState } from '@store/app-store';
@@ -12,6 +13,8 @@ import { SearchIcon } from '@ui/icons';
 export class SearchComponent extends LitElement {
   @watch(appStore) appState!: AppState;
   @property() query!: string;
+
+  private inputRef: HTMLInputElement | undefined;
 
   static styles = css`
     ${tailwindStyles}
@@ -48,7 +51,11 @@ export class SearchComponent extends LitElement {
         composed: true,
       })
     );
-    this.renderRoot.querySelector('input')?.focus();
+    this.inputRef?.focus();
+  }
+
+  private focusInput(): void {
+    this.inputRef?.focus();
   }
 
   render() {
@@ -61,7 +68,9 @@ export class SearchComponent extends LitElement {
           class="grow"
           placeholder="Search"
           .value=${this.query}
+          ${ref(el => this.inputRef = el as HTMLInputElement)}
           @input=${this.handleInput}
+          @pointerup=${this.focusInput}
         />
 
         <svg
