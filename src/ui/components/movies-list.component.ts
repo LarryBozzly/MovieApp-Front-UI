@@ -82,6 +82,8 @@ export class MoviesListComponent extends LitElement {
             <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
               <figure class="flex-shrink-0">
                 <img
+                  fetchpriority="high"
+                  decoding="async"
                   @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
                   draggable="false"
                   class="h-64 object-contain select-none cursor-pointer"
