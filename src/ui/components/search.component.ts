@@ -72,7 +72,7 @@ export class SearchComponent extends LitElement {
             'pointer-events-auto': hasText,
             'pointer-events-none': !hasText,
           })}
-          @click=${this.clearSearch}
+          @pointerup=${this.clearSearch}
           height="1.2em"
           width="1.2em"
           xmlns="http://www.w3.org/2000/svg"
