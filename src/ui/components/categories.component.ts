@@ -79,7 +79,7 @@ export class CategoriesComponent extends LitElement {
                         ${this.selectedCategory === category
                         ? 'btn-primary'
                         : 'btn-neutral-content'}"
-                      ${ghostTap(() => this.handleCategoryClick(category as MovieCategory))}
+                      @pointerup=${() => this.handleCategoryClick(category as MovieCategory)}
                     >
                       ${label}
                     </button>
