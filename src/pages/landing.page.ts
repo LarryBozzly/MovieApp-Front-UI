@@ -102,21 +102,22 @@ export class LandingPage extends LitElement {
               class="text-base sm:text-lg md:text-2xl mb-10 text-white/90 max-w-2xl mx-auto leading-relaxed"
             >
               Movviator helps you and your loved ones find the perfect movie to watch together.
-              Match based on your watchlist, and never argue about movie night again!
+              Match based on your watchlist and your preferences, and never argue about movie night
+              again!
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div class="flex flex-col items-center gap-3 mb-12">
               <a
                 href="/signup"
                 class="btn btn-lg bg-white text-[#6a11cb] hover:bg-gray-100 border-none font-bold px-8 no-underline"
               >
                 Get Started
               </a>
-              <a
-                href="/login"
-                class="btn btn-lg btn-outline text-white hover:bg-white/20 hover:text-white border-2 font-bold px-8 no-underline"
-              >
-                Login
-              </a>
+              <p class="text-sm sm:text-base text-white/90">
+                Already have an account?
+                <a href="/login" class="font-semibold text-white underline underline-offset-4">
+                  Log in here
+                </a>
+              </p>
             </div>
           </div>
 
