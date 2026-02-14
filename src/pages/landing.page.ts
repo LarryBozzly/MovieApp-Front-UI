@@ -194,7 +194,7 @@ export class LandingPage extends LitElement {
             <h2 class="text-3xl font-bold mb-10">Join the Community</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div>
-                <div class="text-4xl font-bold text-primary mb-2">10k+</div>
+                <div class="text-4xl font-bold text-primary mb-2">1M+</div>
                 <div class="text-sm uppercase tracking-wide opacity-60">Movies</div>
               </div>
               <div>
@@ -202,8 +202,8 @@ export class LandingPage extends LitElement {
                 <div class="text-sm uppercase tracking-wide opacity-60">Matches</div>
               </div>
               <div>
-                <div class="text-4xl font-bold text-primary mb-2">Free</div>
-                <div class="text-sm uppercase tracking-wide opacity-60">Forever</div>
+                <div class="text-4xl font-bold text-primary mb-2">100%</div>
+                <div class="text-sm uppercase tracking-wide opacity-60">Personalized</div>
               </div>
               <div>
                 <div class="text-4xl font-bold text-primary mb-2">24/7</div>
