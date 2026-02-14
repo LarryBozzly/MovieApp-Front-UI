@@ -110,7 +110,7 @@ export class LandingPage extends LitElement {
                 href="/signup"
                 class="btn btn-lg bg-white text-[#6a11cb] hover:bg-gray-100 border-none font-bold px-8 no-underline"
               >
-                Get Started
+                Create Free Account
               </a>
               <p class="text-sm sm:text-base text-white/90">
                 Already have an account?
