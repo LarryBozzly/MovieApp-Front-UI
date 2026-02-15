@@ -73,7 +73,33 @@ export class NavbarComponent extends LitElement {
               ></profile-button-component>
             `
           : this.isHomePage
-            ? html` <a href="/login" class="btn btn-primary rounded-full no-underline"> Login </a> `
+            ? html`
+                <div
+                  class="flex items-baseline bg-base-200/50 rounded-full p-1 mr-2 sm:mr-4 border border-base-content/5"
+                >
+                  <a
+                    href="/login"
+                    class="btn btn-primary btn-xs sm:btn-sm rounded-full px-3 sm:px-5 no-underline shadow-sm"
+                  >
+                    <span
+                      class="text-[10px] sm:text-xs uppercase tracking-tight sm:tracking-widest font-bold"
+                    >
+                      Login
+                    </span>
+                  </a>
+
+                  <a
+                    href="/signup"
+                    class="px-2 sm:px-4 no-underline hover:text-primary transition-colors"
+                  >
+                    <span
+                      class="text-[10px] sm:text-xs uppercase tracking-tight sm:tracking-widest font-bold opacity-70"
+                    >
+                      Sign Up
+                    </span>
+                  </a>
+                </div>
+              `
             : ''}
       </div>
     `;
