@@ -27,6 +27,7 @@ export default defineConfig({
         globDirectory: 'dist/',
         globPatterns: ['**/*.{js,css,html,ico,png,webp,svg,md}'],
         skipWaiting: true,
+        clientsClaim: true,
       },
       manifest: {
         name: 'Movviator', // Full app name
