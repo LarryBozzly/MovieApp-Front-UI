@@ -28,15 +28,6 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,ico,png,webp,svg,md}'],
         skipWaiting: true,
         clientsClaim: true,
-        runtimeCaching: [
-          {
-            urlPattern: /index\.html$/,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'shell-html',
-            },
-          },
-        ],
       },
       manifest: {
         name: 'Movviator', // Full app name
