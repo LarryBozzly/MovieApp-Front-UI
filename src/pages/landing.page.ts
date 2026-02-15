@@ -213,14 +213,30 @@ export class LandingPage extends LitElement {
           </div>
         </div>
 
-        <!-- Footer CTA -->
-        <div class="py-20 px-6 bg-neutral text-neutral-content text-center">
-          <h2 class="text-3xl md:text-4xl font-bold mb-6">
-            Ready to find your next favorite movie?
-          </h2>
-          <a href="/signup" class="btn btn-primary btn-lg px-10 no-underline">
-            Join Movviator Today
-          </a>
+        <!-- Footer CTA - cohesive with Features section -->
+        <div class="py-20 px-6 bg-base-200 text-center">
+          <div class="max-w-3xl mx-auto mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-base-content">
+              Ready to find your next favorite movie?
+            </h2>
+            <p class="text-xl opacity-70">
+              Connect with friends, match on movies, and make every movie night unforgettable.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href="/signup"
+              class="btn btn-lg bg-primary text-white hover:bg-primary-focus font-bold px-8 rounded-md transition-colors duration-300"
+            >
+              Create Free Account
+            </a>
+            <a
+              href="/login"
+              class="btn btn-outline btn-lg text-primary hover:bg-primary/10 font-semibold px-8 rounded-md transition-colors duration-300"
+            >
+              Log in
+            </a>
+          </div>
         </div>
       </div>
     `;
