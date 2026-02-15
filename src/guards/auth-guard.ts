@@ -2,8 +2,7 @@ import type { Commands, RouteContext } from '@vaadin/router';
 import AuthService from '@services/auth.service';
 import { authStore } from '@store/auth-store';
 import { safeRefresh } from '@utils/safe-refresh';
-import { routes } from '@routes/app.routes';
-import { publicGuard } from '@guards/public-guard';
+import { PUBLIC_ROUTES_SET, PUBLIC_ROUTES } from '@routes/paths';
 
 export async function authGuard(context: RouteContext, commands: Commands) {
   const authService = await AuthService.getInstance();
@@ -22,11 +21,8 @@ export async function authGuard(context: RouteContext, commands: Commands) {
 
   // Case 3: Not authorized and no refresh attempt is possible/needed.
   if (!authService.isAuthorized()) {
-    const publicPaths = routes
-      .filter((route) => route.action === publicGuard)
-      .map((route) => route.path);
-    if (!publicPaths.includes(context.pathname)) {
-      return commands.redirect('/home');
+    if (!PUBLIC_ROUTES_SET.has(context.pathname)) {
+      return commands.redirect(PUBLIC_ROUTES.HOME);
     }
     return undefined;
   }

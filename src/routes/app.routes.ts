@@ -5,6 +5,7 @@ import { homeViews } from '@routes/home.routes';
 import { aboutViews } from '@routes/about.routes';
 import { authGuard } from '@guards/auth-guard';
 import { publicGuard } from '@guards/public-guard';
+import { PUBLIC_ROUTES } from '@routes/paths';
 import '@pages/login.page';
 import '@pages/signup.page';
 import '@pages/verify.page';
@@ -20,27 +21,27 @@ export const routes: Route[] = [
     action: authGuard,
   },
   {
-    path: '/home',
+    path: PUBLIC_ROUTES.HOME,
     component: 'landing-page',
     action: publicGuard,
   },
   {
-    path: '/login',
+    path: PUBLIC_ROUTES.LOGIN,
     component: 'login-page',
     action: publicGuard,
   },
   {
-    path: '/signup',
+    path: PUBLIC_ROUTES.SIGNUP,
     component: 'signup-page',
     action: publicGuard,
   },
   {
-    path: '/verify',
+    path: PUBLIC_ROUTES.VERIFY,
     component: 'verify-page',
     action: publicGuard,
   },
   {
-    path: '/forgot-password',
+    path: PUBLIC_ROUTES.FORGOT_PASSWORD,
     component: 'forgot-password-page',
     action: publicGuard,
   },
