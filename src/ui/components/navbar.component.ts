@@ -74,28 +74,21 @@ export class NavbarComponent extends LitElement {
             `
           : this.isHomePage
             ? html`
-                <div
-                  class="flex items-baseline bg-base-200/50 rounded-full p-1 mr-2 sm:mr-4 border border-base-content/5"
-                >
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <a
+                    href="/signup"
+                    class="btn btn-outline btn-primary btn-xs sm:btn-sm rounded-full px-3 sm:px-5 no-underline"
+                  >
+                    <span class="sm:text-xs uppercase tracking-tight sm:tracking-widest font-bold">
+                      Sign Up
+                    </span>
+                  </a>
                   <a
                     href="/login"
                     class="btn btn-primary btn-xs sm:btn-sm rounded-full px-3 sm:px-5 no-underline shadow-sm"
                   >
-                    <span
-                      class="text-[10px] sm:text-xs uppercase tracking-tight sm:tracking-widest font-bold"
-                    >
+                    <span class="sm:text-xs uppercase tracking-tight sm:tracking-widest font-bold">
                       Login
-                    </span>
-                  </a>
-
-                  <a
-                    href="/signup"
-                    class="px-2 sm:px-4 no-underline hover:text-primary transition-colors"
-                  >
-                    <span
-                      class="text-[10px] sm:text-xs uppercase tracking-tight sm:tracking-widest font-bold opacity-70"
-                    >
-                      Sign Up
                     </span>
                   </a>
                 </div>
