@@ -25,9 +25,18 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true,
         globDirectory: 'dist/',
-        globPatterns: ['**/*.{js,css,html,ico,png,webp,svg,md}'],
+        globPatterns: ['**/*.{js,css,ico,png,webp,svg,md}'],
         skipWaiting: true,
         clientsClaim: true,
+        runtimeCaching: [
+          {
+            urlPattern: /index\.html$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'shell-html',
+            },
+          },
+        ],
       },
       manifest: {
         name: 'Movviator', // Full app name
