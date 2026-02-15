@@ -198,7 +198,7 @@ export class LandingPage extends LitElement {
                 <div class="text-sm uppercase tracking-wide opacity-60">Movies</div>
               </div>
               <div>
-                <div class="text-4xl font-bold text-primary mb-2 break-words">Unlimited</div>
+                <div class="text-4xl font-bold text-primary mb-2">Endless</div>
                 <div class="text-sm uppercase tracking-wide opacity-60">Matches</div>
               </div>
               <div>
