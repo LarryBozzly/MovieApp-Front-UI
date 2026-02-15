@@ -14,8 +14,8 @@ export async function publicGuard(context: RouteContext, commands: Commands) {
   if (window.location.pathname !== context.pathname) {
     const outlet = getOutlet();
     outlet?.style.setProperty('opacity', '0');
-    commands.prevent();
-    window.location.href = context.pathname;
+    window.location.replace(context.pathname);
+    return commands.prevent();
   }
   return undefined;
 }
