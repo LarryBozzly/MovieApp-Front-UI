@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { PUBLIC_ROUTES_SET } from './src/routes/paths';
 
 export default defineConfig({
   server: {
@@ -28,17 +27,6 @@ export default defineConfig({
         globDirectory: 'dist/',
         globPatterns: ['**/*.{js,css,html,ico,png,webp,svg,md}'],
         skipWaiting: true,
-        runtimeCaching: [
-          {
-            urlPattern: ({ request, url }) =>
-              request.mode === 'navigate' &&
-              Array.from(PUBLIC_ROUTES_SET).some((p) => url.pathname.startsWith(p)),
-            handler: 'NetworkOnly',
-            options: {
-              cacheName: 'no-cache-public-routes',
-            },
-          },
-        ],
       },
       manifest: {
         name: 'Movviator', // Full app name
