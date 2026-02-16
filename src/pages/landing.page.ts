@@ -154,7 +154,7 @@ export class LandingPage extends LitElement {
                   </p>
                 </div>
               </div>
-
+<pre>trestetset</pre>
               <div class="card bg-base-100 shadow-xl border border-base-300">
                 <div class="card-body items-center text-center">
                   <div
