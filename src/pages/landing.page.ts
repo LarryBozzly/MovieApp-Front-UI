@@ -212,7 +212,6 @@ export class LandingPage extends LitElement {
             </div>
           </div>
         </div>
-        <pre>DEBUG</pre>
         <!-- Footer CTA - cohesive with Features section -->
         <div class="py-20 px-6 bg-base-200 text-center">
           <div class="max-w-3xl mx-auto mb-10">
