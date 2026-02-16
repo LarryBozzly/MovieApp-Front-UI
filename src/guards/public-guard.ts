@@ -5,7 +5,7 @@ import { updateSW } from '@utils/update-sw';
 
 // οnly for unauthenticated users, if authenticated redirect to home page
 export async function publicGuard(_context: RouteContext, commands: Commands) {
-  await updateSW();
+  updateSW();
   const isAuthorized = AuthService.getInstance().isAuthorized();
   authStore.getState().setAuthorization(isAuthorized);
   return isAuthorized ? commands.redirect('/') : undefined;
