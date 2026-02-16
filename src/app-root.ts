@@ -38,10 +38,6 @@ export class AppRoot extends LitElement {
     document.documentElement.style.setProperty('--app-width', `${window.innerWidth}px`);
   };
 
-  private reloadPage() {
-    window.location.reload();
-  }
-
   private initRouter() {
     const outlet = document.createElement('div');
     outlet.id = 'outlet';
@@ -86,13 +82,11 @@ export class AppRoot extends LitElement {
 
     authStore.getState().initDeviceVisibilityListener();
     authStore.getState().initCrossTabListener();
-    navigator.serviceWorker.addEventListener('controllerchange', this.reloadPage);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener('resize', this.setAppDimensions);
-    navigator.serviceWorker.addEventListener('controllerchange', this.reloadPage);
   }
 
   render() {

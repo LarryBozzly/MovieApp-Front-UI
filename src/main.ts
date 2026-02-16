@@ -1,9 +1,17 @@
+import { updateSW } from '@utils/update-sw.ts';
+
 async function bootstrap() {
   // Import your Lit root component only when ready
   await import('./app-root.ts');
+  updateSW();
 }
 
 if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('New SW activated → reloading page');
+    window.location.reload();
+  });
+
   if (navigator.onLine) {
     // Online → go immediately
     bootstrap();
