@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
+import { updateSW } from '@utils/update-sw';
 
 @customElement('version-update-modal-component')
 export class VersionUpdateModalComponent extends LitElement {
@@ -12,8 +13,9 @@ export class VersionUpdateModalComponent extends LitElement {
     ${tailwindStyles}
   `;
 
-  private handleUpdate() {
+  private async handleUpdate() {
     this.isReloading = true;
+    await updateSW();
 
     window.addEventListener('beforeunload', () => {
       localStorage.setItem('app-version', this.version);
