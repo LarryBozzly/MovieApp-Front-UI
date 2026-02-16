@@ -20,6 +20,8 @@ export class VersionUpdateModalComponent extends LitElement {
     window.addEventListener('beforeunload', () => {
       localStorage.setItem('app-version', this.version);
     });
+
+    window.location.reload();
   }
 
   render() {
