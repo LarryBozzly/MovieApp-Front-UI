@@ -251,7 +251,7 @@ export class LandingPage extends LitElement {
           </div>
         </div>
         <!-- Footer -->
-        <footer class="bg-base-300 text-base-content w-full flex-shrink-0 pb-safe">
+        <footer class="bg-base-300 text-base-content w-full pb-safe">
           <div class="max-w-6xl mx-auto px-6 py-10">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
               <div class="text-lg font-bold">Movviator</div>
