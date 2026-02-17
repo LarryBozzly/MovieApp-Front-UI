@@ -9,11 +9,8 @@ export class LandingPage extends LitElement {
 
     :host {
       display: block;
-      height: 100vh;
       height: 100dvh;
-      min-height: -webkit-fill-available;
       position: relative;
-      overflow: hidden;
     }
 
     .scroll-container {
@@ -25,7 +22,6 @@ export class LandingPage extends LitElement {
       overflow-y: auto;
       overflow-x: hidden;
       scroll-behavior: smooth;
-      padding-bottom: env(safe-area-inset-bottom, 16px);
     }
 
     @keyframes heroTextIn {
@@ -87,23 +83,6 @@ export class LandingPage extends LitElement {
       }
     }
   `;
-
-  async firstUpdated() {
-    // Wait for the browser to paint and the viewport to settle
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // Detection for standalone PWA mode
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-
-    if (isStandalone) {
-      // Manually verify the height against window.innerHeight
-      const actualHeight = window.innerHeight;
-      this.style.height = `${actualHeight}px`;
-
-      // Force a re-request of the update to sync child components
-      this.requestUpdate();
-    }
-  }
 
   render() {
     return html`
