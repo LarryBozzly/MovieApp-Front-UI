@@ -23,6 +23,10 @@ export class LandingPage extends LitElement {
       overflow-x: hidden;
       scroll-behavior: smooth;
     }
+    footer {
+      position: relative;
+      bottom: env(safe-area-inset-bottom);
+    }
 
     @keyframes heroTextIn {
       from {
