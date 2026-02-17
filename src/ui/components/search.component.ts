@@ -68,7 +68,7 @@ export class SearchComponent extends LitElement {
           class="grow"
           placeholder="Search"
           .value=${this.query}
-          ${ref(el => this.inputRef = el as HTMLInputElement)}
+          ${ref((el) => (this.inputRef = el as HTMLInputElement))}
           @input=${this.handleInput}
           @pointerup=${this.focusInput}
         />

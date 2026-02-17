@@ -213,30 +213,47 @@ export class LandingPage extends LitElement {
           </div>
         </div>
         <!-- Footer CTA - cohesive with Features section -->
-        <div class="py-20 px-6 bg-base-200 text-center">
+        <div class="py-20 px-6 bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-center">
           <div class="max-w-3xl mx-auto mb-10">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-base-content">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
               Ready to find your next favorite movie?
             </h2>
-            <p class="text-xl opacity-70">
+            <p class="text-xl text-white/80">
               Connect with friends, match on movies, and make every movie night unforgettable.
             </p>
           </div>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/signup"
-              class="btn btn-lg bg-primary text-white hover:bg-primary-focus font-bold px-8 rounded-md transition-colors duration-300"
+              class="btn btn-lg bg-white text-primary hover:bg-gray-100 border-none font-bold px-8 rounded-md "
             >
               Create Free Account
             </a>
             <a
               href="/login"
-              class="btn btn-outline btn-lg text-primary hover:bg-primary/10 font-semibold px-8 rounded-md transition-colors duration-300"
+              class="btn btn-lg btn-outline text-white hover:bg-white hover:text-black focus:bg-white focus:text-black 
+                active:bg-white active:text-black
+                hover:scale-105 focus:scale-105 active:scale-105
+                hover:ring-primary/50 focus:ring-primary/50 active:ring-primary/50
+                shadow-none
+                font-semibold px-8 rounded-md transition-all duration-300"
             >
-              Log in
+              Login
             </a>
           </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="bg-base-300 text-base-content">
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div class="text-lg font-bold">Movviator</div>
+            </div>
+            <div class="mt-6 border-t border-base-content/10 pt-4 text-center text-sm opacity-70">
+              © ${new Date().getFullYear()} Movviator. All rights reserved.
+            </div>
+          </div>
+        </footer>
       </div>
     `;
   }

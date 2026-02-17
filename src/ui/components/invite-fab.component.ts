@@ -1,12 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { tailwindStyles } from '@utils/app.constants';
 import { customElement, state } from 'lit/decorators.js';
-import {
-  OutlinePaperPlaneIcon,
-  FilledCopyIcon,
-  OutlineChevronUpIcon,
-  TagIcon,
-} from '@ui/icons';
+import { OutlinePaperPlaneIcon, FilledCopyIcon, OutlineChevronUpIcon, TagIcon } from '@ui/icons';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { appStore, type AppState } from '@store/app-store';
 import { authStore, selectUserProfile, type AuthState } from '@store/auth-store';
