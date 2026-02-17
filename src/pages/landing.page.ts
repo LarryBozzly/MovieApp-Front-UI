@@ -8,9 +8,14 @@ export class LandingPage extends LitElement {
     ${tailwindStyles}
 
     :host {
-      display: block;
-      height: 100dvh;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh; /* full viewport height */
+      --pb-safe: env(safe-area-inset-bottom);
+    }
+
+    .pb-safe {
+      padding-bottom: var(--pb-safe, 1rem);
     }
 
     .scroll-container {
@@ -21,6 +26,9 @@ export class LandingPage extends LitElement {
       bottom: 0;
       overflow-y: auto;
       overflow-x: hidden;
+      scroll-behavior: smooth;
+      flex: 1; /* grows to fill available space */
+      overflow-y: auto;
       scroll-behavior: smooth;
     }
 
@@ -87,174 +95,172 @@ export class LandingPage extends LitElement {
   render() {
     return html`
       <div class="scroll-container bg-base-200 font-sans text-base-content">
-        <main class="mx-auto">
-          <!-- Hero Section -->
-          <div
-            class="relative bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-white flex flex-col items-center px-6 pt-16"
-          >
-            <div class="max-w-5xl mx-auto text-center hero-text">
-              <h1
-                class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight"
-              >
-                Find the Perfect Movie <br class="hidden md:block" />
-                to Watch Together
-              </h1>
-              <p
-                class="text-base sm:text-lg md:text-2xl mb-10 text-white/90 max-w-2xl mx-auto leading-relaxed"
-              >
-                Movviator helps you and your loved ones find the perfect movie to watch together.
-                Match based on your watchlist and your preferences, and never argue about movie
-                night again!
-              </p>
-              <div class="flex flex-col items-center gap-3 mb-12">
-                <a
-                  href="/signup"
-                  class="btn btn-lg bg-white text-[#6a11cb] hover:bg-gray-100 border-none font-bold px-8 no-underline"
-                >
-                  Create Free Account
-                </a>
-                <p class="text-sm sm:text-base text-white/90">
-                  Already have an account?
-                  <a href="/login" class="font-semibold text-white underline underline-offset-4">
-                    Log in here
-                  </a>
-                </p>
-              </div>
-            </div>
-
-            <!-- Image BELOW text -->
-            <div class="hero-image-wrapper px-4">
-              <img
-                src="/images/landing/hero_people.webp"
-                alt="Couple watching movies"
-                class="hero-image"
-              />
-            </div>
-          </div>
-
-          <!-- Features Section -->
-          <div class="pt-32 pb-20 px-6 bg-base-200">
-            <div class="max-w-6xl mx-auto">
-              <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">How Movviator Works</h2>
-                <p class="text-xl opacity-70">Three simple steps to your next movie night.</p>
-              </div>
-
-              <div class="grid md:grid-cols-3 gap-10">
-                <div class="card bg-base-100 shadow-xl border border-base-300">
-                  <div class="card-body items-center text-center">
-                    <div
-                      class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-3xl"
-                    >
-                      🎬
-                    </div>
-                    <h3 class="card-title text-xl mb-2">Browse Catalogs</h3>
-                    <p class="opacity-70">
-                      Explore extensive catalogs of trending and top-rated movies. Filter by genre
-                      and find hidden gems.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="card bg-base-100 shadow-xl border border-base-300">
-                  <div class="card-body items-center text-center">
-                    <div
-                      class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mb-4 text-3xl"
-                    >
-                      🤝
-                    </div>
-                    <h3 class="card-title text-xl mb-2">Match with Friends</h3>
-                    <p class="opacity-70">
-                      Connect with friends and swipe on movies. We'll tell you instantly when you
-                      both like the same film.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="card bg-base-100 shadow-xl border border-base-300">
-                  <div class="card-body items-center text-center">
-                    <div
-                      class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4 text-3xl"
-                    >
-                      🍿
-                    </div>
-                    <h3 class="card-title text-xl mb-2">Watch Together</h3>
-                    <p class="opacity-70">
-                      No more endless scrolling or arguments. Pick from your matches and enjoy the
-                      show.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stats Section -->
-          <div class="py-16 px-6 bg-base-100">
-            <div class="max-w-4xl mx-auto text-center">
-              <h2 class="text-3xl font-bold mb-10">Join the Community</h2>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div>
-                  <div class="text-4xl font-bold text-primary mb-2">1M+</div>
-                  <div class="text-sm uppercase tracking-wide opacity-60">Movies</div>
-                </div>
-                <div>
-                  <div class="text-4xl font-bold text-primary mb-2">Endless</div>
-                  <div class="text-sm uppercase tracking-wide opacity-60">Matches</div>
-                </div>
-                <div>
-                  <div class="text-4xl font-bold text-primary mb-2">100%</div>
-                  <div class="text-sm uppercase tracking-wide opacity-60">Personalized</div>
-                </div>
-                <div>
-                  <div class="text-4xl font-bold text-primary mb-2">24/7</div>
-                  <div class="text-sm uppercase tracking-wide opacity-60">Movie Night</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Footer CTA - cohesive with Features section -->
-          <div class="py-20 px-6 bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-center">
-            <div class="max-w-3xl mx-auto mb-10">
-              <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
-                Ready to find your next favorite movie?
-              </h2>
-              <p class="text-xl text-white/80">
-                Connect with friends, match on movies, and make every movie night unforgettable.
-              </p>
-            </div>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <!-- Hero Section -->
+        <div
+          class="relative bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-white flex flex-col items-center px-6 pt-16"
+        >
+          <div class="max-w-5xl mx-auto text-center hero-text">
+            <h1
+              class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight"
+            >
+              Find the Perfect Movie <br class="hidden md:block" />
+              to Watch Together
+            </h1>
+            <p
+              class="text-base sm:text-lg md:text-2xl mb-10 text-white/90 max-w-2xl mx-auto leading-relaxed"
+            >
+              Movviator helps you and your loved ones find the perfect movie to watch together.
+              Match based on your watchlist and your preferences, and never argue about movie night
+              again!
+            </p>
+            <div class="flex flex-col items-center gap-3 mb-12">
               <a
                 href="/signup"
-                class="btn btn-lg bg-white text-primary hover:bg-gray-100 border-none font-bold px-8 rounded-md "
+                class="btn btn-lg bg-white text-[#6a11cb] hover:bg-gray-100 border-none font-bold px-8 no-underline"
               >
                 Create Free Account
               </a>
-              <a
-                href="/login"
-                class="btn btn-lg btn-outline text-white hover:bg-white hover:text-black focus:bg-white focus:text-black 
+              <p class="text-sm sm:text-base text-white/90">
+                Already have an account?
+                <a href="/login" class="font-semibold text-white underline underline-offset-4">
+                  Log in here
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <!-- Image BELOW text -->
+          <div class="hero-image-wrapper px-4">
+            <img
+              src="/images/landing/hero_people.webp"
+              alt="Couple watching movies"
+              class="hero-image"
+            />
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="pt-32 pb-20 px-6 bg-base-200">
+          <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+              <h2 class="text-3xl md:text-4xl font-bold mb-4">How Movviator Works</h2>
+              <p class="text-xl opacity-70">Three simple steps to your next movie night.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-10">
+              <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body items-center text-center">
+                  <div
+                    class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-3xl"
+                  >
+                    🎬
+                  </div>
+                  <h3 class="card-title text-xl mb-2">Browse Catalogs</h3>
+                  <p class="opacity-70">
+                    Explore extensive catalogs of trending and top-rated movies. Filter by genre and
+                    find hidden gems.
+                  </p>
+                </div>
+              </div>
+
+              <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body items-center text-center">
+                  <div
+                    class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mb-4 text-3xl"
+                  >
+                    🤝
+                  </div>
+                  <h3 class="card-title text-xl mb-2">Match with Friends</h3>
+                  <p class="opacity-70">
+                    Connect with friends and swipe on movies. We'll tell you instantly when you both
+                    like the same film.
+                  </p>
+                </div>
+              </div>
+
+              <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body items-center text-center">
+                  <div
+                    class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4 text-3xl"
+                  >
+                    🍿
+                  </div>
+                  <h3 class="card-title text-xl mb-2">Watch Together</h3>
+                  <p class="opacity-70">
+                    No more endless scrolling or arguments. Pick from your matches and enjoy the
+                    show.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="py-16 px-6 bg-base-100">
+          <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-10">Join the Community</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div>
+                <div class="text-4xl font-bold text-primary mb-2">1M+</div>
+                <div class="text-sm uppercase tracking-wide opacity-60">Movies</div>
+              </div>
+              <div>
+                <div class="text-4xl font-bold text-primary mb-2">Endless</div>
+                <div class="text-sm uppercase tracking-wide opacity-60">Matches</div>
+              </div>
+              <div>
+                <div class="text-4xl font-bold text-primary mb-2">100%</div>
+                <div class="text-sm uppercase tracking-wide opacity-60">Personalized</div>
+              </div>
+              <div>
+                <div class="text-4xl font-bold text-primary mb-2">24/7</div>
+                <div class="text-sm uppercase tracking-wide opacity-60">Movie Night</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Footer CTA - cohesive with Features section -->
+        <div class="py-20 px-6 bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-center">
+          <div class="max-w-3xl mx-auto mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
+              Ready to find your next favorite movie?
+            </h2>
+            <p class="text-xl text-white/80">
+              Connect with friends, match on movies, and make every movie night unforgettable.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href="/signup"
+              class="btn btn-lg bg-white text-primary hover:bg-gray-100 border-none font-bold px-8 rounded-md "
+            >
+              Create Free Account
+            </a>
+            <a
+              href="/login"
+              class="btn btn-lg btn-outline text-white hover:bg-white hover:text-black focus:bg-white focus:text-black 
                 active:bg-white active:text-black
                 hover:scale-105 focus:scale-105 active:scale-105
                 hover:ring-primary/50 focus:ring-primary/50 active:ring-primary/50
                 shadow-none
                 font-semibold px-8 rounded-md transition-all duration-300"
-              >
-                Login
-              </a>
+            >
+              Login
+            </a>
+          </div>
+        </div>
+        <!-- Footer -->
+        <footer class="bg-base-300 text-base-content w-full flex-shrink-0 pb-safe">
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div class="text-lg font-bold">Movviator</div>
+            </div>
+            <div class="mt-6 border-t border-base-content/10 pt-4 text-center text-sm opacity-70">
+              © ${new Date().getFullYear()} Movviator. All rights reserved.
             </div>
           </div>
-          <!-- Footer -->
-          <footer class="bg-base-300 text-base-content">
-            <div class="max-w-6xl mx-auto px-6 py-10">
-              <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="text-lg font-bold">Movviator</div>
-              </div>
-              <div class="mt-6 border-t border-base-content/10 pt-4 text-center text-sm opacity-70">
-                © ${new Date().getFullYear()} Movviator. All rights reserved.
-              </div>
-            </div>
-          </footer>
-        </main>
+        </footer>
       </div>
     `;
   }
