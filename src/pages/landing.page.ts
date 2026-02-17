@@ -243,13 +243,12 @@ export class LandingPage extends LitElement {
           </div>
         </div>
 
-        <!-- Footer -->
         <footer class="bg-base-300 text-base-content">
-          <div class="max-w-6xl mx-auto px-6 py-10">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div class="text-lg font-bold">Movviator</div>
-            </div>
-            <div class="mt-6 border-t border-base-content/10 pt-4 text-center text-sm opacity-70">
+          <div
+            class="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4"
+          >
+            <div class="text-2xl font-bold text-primary">Movviator</div>
+            <div class="mt-4 md:mt-0 text-center text-sm text-base-content/70">
               © ${new Date().getFullYear()} Movviator. All rights reserved.
             </div>
           </div>
