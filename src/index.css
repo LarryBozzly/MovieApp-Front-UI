@@ -44,6 +44,12 @@ body {
 .max-height-modal {
   max-height: calc(var(--app-height) * 0.96);
 }
+
+/* override default and md input sizes to be 16px because of ios */
+.input:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl),
+.input-md {
+  --font-size: 1rem;
+}
 /* Removes focus rings from daisy UI remove it if we want them back */
 .input:focus-within {
   box-shadow: none !important;
