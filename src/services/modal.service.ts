@@ -13,9 +13,10 @@ class ModalService {
   private static instance: ModalService;
   private modal: HTMLDialogElement;
   private contentContainer: HTMLElement;
+  private modalOpenedInHistory = false;
 
   private constructor() {
-    // Create modal structure dynamically if not present
+    // Create modal dynamically if not present
     let modal = document.getElementById('global-modal') as HTMLDialogElement;
 
     if (!modal) {
@@ -27,7 +28,7 @@ class ModalService {
       modalBox.className = 'modal-box';
       modalBox.id = 'modal-content';
 
-      // ✅ Apply safe-area padding and scrolling support
+      // Safe-area padding + scrolling
       modalBox.style.paddingTop = 'env(safe-area-inset-top)';
       modalBox.style.paddingBottom = 'env(safe-area-inset-bottom)';
       modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
@@ -41,6 +42,11 @@ class ModalService {
       const closeButton = document.createElement('button');
       closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-0.5 top-0.5 z-90';
       closeButton.textContent = '✕';
+
+      closeButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.close();
+      });
 
       closeForm.appendChild(closeButton);
       modalBox.appendChild(closeForm);
@@ -56,6 +62,13 @@ class ModalService {
 
     this.modal = modal;
     this.contentContainer = contentContainer;
+
+    // Back button closes modal
+    window.addEventListener('popstate', () => {
+      if (this.modal.open) {
+        this.close(true); // from popstate
+      }
+    });
   }
 
   public static getInstance(): ModalService {
@@ -66,7 +79,12 @@ class ModalService {
   }
 
   open(content: ModalContent): void {
-    // Remove everything except the close form
+    if (!this.modal.open && !this.modalOpenedInHistory) {
+      history.pushState({ modal: true }, '');
+      this.modalOpenedInHistory = true;
+    }
+
+    // Clear previous content except the close form
     [...this.contentContainer.children].forEach((child) => {
       if (child.tagName !== 'FORM') {
         child.remove();
@@ -113,8 +131,13 @@ class ModalService {
     this.modal.show();
   }
 
-  close(): void {
+  close(fromPopState = false): void {
+    if (!this.modal.open) return;
+
     this.modal.close();
+
+    if (!fromPopState && this.modalOpenedInHistory) history.back();
+    this.modalOpenedInHistory = false;
   }
 }
 
