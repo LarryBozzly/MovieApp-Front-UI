@@ -17,9 +17,7 @@ export class VersionUpdateModalComponent extends LitElement {
     this.isReloading = true;
     await updateSW();
 
-    window.addEventListener('beforeunload', () => {
-      localStorage.setItem('app-version', this.version);
-    });
+    localStorage.setItem('app-version', this.version);
 
     window.location.reload();
   }
