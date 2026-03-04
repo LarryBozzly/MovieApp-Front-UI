@@ -115,7 +115,7 @@ class ModalService {
     }
 
     this.contentContainer.appendChild(element);
-    this.modal.show();
+    this.modal.showModal();
   }
 
   close(): void {
