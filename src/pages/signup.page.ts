@@ -10,6 +10,7 @@ import {
   selectIsRegistered,
   type AuthState,
 } from '@store/auth-store';
+import { setPageMeta } from '@utils/setPageMeta';
 
 @customElement('signup-page')
 export class SignupPage extends LitElement {
@@ -23,6 +24,16 @@ export class SignupPage extends LitElement {
     ${tailwindStyles}
   `;
   @state() private email: string = '';
+
+  connectedCallback() {
+    super.connectedCallback();
+    setPageMeta({
+      title: 'Sign Up – Movviator',
+      description:
+        'Create your Movviator account and start matching movies with your friends and family.',
+      robots: 'noindex, nofollow',
+    });
+  }
 
   disconnectedCallback() {
     super.disconnectedCallback();

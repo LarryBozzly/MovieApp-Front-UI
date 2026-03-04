@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { tailwindStyles } from '@utils/app.constants';
 import { authStore, selectError, selectIsLoading, type AuthState } from '@store/auth-store';
+import { setPageMeta } from '@utils/setPageMeta';
 
 @customElement('login-page')
 export class LoginPage extends LitElement {
@@ -13,6 +14,16 @@ export class LoginPage extends LitElement {
   static styles = css`
     ${tailwindStyles}
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    setPageMeta({
+      title: 'Login – Movviator',
+      description:
+        'Log in to your Movviator account to access your watchlist and match movies with friends.',
+      robots: 'noindex, nofollow',
+    });
+  }
 
   private async handleSubmit(e: Event) {
     e.preventDefault();
