@@ -388,11 +388,11 @@ class OnboardingService {
       });
     }
     if (this.currentStep === 4) {
-      await appStore.getState().openSendInvitationModal();
+      await appStore.getState().openOnboardingSendInvitationModal();
       await this.syncAfterLayout(() => this.getInviteModal());
     }
     if (this.currentStep === 5) {
-      await appStore.getState().openStartMovieMatchModal(MOCK_MOVIES);
+      await appStore.getState().openOnboardingStartMovieMatchModal(MOCK_MOVIES);
       await this.syncAfterLayout(() => this.getInviteModal());
     }
   }

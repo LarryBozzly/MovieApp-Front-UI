@@ -73,8 +73,10 @@ export interface AppState {
   addToWatchlist: (movie: Movie) => Promise<void>;
   removeFromWatchlist: (movie: Movie) => Promise<void>;
   openSendInvitationModal: () => Promise<void>;
+  openOnboardingSendInvitationModal: () => Promise<void>;
   openReceivedInvitationModal: (notification: Notification) => Promise<void>;
   openStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
+  openOnboardingStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
   openMovieMatchModal: (movie: Movie) => Promise<void>;
   openMoviePreviewModal: (movie: Movie) => Promise<void>;
   openEditTagModal: (tag: string) => Promise<void>;
@@ -330,6 +332,10 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { modalService } = deps;
     modalService.open({ tag: 'send-invite-modal-component' });
   }),
+  openOnboardingSendInvitationModal: createEffect(store, async (deps, _store) => {
+    const { modalService } = deps;
+    modalService.open({ tag: 'send-invite-modal-component', isOnboarding: true });
+  }),
   openReceivedInvitationModal: createEffect(
     store,
     async (deps, _store, notification: Notification) => {
@@ -343,6 +349,10 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   openStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
     const { modalService } = deps;
     modalService.open({ tag: 'movie-match-modal-component', props: { movies } });
+  }),
+  openOnboardingStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
+    const { modalService } = deps;
+    modalService.open({ tag: 'movie-match-modal-component', props: { movies }, isOnboarding: true });
   }),
   openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie) => {
     const { modalService } = deps;

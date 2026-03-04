@@ -7,6 +7,7 @@ type ModalContent =
       tag: string;
       props?: ComponentProps;
       useProperties?: boolean;
+      isOnboarding?: boolean;
     };
 
 class ModalService {
@@ -115,7 +116,14 @@ class ModalService {
     }
 
     this.contentContainer.appendChild(element);
-    this.modal.showModal();
+
+    const isOnboarding =
+      typeof content === 'object' && 'isOnboarding' in content && !!content.isOnboarding;
+    if (isOnboarding) {
+      this.modal.show();
+    } else {
+      this.modal.showModal();
+    }
   }
 
   close(): void {
