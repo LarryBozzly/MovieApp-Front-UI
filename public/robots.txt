@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /home
+Disallow: /login
+Disallow: /signup
+Disallow: /profile
+Disallow: /notifications
