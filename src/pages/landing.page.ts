@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
+import { setPageMeta } from '@utils/setPageMeta';
 
 @customElement('landing-page')
 export class LandingPage extends LitElement {
@@ -91,6 +92,17 @@ export class LandingPage extends LitElement {
       }
     }
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    setPageMeta({
+      title: 'Movviator – Find the Perfect Movie to Watch Together',
+      description:
+        'Movviator helps you and your loved ones find the perfect movie to watch together. Match based on your watchlist and preferences, and never argue about movie night again.',
+      robots: 'index, follow',
+      ogImage: '/images/landing/hero_people.webp',
+    });
+  }
 
   render() {
     return html`
