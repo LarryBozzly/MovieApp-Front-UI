@@ -11,7 +11,7 @@ import '@pages/signup.page';
 import '@pages/verify.page';
 import '@pages/forgot-password.page';
 import '@pages/landing.page';
-import '@pages/terms.page';
+// import '@pages/terms.page';
 
 const children: Route[] = [...homeViews, ...profileViews, ...notificationViews, ...aboutViews];
 
@@ -46,11 +46,11 @@ export const routes: Route[] = [
     component: 'forgot-password-page',
     action: publicGuard,
   },
-  {
-    path: PUBLIC_ROUTES.TERMS,
-    component: 'terms-page',
-    action: publicGuard,
-  },
+  // {
+  //   path: PUBLIC_ROUTES.TERMS,
+  //   component: 'terms-page',
+  //   action: publicGuard,
+  // },
   {
     path: '(.*)',
     redirect: '/',
