@@ -263,14 +263,46 @@ export class LandingPage extends LitElement {
           </div>
         </div>
         <!-- Footer -->
-        <footer class="bg-base-300 text-base-content w-full pb-safe">
-          <div class="max-w-6xl mx-auto px-6 py-10">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div class="text-lg font-bold">Movviator</div>
+        <footer class="bg-neutral text-neutral-content mt-auto">
+          <div class="max-w-6xl mx-auto px-6 py-16 flex flex-col items-center">
+            <nav class="flex flex-wrap justify-center items-center gap-x-12 gap-y-4 mb-10">
+              <a
+                href="/terms"
+                class="text-sm font-medium hover:text-white transition-all duration-200 hover:scale-105"
+                >Terms of Use</a
+              >
+              <a
+                href="/privacy"
+                class="text-sm font-medium hover:text-white transition-all duration-200 hover:scale-105"
+                >Privacy Policy</a
+              >
+              <a
+                href="/contact"
+                class="text-sm font-medium hover:text-white transition-all duration-200 hover:scale-105"
+                >Contact Us</a
+              >
+            </nav>
+            <div class="text-center text-sm opacity-70 leading-relaxed max-w-2xl space-y-4 mb-4">
+              <p>
+                By using <span class="text-white font-semibold">Movviator</span>, you agree to our
+                Terms of Use and Privacy Policy. All film-related metadata is supplied by
+                <span class="text-white font-semibold">The Movie Database (TMDB)</span>.
+              </p>
+              <p class="text-xs italic opacity-60">
+                Changes made on TMDB will be reflected in Movviator once TMDB processes the updates.
+              </p>
             </div>
-            <div class="mt-6 border-t border-base-content/10 pt-4 text-center text-sm opacity-70">
+
+            <div class="flex flex-col items-center gap-3 border-t border-neutral-content/20 pt-6">
+              <img src="/images/tmdb-logo.svg" alt="TMDB Logo" class="h-8 w-auto" />
+              <p class="text-center text-sm opacity-60">
+                Movviator uses the TMDB API but is not endorsed or certified by TMDB.
+              </p>
+            </div>
+
+            <p class="text-center text-xs opacity-50 mt-4">
               © ${new Date().getFullYear()} Movviator. All rights reserved.
-            </div>
+            </p>
           </div>
         </footer>
       </div>

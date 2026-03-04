@@ -21,7 +21,7 @@ export class LoginPage extends LitElement {
       title: 'Login – Movviator',
       description:
         'Log in to your Movviator account to access your watchlist and match movies with friends.',
-      robots: 'noindex, nofollow',
+      robots: 'index, follow',
     });
   }
 

@@ -31,7 +31,7 @@ export class SignupPage extends LitElement {
       title: 'Sign Up – Movviator',
       description:
         'Create your Movviator account and start matching movies with your friends and family.',
-      robots: 'noindex, nofollow',
+      robots: 'index, follow',
     });
   }
 
