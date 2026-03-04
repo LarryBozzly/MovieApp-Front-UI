@@ -107,7 +107,10 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   setMaxPage: (maxPage: number) => set((state) => ({ ...state, maxPage })),
   setCategory: (category: MovieCategory | undefined) => set((state) => ({ ...state, category })),
   setMovies: (movies: Movie[]) =>
-    set((state) => ({ ...state, movies: [...state.movies, ...movies] })),
+    set((state) => ({
+      ...state,
+      movies: [...new Map([...state.movies, ...movies].map((m) => [m.id, m])).values()],
+    })),
   clearMovies: () => set({ movies: [] }),
   setWatchlistIds: (ids: Record<number, WatchlistState>) =>
     set((state) => ({
