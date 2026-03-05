@@ -89,9 +89,6 @@ class ModalService {
     modalBox.style.paddingBottom = this.modal.classList.contains('modal-drawer')
       ? ''
       : 'env(safe-area-inset-bottom)';
-    modalBox.style.paddingTop = 'env(safe-area-inset-top)';
-    modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
-    modalBox.style.paddingRight = 'env(safe-area-inset-right)';
 
     for (const [key, value] of Object.entries(props)) {
       if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
