@@ -338,7 +338,11 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   }),
   openOnboardingSendInvitationModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
-    modalService.open({ tag: 'send-invite-modal-component', modalMode: 'nonModal' });
+    modalService.open({
+      tag: 'send-invite-modal-component',
+      modalMode: 'nonModal',
+      className: 'modal-drawer',
+    });
   }),
   openReceivedInvitationModal: createEffect(
     store,

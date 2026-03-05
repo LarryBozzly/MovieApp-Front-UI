@@ -177,7 +177,7 @@ class OnboardingService {
         title: 'Send an Invitation',
         description:
           'Enter your friend’s tag and send them an invite so you can discover movies together.',
-        position: 'bottom',
+        position: 'top',
         action: 'observe',
         highlight: true,
         skipable: false,
