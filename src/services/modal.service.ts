@@ -112,16 +112,6 @@ class ModalService {
 
   private reset() {
     this.modal.className = 'modal';
-
-    // Keep only the close form, remove all other children
-    const closeForm = this.contentContainer.querySelector('form');
-    if (closeForm) {
-      this.contentContainer.replaceChildren(closeForm);
-    } else {
-      // Fallback: no form present (shouldn't happen)
-      this.contentContainer.replaceChildren();
-    }
-
     Object.assign(this.contentContainer.style, {
       paddingTop: 'env(safe-area-inset-top)',
       paddingBottom: 'env(safe-area-inset-bottom)',
