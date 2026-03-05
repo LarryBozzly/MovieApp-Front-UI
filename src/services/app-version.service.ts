@@ -53,6 +53,7 @@ class AppVersionService {
       modalService.open({
         tag: 'version-update-modal-component',
         props: { version, onClose },
+        modalMode: 'nonModal',
       });
     }
   }

@@ -1,14 +1,11 @@
 type ComponentProps = Record<string, any>;
 
-type ModalContent =
-  | string
-  | HTMLElement
-  | {
-      tag: string;
-      props?: ComponentProps;
-      useProperties?: boolean;
-      isOnboarding?: boolean;
-    };
+type ModalContent = {
+  tag: string;
+  modalMode: 'modal' | 'nonModal';
+  className?: string;
+  props?: ComponentProps;
+};
 
 class ModalService {
   private static instance: ModalService;
@@ -79,35 +76,24 @@ class ModalService {
       }
     });
 
-    let element: HTMLElement | null = null;
+    const element = document.createElement(content.tag);
+    const { props = {}, modalMode, className = '' } = content;
 
-    if (typeof content === 'string') {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = content;
-      element = wrapper;
-    } else if (content instanceof HTMLElement) {
-      element = content;
-    } else if (content && 'tag' in content) {
-      element = document.createElement(content.tag);
+    this.modal.className = `modal ${className}`.trim();
 
-      const { props = {}, useProperties = false } = content;
+    const modalBox = this.contentContainer;
+    modalBox.style.paddingBottom = this.modal.classList.contains('modal-drawer')
+      ? ''
+      : 'env(safe-area-inset-bottom)';
+    modalBox.style.paddingTop = 'env(safe-area-inset-top)';
+    modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
+    modalBox.style.paddingRight = 'env(safe-area-inset-right)';
 
-      for (const [key, value] of Object.entries(props)) {
-        if (useProperties) {
-          // Always assign via property
-          (element as any)[key] = value;
-        } else {
-          // Auto-choose: primitive => attribute, object/array => property
-          if (
-            typeof value === 'string' ||
-            typeof value === 'number' ||
-            typeof value === 'boolean'
-          ) {
-            element.setAttribute(key, String(value));
-          } else {
-            (element as any)[key] = value;
-          }
-        }
+    for (const [key, value] of Object.entries(props)) {
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        element.setAttribute(key, String(value));
+      } else {
+        (element as any)[key] = value;
       }
     }
 
@@ -116,14 +102,7 @@ class ModalService {
     }
 
     this.contentContainer.appendChild(element);
-
-    const isOnboarding =
-      typeof content === 'object' && 'isOnboarding' in content && !!content.isOnboarding;
-    if (isOnboarding) {
-      this.modal.show();
-    } else {
-      this.modal.showModal();
-    }
+    modalMode === 'modal' ? this.modal.showModal() : this.modal.show();
   }
 
   close(): void {

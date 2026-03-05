@@ -330,11 +330,15 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   }),
   openSendInvitationModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
-    modalService.open({ tag: 'send-invite-modal-component' });
+    modalService.open({
+      tag: 'send-invite-modal-component',
+      modalMode: 'modal',
+      className: 'modal-drawer',
+    });
   }),
   openOnboardingSendInvitationModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
-    modalService.open({ tag: 'send-invite-modal-component', isOnboarding: true });
+    modalService.open({ tag: 'send-invite-modal-component', modalMode: 'nonModal' });
   }),
   openReceivedInvitationModal: createEffect(
     store,
@@ -343,22 +347,32 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       modalService.open({
         tag: 'invitation-notification-modal-component',
         props: { notification },
+        modalMode: 'modal',
       });
     }
   ),
   openStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
     const { modalService } = deps;
-    modalService.open({ tag: 'movie-match-modal-component', props: { movies } });
+    modalService.open({
+      tag: 'movie-match-modal-component',
+      props: { movies },
+      modalMode: 'modal',
+    });
   }),
   openOnboardingStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {
     const { modalService } = deps;
-    modalService.open({ tag: 'movie-match-modal-component', props: { movies }, isOnboarding: true });
+    modalService.open({
+      tag: 'movie-match-modal-component',
+      props: { movies },
+      modalMode: 'nonModal',
+    });
   }),
   openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie) => {
     const { modalService } = deps;
     const { closeModal } = store.getState();
     modalService.open({
       tag: 'movie-match-result-modal',
+      modalMode: 'modal',
       props: {
         movie,
         onClose: closeModal,
@@ -370,6 +384,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { closeModal } = store.getState();
     modalService.open({
       tag: 'movie-preview-modal',
+      modalMode: 'modal',
       props: {
         movie,
         onClose: closeModal,
@@ -381,6 +396,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { closeModal } = store.getState();
     modalService.open({
       tag: 'edit-tag-modal-component',
+      modalMode: 'modal',
       props: {
         tag,
         onClose: closeModal,
@@ -392,6 +408,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { closeModal } = store.getState();
     modalService.open({
       tag: 'error-modal',
+      modalMode: 'modal',
       props: {
         message,
         onClose: closeModal,
