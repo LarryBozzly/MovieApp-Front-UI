@@ -22,24 +22,28 @@ export class ProfileButtonComponent extends LitElement {
 
   private async logout(e: Event) {
     e.stopPropagation();
+    e.preventDefault();
     this.dropdownButton?.blur();
     await this.authState.logout();
   }
 
   private redirectToProfile(e: Event) {
     e.stopPropagation();
+    e.preventDefault();
     this.dropdownButton?.blur();
     Router.go('/profile');
   }
 
   private redirectToNotifications(e: Event) {
     e.stopPropagation();
+    e.preventDefault();
     this.dropdownButton?.blur();
     Router.go('/notifications');
   }
 
   private redirectToAbout(e: Event) {
     e.stopPropagation();
+    e.preventDefault();
     this.dropdownButton?.blur();
     Router.go('/about');
   }
