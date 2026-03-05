@@ -72,6 +72,7 @@ export class ProfileButtonComponent extends LitElement {
             <li>
               <a
                 @pointerup="${this.redirectToProfile}"
+                @click="${(e: Event) => e.stopPropagation()}"
                 class="flex items-center px-4 py-2 text-primary font-semibold"
               >
                 Profile
@@ -80,6 +81,7 @@ export class ProfileButtonComponent extends LitElement {
             <li>
               <a
                 @pointerup="${this.redirectToNotifications}"
+                @click="${(e: Event) => e.stopPropagation()}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>Notifications</span>
@@ -92,6 +94,7 @@ export class ProfileButtonComponent extends LitElement {
             <li>
               <a
                 @pointerup="${this.redirectToAbout}"
+                @click="${(e: Event) => e.stopPropagation()}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>About</span>
@@ -101,6 +104,7 @@ export class ProfileButtonComponent extends LitElement {
             <li>
               <button
                 @pointerup="${this.logout}"
+                @click="${(e: Event) => e.stopPropagation()}"
                 class="flex w-full items-center px-4 py-2 text-error font-semibold text-left"
               >
                 Logout
