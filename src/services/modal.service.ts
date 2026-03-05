@@ -9,60 +9,11 @@ type ModalContent = {
 
 class ModalService {
   private static instance: ModalService;
-  private modal: HTMLDialogElement;
-  private contentContainer: HTMLElement;
+  private modal: HTMLDialogElement; // current active modal
 
   private constructor() {
-    // Create modal structure dynamically if not present
-    let modal = document.getElementById('global-modal') as HTMLDialogElement;
-
-    if (!modal) {
-      modal = document.createElement('dialog');
-      modal.id = 'global-modal';
-      modal.className = 'modal';
-
-      const modalBox = document.createElement('div');
-      modalBox.className = 'modal-box';
-      modalBox.id = 'modal-content';
-
-      // ✅ Apply safe-area padding and scrolling support
-      modalBox.style.paddingTop = 'env(safe-area-inset-top)';
-      modalBox.style.paddingBottom = 'env(safe-area-inset-bottom)';
-      modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
-      modalBox.style.paddingRight = 'env(safe-area-inset-right)';
-      modalBox.style.boxSizing = 'border-box';
-      modalBox.style.overflowY = 'auto';
-
-      const closeForm = document.createElement('form');
-      closeForm.method = 'dialog';
-
-      const closeButton = document.createElement('button');
-      closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-0.5 top-0.5 z-90';
-      closeButton.textContent = '✕';
-
-      closeButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.close();
-      });
-
-      closeForm.appendChild(closeButton);
-      modalBox.appendChild(closeForm);
-      modal.appendChild(modalBox);
-      document.body.appendChild(modal);
-    }
-
-    const contentContainer = document.getElementById('modal-content');
-
-    if (!modal || !contentContainer) {
-      throw new Error('Modal elements not found.');
-    }
-
-    this.modal = modal;
-    this.contentContainer = contentContainer;
-
-    /* important events to listen to and reset modal state */
-    this.modal.addEventListener('close', () => this.reset());
-    this.modal.addEventListener('cancel', () => this.reset());
+    this.modal = this.createModal();
+    document.body.appendChild(this.modal);
   }
 
   public static getInstance(): ModalService {
@@ -72,47 +23,17 @@ class ModalService {
     return ModalService.instance;
   }
 
-  open(content: ModalContent): void {
-    // Remove everything except the close form
-    [...this.contentContainer.children].forEach((child) => {
-      if (child.tagName !== 'FORM') {
-        child.remove();
-      }
-    });
+  private createModal(): HTMLDialogElement {
+    const modal = document.createElement('dialog');
+    modal.id = 'global-modal';
+    modal.className = 'modal';
 
-    const element = document.createElement(content.tag);
-    const { props = {}, modalMode, className = '' } = content;
+    const modalBox = document.createElement('div');
+    modalBox.className = 'modal-box';
+    modalBox.id = 'modal-content';
 
-    this.modal.className = `modal ${className}`.trim();
-
-    const modalBox = this.contentContainer;
-    modalBox.style.paddingBottom = this.modal.classList.contains('modal-drawer')
-      ? ''
-      : 'env(safe-area-inset-bottom)';
-
-    for (const [key, value] of Object.entries(props)) {
-      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-        element.setAttribute(key, String(value));
-      } else {
-        (element as any)[key] = value;
-      }
-    }
-
-    if (!element) {
-      throw new Error('Invalid modal content.');
-    }
-
-    this.contentContainer.appendChild(element);
-    modalMode === 'modal' ? this.modal.showModal() : this.modal.show();
-  }
-
-  close(): void {
-    this.modal.close();
-  }
-
-  private reset() {
-    this.modal.className = 'modal';
-    Object.assign(this.contentContainer.style, {
+    // Safe-area and scrolling
+    Object.assign(modalBox.style, {
       paddingTop: 'env(safe-area-inset-top)',
       paddingBottom: 'env(safe-area-inset-bottom)',
       paddingLeft: 'env(safe-area-inset-left)',
@@ -120,6 +41,67 @@ class ModalService {
       boxSizing: 'border-box',
       overflowY: 'auto',
     });
+
+    // Close button
+    const closeForm = document.createElement('form');
+    closeForm.method = 'dialog';
+
+    const closeButton = document.createElement('button');
+    closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-0.5 top-0.5 z-90';
+    closeButton.textContent = '✕';
+    closeButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.close();
+    });
+
+    closeForm.appendChild(closeButton);
+    modalBox.appendChild(closeForm);
+    modal.appendChild(modalBox);
+
+    return modal;
+  }
+
+  open(content: ModalContent): void {
+    const { props = {}, modalMode, className = '' } = content;
+
+    // Clone the base modal to isolate animations
+    const newModal = this.modal.cloneNode(true) as HTMLDialogElement;
+    newModal.className = `modal ${className}`.trim();
+
+    const newContentContainer = newModal.querySelector('#modal-content')!;
+
+    // Remove all children except the close form
+    [...newContentContainer.children].forEach((child) => {
+      if (child.tagName !== 'FORM') child.remove();
+    });
+
+    // Create the content element
+    const element = document.createElement(content.tag);
+    for (const [key, value] of Object.entries(props)) {
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        element.setAttribute(key, String(value));
+      } else {
+        (element as any)[key] = value;
+      }
+    }
+    newContentContainer.appendChild(element);
+
+    // Append new modal to body and show
+    document.body.appendChild(newModal);
+    modalMode === 'modal' ? newModal.showModal() : newModal.show();
+
+    // Replace old modal reference
+    const oldModal = this.modal;
+    this.modal = newModal;
+
+    // Remove old modal after browser has painted new modal
+    if (oldModal.parentElement) {
+      requestAnimationFrame(() => oldModal.remove());
+    }
+  }
+
+  close(): void {
+    this.modal.close();
   }
 }
 
