@@ -360,7 +360,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     modalService.open({
       tag: 'movie-match-modal-component',
       props: { movies },
-      modalMode: 'nonModal',
+      modalMode: 'modal',
     });
   }),
   openOnboardingStartMovieMatchModal: createEffect(store, async (deps, _store, movies: Movie[]) => {

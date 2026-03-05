@@ -9,109 +9,104 @@ type ModalContent = {
 
 class ModalService {
   private static instance: ModalService;
-
   private modal: HTMLDialogElement;
-  private content: HTMLElement;
+  private contentContainer: HTMLElement;
 
   private constructor() {
-    this.modal = this.createModal();
-    this.content = this.modal.querySelector('#modal-content') as HTMLElement;
-  }
+    // Create modal structure dynamically if not present
+    let modal = document.getElementById('global-modal') as HTMLDialogElement;
 
-  static getInstance(): ModalService {
-    if (!this.instance) {
-      this.instance = new ModalService();
+    if (!modal) {
+      modal = document.createElement('dialog');
+      modal.id = 'global-modal';
+      modal.className = 'modal';
+
+      const modalBox = document.createElement('div');
+      modalBox.className = 'modal-box';
+      modalBox.id = 'modal-content';
+
+      // ✅ Apply safe-area padding and scrolling support
+      modalBox.style.paddingTop = 'env(safe-area-inset-top)';
+      modalBox.style.paddingBottom = 'env(safe-area-inset-bottom)';
+      modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
+      modalBox.style.paddingRight = 'env(safe-area-inset-right)';
+      modalBox.style.boxSizing = 'border-box';
+      modalBox.style.overflowY = 'auto';
+
+      const closeForm = document.createElement('form');
+      closeForm.method = 'dialog';
+
+      const closeButton = document.createElement('button');
+      closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-0.5 top-0.5 z-90';
+      closeButton.textContent = '✕';
+
+      closeButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.close();
+      });
+
+      closeForm.appendChild(closeButton);
+      modalBox.appendChild(closeForm);
+      modal.appendChild(modalBox);
+      document.body.appendChild(modal);
     }
-    return this.instance;
-  }
 
-  open({ tag, props = {}, modalMode = 'modal', className = '' }: ModalContent) {
-    const show = () => {
-      this.reset();
+    const contentContainer = document.getElementById('modal-content');
 
-      const element = document.createElement(tag);
-      Object.assign(element, props);
-
-      this.modal.className = `modal ${className}`.trim();
-      this.content.appendChild(element);
-
-      modalMode === 'modal' ? this.modal.showModal() : this.modal.show();
-    };
-
-    if (this.modal.open) {
-      this.modal.addEventListener('close', show, { once: true });
-      this.modal.close();
-    } else {
-      show();
+    if (!modal || !contentContainer) {
+      throw new Error('Modal elements not found.');
     }
+
+    this.modal = modal;
+    this.contentContainer = contentContainer;
   }
 
-  close() {
-    if (this.modal.open) {
-      this.modal.close();
+  public static getInstance(): ModalService {
+    if (!ModalService.instance) {
+      ModalService.instance = new ModalService();
     }
+    return ModalService.instance;
   }
 
-  private reset() {
-    this.modal.className = 'modal';
-
-    const form = this.content.querySelector('form');
-    if (form) {
-      this.content.replaceChildren(form);
-    } else {
-      // fallback (should never happen)
-      this.content.replaceChildren();
-    }
-  }
-
-  private createModal(): HTMLDialogElement {
-    const existing = document.getElementById('global-modal') as HTMLDialogElement | null;
-    if (existing) return existing;
-
-    const dialog = document.createElement('dialog');
-    dialog.id = 'global-modal';
-    dialog.className = 'modal';
-
-    // Ensure cleanup on any type of close
-    dialog.addEventListener('close', () => this.reset());
-    dialog.addEventListener('cancel', () => this.reset());
-
-    const box = document.createElement('div');
-    box.className = 'modal-box';
-    box.id = 'modal-content';
-
-    this.applySafeArea(box);
-
-    const form = document.createElement('form');
-    form.method = 'dialog';
-
-    const close = document.createElement('button');
-    close.className = 'btn btn-sm btn-circle btn-ghost absolute right-0.5 top-0.5 z-90';
-    close.textContent = '✕';
-
-    close.addEventListener('click', (e) => {
-      e.preventDefault();
-      this.close();
+  open(content: ModalContent): void {
+    // Remove everything except the close form
+    [...this.contentContainer.children].forEach((child) => {
+      if (child.tagName !== 'FORM') {
+        child.remove();
+      }
     });
 
-    form.appendChild(close);
-    box.appendChild(form);
-    dialog.appendChild(box);
+    const element = document.createElement(content.tag);
+    const { props = {}, modalMode, className = '' } = content;
 
-    document.body.appendChild(dialog);
+    this.modal.className = `modal ${className}`.trim();
 
-    return dialog;
+    const modalBox = this.contentContainer;
+    modalBox.style.paddingBottom = this.modal.classList.contains('modal-drawer')
+      ? ''
+      : 'env(safe-area-inset-bottom)';
+    modalBox.style.paddingTop = 'env(safe-area-inset-top)';
+    modalBox.style.paddingLeft = 'env(safe-area-inset-left)';
+    modalBox.style.paddingRight = 'env(safe-area-inset-right)';
+
+    for (const [key, value] of Object.entries(props)) {
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        element.setAttribute(key, String(value));
+      } else {
+        (element as any)[key] = value;
+      }
+    }
+
+    if (!element) {
+      throw new Error('Invalid modal content.');
+    }
+
+    this.contentContainer.appendChild(element);
+    modalMode === 'modal' ? this.modal.showModal() : this.modal.show();
   }
 
-  private applySafeArea(el: HTMLElement) {
-    Object.assign(el.style, {
-      paddingTop: 'env(safe-area-inset-top)',
-      paddingBottom: 'env(safe-area-inset-bottom)',
-      paddingLeft: 'env(safe-area-inset-left)',
-      paddingRight: 'env(safe-area-inset-right)',
-      boxSizing: 'border-box',
-      overflowY: 'auto',
-    });
+  close(): void {
+    this.modal.close();
   }
 }
 
