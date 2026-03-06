@@ -59,8 +59,8 @@ export class NavbarComponent extends LitElement {
     return html`
       <div
         class="navbar bg-base-100 shadow-sm fixed top-0 left-0 w-full z-50 ${this.isNavbarVisible
-          ? ''
-          : 'hidden'}"
+          ? 'opacity-100 pointer-events-auto'
+          : 'opacity-0 pointer-events-none'}"
       >
         <div class="flex-1">
           <logo-back-component .isAuthorized=${this.isAuthorized}></logo-back-component>
