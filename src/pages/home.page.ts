@@ -179,7 +179,8 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <div
-        id="fixed top-0 left-0 w-full z-20 flex"
+        style="z-index: 20;"
+        id="fixed top-0 left-0 w-full flex"
         class="${this.isNavbarVisible ? 'pt-[64px] bg-transparent' : 'bg-base-100 custom-shadow'}"
       >
         <categories-component
