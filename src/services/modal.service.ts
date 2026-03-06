@@ -94,9 +94,8 @@ class ModalService {
     const oldModal = this.modal;
     this.modal = newModal;
 
-    // Remove old modal after browser has painted new modal
     if (oldModal.parentElement) {
-      requestAnimationFrame(() => oldModal.remove());
+      oldModal.remove();
     }
   }
 
