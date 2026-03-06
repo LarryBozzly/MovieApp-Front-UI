@@ -329,7 +329,7 @@ class OnboardingService {
       0: 0,
       1: 1,
     };
-    const zIndex = zMap[stepIndex] ?? 0;
+    const zIndex = zMap[stepIndex] ?? 1;
     overlay.style.zIndex = String(zIndex);
     backdrop.style.zIndex = String(zIndex);
   }
