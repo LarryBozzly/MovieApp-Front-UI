@@ -47,8 +47,10 @@ class ModalService {
     closeForm.method = 'dialog';
 
     const closeButton = document.createElement('button');
-    closeButton.className = 'btn btn-sm btn-circle btn-ghost absolute right-0.5 top-0.5 z-90';
-    closeButton.textContent = '✕';
+    closeButton.className =
+      'btn btn-circle btn-ghost absolute right-2 top-2 z-90 w-11 h-11 text-xl';
+    closeButton.textContent = '×';
+
     closeButton.addEventListener('click', (e) => {
       e.preventDefault();
       this.close();
