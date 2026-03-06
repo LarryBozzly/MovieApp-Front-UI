@@ -59,7 +59,7 @@ export class EditTagModalComponent extends LitElement {
 
   render() {
     return html`
-      <form class="p-6 space-y-4" @submit=${this.handleSubmit}>
+      <form class="p-6 pb-12 sm:pb-6 space-y-4" @submit=${this.handleSubmit}>
         <h2 class="text-2xl font-bold">Edit Tag</h2>
 
         <p class="text-sm text-base-content/50">

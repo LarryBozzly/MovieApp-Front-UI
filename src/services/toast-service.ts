@@ -23,7 +23,7 @@ class ToastService {
 
     if (!container) {
       container = document.createElement('div');
-      container.className = 'toast toast-bottom toast-center';
+      container.className = 'toast toast-top toast-center';
       container.style.zIndex = '500';
       document.body.appendChild(container);
     }

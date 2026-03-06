@@ -333,7 +333,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     modalService.open({
       tag: 'send-invite-modal-component',
       modalMode: 'modal',
-      className: 'modal-drawer',
+      className: 'modal-bottom sm:modal-middle',
     });
   }),
   openOnboardingSendInvitationModal: createEffect(store, async (deps, _store) => {
@@ -341,7 +341,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     modalService.open({
       tag: 'send-invite-modal-component',
       modalMode: 'nonModal',
-      className: 'modal-drawer',
+      className: 'modal-bottom sm:modal-middle',
     });
   }),
   openReceivedInvitationModal: createEffect(
@@ -400,6 +400,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     const { closeModal } = store.getState();
     modalService.open({
       tag: 'edit-tag-modal-component',
+      className: 'modal-bottom sm:modal-middle',
       modalMode: 'modal',
       props: {
         tag,

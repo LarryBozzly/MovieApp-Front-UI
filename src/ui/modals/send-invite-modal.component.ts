@@ -33,7 +33,7 @@ export class SendInviteModalComponent extends LitElement {
 
   render() {
     return html`
-      <div class="p-6 space-y-4">
+      <div class="p-6 pb-12 sm:pb-6 space-y-4">
         <h2 class="text-2xl font-bold">Send Invitation</h2>
         <p class="text-sm text-gray-500">Enter the user tag to send a movie match invitation.</p>
 

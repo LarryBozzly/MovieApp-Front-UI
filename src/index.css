@@ -45,19 +45,6 @@ body {
   max-height: calc(var(--app-height) * 0.96);
 }
 
-/* Modal drawer styles */
-@layer utilities {
-  .modal-drawer {
-    @apply modal-bottom;
-  }
-}
-
-@media (min-width: theme(--breakpoint-sm)) {
-  .modal-drawer {
-    @apply modal-middle;
-  }
-}
-/* end of styles for modal drawer */
 
 /* override default and md input sizes to be 16px because of ios */
 .input:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl),
