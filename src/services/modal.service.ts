@@ -48,7 +48,7 @@ class ModalService {
 
     const closeButton = document.createElement('button');
     closeButton.className =
-      'btn btn-circle btn-ghost absolute right-2 top-2 z-90 w-11 h-11 text-xl';
+      'btn w-9 h-9 rounded-full btn-ghost absolute z-90 top-0 right-0 text-xl flex items-center justify-center';
     closeButton.textContent = '×';
 
     closeButton.addEventListener('click', (e) => {
