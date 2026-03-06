@@ -51,21 +51,9 @@ export class HomePage extends LitElement {
       font-family: system-ui, sans-serif;
     }
 
-    /* Navbar container outside scrollable content */
-    #navbar-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 25;
-    }
-
     main {
       position: absolute;
-      top: 64px; /* height of navbar */
-      bottom: 0;
-      left: 0;
-      right: 0;
+      inset: 64px 0px 0px; /* height of navbar */
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -191,10 +179,8 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <div
-        id="navbar-container"
-        class="${this.isNavbarVisible
-          ? 'flex pt-[64px] bg-transparent'
-          : 'bg-base-100 custom-shadow'}"
+        id="fixed top-0 left-0 w-full z-20 flex"
+        class="${this.isNavbarVisible ? 'pt-[64px] bg-transparent' : 'bg-base-100 custom-shadow'}"
       >
         <categories-component
           .notifications=${this.notifications}
