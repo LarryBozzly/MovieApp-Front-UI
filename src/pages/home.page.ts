@@ -51,7 +51,7 @@ export class HomePage extends LitElement {
     }
     main {
       position: fixed;
-      inset: 64px 0px 0px;
+      inset: 0px 0px 0px;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -179,7 +179,9 @@ export class HomePage extends LitElement {
     return html`
       <main>
         <div
-          class="w-full z-25 fixed ${this.isNavbarVisible ? '' : 'top-0 bg-base-100 custom-shadow'}"
+          class="w-full z-25 sticky top-0 ${this.isNavbarVisible
+            ? 'top-[64px]'
+            : 'bg-base-100 custom-shadow'}"
         >
           <categories-component
             .notifications=${this.notifications}
