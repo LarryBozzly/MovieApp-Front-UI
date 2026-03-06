@@ -43,16 +43,30 @@ export class HomePage extends LitElement {
 
   static styles = css`
     ${tailwindStyles}
+
     :host {
       display: flex;
       flex-direction: column;
       height: 100dvh;
       font-family: system-ui, sans-serif;
     }
-    main {
+
+    /* Navbar container outside scrollable content */
+    #navbar-container {
       position: fixed;
-      inset: 0px 0px 0px;
-      overflow: auto;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 25;
+    }
+
+    main {
+      position: absolute;
+      top: 64px; /* height of navbar */
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
   `;
@@ -156,7 +170,6 @@ export class HomePage extends LitElement {
     this._setupObserver();
   }
 
-  // ResizeObserver to watch content height changes
   private _setupResizeObserver() {
     if (!this.moviesListComponent) return;
 
@@ -177,23 +190,25 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
+      <div
+        id="navbar-container"
+        class="${this.isNavbarVisible
+          ? 'flex pt-[64px] bg-transparent'
+          : 'bg-base-100 custom-shadow'}"
+      >
+        <categories-component
+          .notifications=${this.notifications}
+          .isNavbarVisible=${this.isNavbarVisible}
+          .userProfile=${this.userProfile}
+          .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
+          .selectedCategory=${this.selectedCategory}
+          .query=${this.query}
+          @onCategoryChanged=${this.onCategoryChanged}
+          @onSearchInput=${this.onSearchInput}
+        ></categories-component>
+      </div>
+
       <main>
-        <div
-          class="w-full z-25 sticky top-0 ${this.isNavbarVisible
-            ? 'top-[64px]'
-            : 'bg-base-100 custom-shadow'}"
-        >
-          <categories-component
-            .notifications=${this.notifications}
-            .isNavbarVisible=${this.isNavbarVisible}
-            .userProfile=${this.userProfile}
-            .selectIsOnInitLoaded=${this.selectIsOnInitLoaded}
-            .selectedCategory=${this.selectedCategory}
-            .query=${this.query}
-            @onCategoryChanged=${this.onCategoryChanged}
-            @onSearchInput=${this.onSearchInput}
-          ></categories-component>
-        </div>
         <movies-list-component
           class="block pt-18"
           .isLoading=${this.isLoading}
