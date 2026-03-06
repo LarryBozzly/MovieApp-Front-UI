@@ -68,7 +68,14 @@ class ModalService {
     const newModal = this.modal.cloneNode(true) as HTMLDialogElement;
     newModal.className = `modal ${className}`.trim();
 
-    const newContentContainer = newModal.querySelector('#modal-content')!;
+    const newContentContainer = newModal.querySelector('#modal-content') as HTMLElement;
+    const newModalBox = newModal.querySelector('.modal-box') as HTMLElement;
+
+    // ✅ Reset only animation-related properties to prevent leaks
+    newModalBox.style.transform = '';
+    newModalBox.style.transition = '';
+    newModalBox.style.willChange = '';
+    newModalBox.style.transformOrigin = '';
 
     // Remove all children except the close form
     [...newContentContainer.children].forEach((child) => {
@@ -94,9 +101,7 @@ class ModalService {
     const oldModal = this.modal;
     this.modal = newModal;
 
-    if (oldModal.parentElement) {
-      oldModal.remove();
-    }
+    if (oldModal.parentElement) oldModal.remove();
   }
 
   close(): void {
