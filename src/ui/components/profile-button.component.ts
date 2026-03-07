@@ -16,12 +16,17 @@ export class ProfileButtonComponent extends LitElement {
 
   static styles = css`
     ${tailwindStyles}
+
+    .menu a:active {
+      background-color: rgba(0, 0, 0, 0.05) !important;
+      color: inherit !important;
+    }
   `;
 
   private async navigate(path: string) {
     const details = this.renderRoot.querySelector('details');
     if (details?.open) {
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 200));
       await new Promise<void>((resolve) => {
         const observer = new MutationObserver(() => {
           if (!details.open) {
