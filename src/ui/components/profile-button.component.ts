@@ -81,7 +81,7 @@ export class ProfileButtonComponent extends LitElement {
             </li>
             <li>
               <a
-                @pointerup="${() => this.navigate('/about')}"
+                @click="${() => this.navigate('/about')}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>About</span>
@@ -90,7 +90,7 @@ export class ProfileButtonComponent extends LitElement {
             <hr class="my-2 border border-base-content/10" />
             <li>
               <button
-                @pointerup="${this.logout}"
+                @click="${this.logout}"
                 class="flex w-full items-center px-4 py-2 text-error font-semibold text-left"
               >
                 Logout
