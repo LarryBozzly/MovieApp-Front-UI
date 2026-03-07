@@ -6,6 +6,7 @@ import { OutlineChevronLeftIcon } from '@ui/icons';
 import { routes } from '@routes/app.routes';
 import { publicGuard } from '@guards/public-guard';
 import { authGuard } from '@guards/auth-guard';
+import { ghostTap } from '@ui/directives/ghost-tap.directive';
 
 @customElement('logo-back-component')
 export class LogoBackComponent extends LitElement {
@@ -88,7 +89,11 @@ export class LogoBackComponent extends LitElement {
           `
         : showBackButton
           ? html`
-              <button @click="${this.goHome}" class="btn btn-ghost btn-circle">
+              <button
+                ${ghostTap(() => this.goHome())}
+                @click="${this.goHome}"
+                class="btn btn-ghost btn-circle"
+              >
                 ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
               </button>
             `
