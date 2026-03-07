@@ -1,6 +1,5 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ref } from 'lit/directives/ref.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '@store/auth-store';
@@ -12,7 +11,6 @@ import '@ui/components/notification-badge.component';
 export class ProfileButtonComponent extends LitElement {
   @watch(authStore) authState!: AuthState;
 
-  private dropdownButton: HTMLElement | undefined;
   @property({ type: Object }) userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
 
@@ -20,42 +18,35 @@ export class ProfileButtonComponent extends LitElement {
     ${tailwindStyles}
   `;
 
-  private async logout(e: Event) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.dropdownButton?.blur();
+  private async navigate(path: string) {
+    const details = this.renderRoot.querySelector('details');
+    if (details?.open) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise<void>((resolve) => {
+        const observer = new MutationObserver(() => {
+          if (!details.open) {
+            observer.disconnect();
+            resolve();
+          }
+        });
+        observer.observe(details, { attributes: true, attributeFilter: ['open'] });
+        details.open = false;
+      });
+    }
+    Router.go(path);
+  }
+
+  private async logout() {
     await this.authState.logout();
-  }
-
-  private redirectToProfile(e: Event) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.dropdownButton?.blur();
-    Router.go('/profile');
-  }
-
-  private redirectToNotifications(e: Event) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.dropdownButton?.blur();
-    Router.go('/notifications');
-  }
-
-  private redirectToAbout(e: Event) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.dropdownButton?.blur();
-    Router.go('/about');
+    const details = this.renderRoot.querySelector('details');
+    if (details?.open) details.open = false;
   }
 
   render() {
     return html`
       <div class="flex-none">
-        <div class="dropdown dropdown-end">
-          <div
-            tabindex="0"
-            role="button"
-            ${ref((el) => (this.dropdownButton = el as HTMLElement))}
+        <details class="dropdown dropdown-end">
+          <summary
             class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"
           >
             ${this.userProfile.tag?.[0] ?? '?'}
@@ -64,15 +55,14 @@ export class ProfileButtonComponent extends LitElement {
               .count=${this.notifications.length}
             >
             </notification-badge-component>
-          </div>
+          </summary>
+
           <ul
-            tabindex="0"
             class="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
           >
             <li>
               <a
-                @pointerup="${this.redirectToProfile}"
-                @click="${(e: Event) => e.stopPropagation()}"
+                @click="${() => this.navigate('/profile')}"
                 class="flex items-center px-4 py-2 text-primary font-semibold"
               >
                 Profile
@@ -80,12 +70,10 @@ export class ProfileButtonComponent extends LitElement {
             </li>
             <li>
               <a
-                @pointerup="${this.redirectToNotifications}"
-                @click="${(e: Event) => e.stopPropagation()}"
+                @click="${() => this.navigate('/notifications')}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>Notifications</span>
-
                 ${this.notifications.length > 0
                   ? html`<span class="w-2 h-2 bg-secondary rounded-full"></span>`
                   : null}
@@ -93,8 +81,7 @@ export class ProfileButtonComponent extends LitElement {
             </li>
             <li>
               <a
-                @pointerup="${this.redirectToAbout}"
-                @click="${(e: Event) => e.stopPropagation()}"
+                @pointerup="${() => this.navigate('/about')}"
                 class="flex items-center justify-between px-4 py-2 text-primary font-semibold"
               >
                 <span>About</span>
@@ -104,14 +91,13 @@ export class ProfileButtonComponent extends LitElement {
             <li>
               <button
                 @pointerup="${this.logout}"
-                @click="${(e: Event) => e.stopPropagation()}"
                 class="flex w-full items-center px-4 py-2 text-error font-semibold text-left"
               >
                 Logout
               </button>
             </li>
           </ul>
-        </div>
+        </details>
       </div>
     `;
   }
