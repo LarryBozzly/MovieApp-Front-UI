@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ref, createRef } from 'lit/directives/ref.js';
+import { clickOutside } from '../directives/click-outside';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '@store/auth-store';
@@ -19,7 +20,6 @@ export class ProfileButtonComponent extends LitElement {
 
   static styles = css`
     ${tailwindStyles}
-
     .menu a:active {
       background-color: rgba(0, 0, 0, 0.05) !important;
       color: inherit !important;
@@ -29,54 +29,29 @@ export class ProfileButtonComponent extends LitElement {
     }
   `;
 
-  connectedCallback() {
-    super.connectedCallback();
-    document.addEventListener('click', this.handleDocumentClick);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener('click', this.handleDocumentClick);
-  }
-
-  private handleDocumentClick = (event: MouseEvent) => {
+  private closeDropdown = () => {
     const details = this.detailsRef.value;
-    if (!details) return;
-
-    const path = event.composedPath();
-    if (!path.includes(details)) {
-      details.open = false;
-    }
+    if (details) details.open = false;
   };
 
-  private async navigate(path: string) {
-    const details = this.detailsRef.value;
-    if (details?.open) {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      await new Promise<void>((resolve) => {
-        const observer = new MutationObserver(() => {
-          if (!details.open) {
-            observer.disconnect();
-            resolve();
-          }
-        });
-        observer.observe(details, { attributes: true, attributeFilter: ['open'] });
-      details.open = false;
-      });
-    }
+  private navigate(path: string) {
+    this.closeDropdown();
     Router.go(path);
   }
 
   private async logout() {
+    this.closeDropdown();
     await this.authState.logout();
-    const details = this.detailsRef.value;
-    if (details?.open) details.open = false;
   }
 
   render() {
     return html`
       <div class="flex-none">
-        <details class="dropdown dropdown-end" ${ref(this.detailsRef)}>
+        <details
+          class="dropdown dropdown-end"
+          ${ref(this.detailsRef)}
+          ${clickOutside(() => this.closeDropdown())}
+        >
           <summary
             class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"
           >
