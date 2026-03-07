@@ -24,6 +24,9 @@ export class ProfileButtonComponent extends LitElement {
       background-color: rgba(0, 0, 0, 0.05) !important;
       color: inherit !important;
     }
+    summary::-webkit-details-marker {
+      display: none;
+    }
   `;
 
   connectedCallback() {
@@ -58,7 +61,7 @@ export class ProfileButtonComponent extends LitElement {
           }
         });
         observer.observe(details, { attributes: true, attributeFilter: ['open'] });
-        details.open = false;
+      details.open = false;
       });
     }
     Router.go(path);
