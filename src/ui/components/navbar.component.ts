@@ -65,7 +65,7 @@ export class NavbarComponent extends LitElement {
         <div class="flex-1">
           <logo-back-component .isAuthorized=${this.isAuthorized}></logo-back-component>
         </div>
-        ${this.isAuthorized
+        ${this.isAuthorized && this.isNavbarVisible
           ? html`
               <profile-button-component
                 .notifications=${this.notifications}

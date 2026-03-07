@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ref, createRef } from 'lit/directives/ref.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { authStore, type AuthState } from '@store/auth-store';
@@ -14,6 +15,8 @@ export class ProfileButtonComponent extends LitElement {
   @property({ type: Object }) userProfile!: UserProfile;
   @property({ type: Array }) notifications: Notification[] = [];
 
+  private detailsRef = createRef<HTMLDetailsElement>();
+
   static styles = css`
     ${tailwindStyles}
 
@@ -23,8 +26,28 @@ export class ProfileButtonComponent extends LitElement {
     }
   `;
 
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('click', this.handleDocumentClick);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('click', this.handleDocumentClick);
+  }
+
+  private handleDocumentClick = (event: MouseEvent) => {
+    const details = this.detailsRef.value;
+    if (!details) return;
+
+    const path = event.composedPath();
+    if (!path.includes(details)) {
+      details.open = false;
+    }
+  };
+
   private async navigate(path: string) {
-    const details = this.renderRoot.querySelector('details');
+    const details = this.detailsRef.value;
     if (details?.open) {
       await new Promise((resolve) => setTimeout(resolve, 200));
       await new Promise<void>((resolve) => {
@@ -43,14 +66,14 @@ export class ProfileButtonComponent extends LitElement {
 
   private async logout() {
     await this.authState.logout();
-    const details = this.renderRoot.querySelector('details');
+    const details = this.detailsRef.value;
     if (details?.open) details.open = false;
   }
 
   render() {
     return html`
       <div class="flex-none">
-        <details class="dropdown dropdown-end">
+        <details class="dropdown dropdown-end" ${ref(this.detailsRef)}>
           <summary
             class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"
           >
