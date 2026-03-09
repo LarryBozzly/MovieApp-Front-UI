@@ -77,7 +77,7 @@ export class FigureVideoComponent extends LitElement {
                 class="w-full h-full"
                 src="https://www.youtube.com/embed/${this.trailerKey}?autoplay=1"
                 frameborder="0"
-                allow="autoplay; encrypted-media"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
                 @load=${() => (this.isLoadingTrailer = false)}
               ></iframe>
