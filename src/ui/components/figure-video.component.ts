@@ -37,7 +37,7 @@ export class FigureVideoComponent extends LitElement {
       NoImageIcon().strings.join(''),
       'image/svg+xml'
     ).documentElement;
-    svg.setAttribute('class', 'w-full h-64 text-base-content/40 bg-base-200 select-none');
+    svg.setAttribute('class', 'w-full h-full text-base-content/40 bg-base-200 select-none');
     img.replaceWith(svg);
   }
 
@@ -70,7 +70,9 @@ export class FigureVideoComponent extends LitElement {
     const isTrailer = !!this.trailerKey;
 
     return html`
-      <figure class="relative w-full h-64 flex-shrink-0 bg-base-200 rounded-lg overflow-hidden">
+      <figure
+        class="relative w-full flex-shrink-0 bg-base-200 rounded-lg overflow-hidden aspect-[3/2] max-h-[240px]"
+      >
         ${isTrailer
           ? html`
               <iframe

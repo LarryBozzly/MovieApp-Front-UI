@@ -29,7 +29,7 @@ export class MovieMatchResultModal extends LitElement {
         <img
           src="https://image.tmdb.org/t/p/w500${this.movie.poster_path}"
           alt="${this.movie.title}"
-          class="w-full h-64 object-contain rounded-lg shadow-md flex-shrink-0 bg-base-200"
+          class="w-full aspect-[3/2] max-h-[240px] object-contain rounded-lg shadow-md flex-shrink-0 bg-base-200"
         />
 
         <div class="flex flex-col flex-1 overflow-hidden">
