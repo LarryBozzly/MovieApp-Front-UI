@@ -160,47 +160,58 @@ export class LandingPage extends LitElement {
             </div>
 
             <div class="grid md:grid-cols-3 gap-10">
-              <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body items-center text-center">
-                  <div
-                    class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-3xl"
-                  >
-                    🎬
-                  </div>
-                  <h3 class="card-title text-xl mb-2">Browse Catalogs</h3>
-                  <p class="opacity-70">
+              <div class="bg-base-100 border border-base-300 rounded-2xl overflow-hidden shadow-sm">
+                <div class="bg-primary/10 flex items-center justify-center py-12 px-8">
+                  <img
+                    src="/images/landing/director.webp"
+                    alt="Browse Catalogs"
+                    class="w-40 md:w-44 object-contain"
+                  />
+                </div>
+
+                <div class="p-8 text-center">
+                  <h3 class="text-xl font-bold mb-3">Browse Catalogs</h3>
+                  <p class="opacity-70 leading-relaxed">
                     Explore extensive catalogs of trending and top-rated movies. Filter by genre and
-                    find hidden gems.
+                    discover hidden gems.
                   </p>
                 </div>
               </div>
 
-              <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body items-center text-center">
-                  <div
-                    class="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mb-4 text-3xl"
-                  >
-                    🤝
-                  </div>
-                  <h3 class="card-title text-xl mb-2">Match with Friends</h3>
-                  <p class="opacity-70">
-                    Connect with friends and swipe on movies. We'll tell you instantly when you both
-                    like the same film.
+              <!-- Card 2 -->
+              <div class="bg-base-100 border border-base-300 rounded-2xl overflow-hidden shadow-sm">
+                <div class="bg-secondary/10 flex items-center justify-center py-12 px-8">
+                  <img
+                    src="/images/landing/cards.webp"
+                    alt="Match with Friends"
+                    class="w-40 md:w-44 object-contain"
+                  />
+                </div>
+
+                <div class="p-8 text-center">
+                  <h3 class="text-xl font-bold mb-3">Match with Friends</h3>
+                  <p class="opacity-70 leading-relaxed">
+                    Connect with friends and swipe on movies. We'll notify you instantly when you
+                    match on the same film.
                   </p>
                 </div>
               </div>
 
-              <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body items-center text-center">
-                  <div
-                    class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4 text-3xl"
-                  >
-                    🍿
-                  </div>
-                  <h3 class="card-title text-xl mb-2">Watch Together</h3>
-                  <p class="opacity-70">
-                    No more endless scrolling or arguments. Pick from your matches and enjoy the
-                    show.
+              <!-- Card 3 -->
+              <div class="bg-base-100 border border-base-300 rounded-2xl overflow-hidden shadow-sm">
+                <div class="bg-accent/10 flex items-center justify-center py-12 px-8">
+                  <img
+                    src="/images/landing/popcorn.webp"
+                    alt="Watch Together"
+                    class="w-40 md:w-44 object-contain"
+                  />
+                </div>
+
+                <div class="p-8 text-center">
+                  <h3 class="text-xl font-bold mb-3">Watch Together</h3>
+                  <p class="opacity-70 leading-relaxed">
+                    No more endless scrolling or arguments. Pick from your matches and enjoy movie
+                    night together.
                   </p>
                 </div>
               </div>
