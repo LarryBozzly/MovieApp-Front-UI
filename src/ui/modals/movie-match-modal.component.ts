@@ -346,7 +346,7 @@ export class MovieMatchModalComponent extends LitElement {
 
     return html`
       <div
-        class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[80vh]"
+        class="rounded-xl overflow-hidden shadow-lg bg-base-100 border border-base-300 flex flex-col max-h-[calc(var(--app-height)*0.95)]"
       >
         <figure-video-component
           class="pt-7.5 px-4"
