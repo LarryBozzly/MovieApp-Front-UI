@@ -47,12 +47,10 @@ export class InviteFab extends LitElement {
   }
 
   private scrollToTopSmooth(): void {
-    const main = this.parentNode?.firstElementChild;
-    main?.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    const main = (this.getRootNode() as ShadowRoot)?.host.shadowRoot?.querySelector('main');
+
+    main?.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
     this.isOpen = false;
   }
 
