@@ -71,7 +71,7 @@ export class FigureVideoComponent extends LitElement {
 
     return html`
       <figure
-        class="relative w-full flex-shrink-0 bg-base-200 rounded-lg overflow-hidden aspect-[3/2] max-h-[240px]"
+        class="relative w-full flex-shrink-0 bg-base-200 rounded-lg overflow-hidden aspect-[3/2] max-h-[40vh]"
       >
         ${isTrailer
           ? html`
