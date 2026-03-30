@@ -72,6 +72,7 @@ export interface AppState {
   updateNotifications: (newNotifications: Notification[]) => Promise<void>;
   addToWatchlist: (movie: Movie) => Promise<void>;
   removeFromWatchlist: (movie: Movie) => Promise<void>;
+  openMovieExplorerModal: () => Promise<void>;
   openSendInvitationModal: () => Promise<void>;
   openOnboardingSendInvitationModal: () => Promise<void>;
   openReceivedInvitationModal: (notification: Notification) => Promise<void>;
@@ -326,6 +327,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setLoading(false);
     setWatchlistIds({
       [movie.id]: { isWatchlist: data?.success ? false : true, isLoading: false },
+    });
+  }),
+  openMovieExplorerModal: createEffect(store, async (deps, _store) => {
+    const { modalService } = deps;
+    modalService.open({
+      tag: 'movie-explorer-modal-component',
+      modalMode: 'modal',
+      className: 'modal-bottom sm:modal-middle',
     });
   }),
   openSendInvitationModal: createEffect(store, async (deps, _store) => {

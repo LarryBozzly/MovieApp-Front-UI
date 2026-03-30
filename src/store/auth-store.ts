@@ -74,6 +74,7 @@ export interface AuthState {
   rejectInvitationResponse: (notification: Notification) => Promise<void>;
   sendMovieSelection: (movie: Movie) => Promise<void>;
   sendMovieRejection: (movie: Movie) => Promise<void>;
+  startSoloSession: (toTag: string, genres: number[]) => Promise<void>;
   initDeviceVisibilityListener: () => Promise<void>;
   initCrossTabListener: () => Promise<void>;
   closeModal: () => Promise<void>;
@@ -322,6 +323,16 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     }
 
     webSocketService.sendMovieRejection(movie);
+  }),
+  startSoloSession: createEffect(store, async (deps, _store, toTag: string, genreIds: number[]) => {
+    const { webSocketService } = deps;
+
+    if (!webSocketService) {
+      console.error('WebSocketService not initialized');
+      return;
+    }
+
+    webSocketService.sendInvitationRequest(toTag, genreIds);
   }),
   initDeviceVisibilityListener: createEffect(store, async (deps, store) => {
     const {

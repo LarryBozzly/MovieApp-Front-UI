@@ -221,3 +221,19 @@ export const PlayIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => 
     <polygon points="10 8 16 12 10 16" fill="white" />
   </svg>
 `;
+
+export const SoloIcon = (className = 'w-6 h-6 text-primary'): TemplateResult => html`
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="${className}"
+  >
+    <circle cx="12" cy="7" r="3.2" />
+    <path d="M4.5 19c0-3.8 3.4-6.5 7.5-6.5s7.5 2.7 7.5 6.5" />
+  </svg>
+`;

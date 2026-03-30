@@ -6,3 +6,4 @@ import './movie-preview-modal.component';
 import './edit-tag-modal.component';
 import './error-modal.component';
 import './version-update-modal.component';
+import './movie-explorer-modal.component';

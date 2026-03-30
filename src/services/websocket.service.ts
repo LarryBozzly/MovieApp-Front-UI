@@ -143,8 +143,13 @@ export default class WebSocketService {
     this.socket.send(buffer);
   }
 
-  sendInvitationRequest(toTag: string) {
-    this.send({ invitationRequest: { to: toTag } });
+  sendInvitationRequest(toTag: string, genreIds: number[] = []) {
+    this.send({
+      invitationRequest: {
+        to: toTag,
+        genreIds,
+      },
+    });
   }
 
   acceptInvitationResponse(notification: Notification) {

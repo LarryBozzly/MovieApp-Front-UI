@@ -55,6 +55,7 @@ message ReadNotificationResponse {
 message InvitationRequest {
   // Client → Server: Send an invite
   string to = 1;
+  repeated uint32 genreIds = 2;
 }
 
 message InvitationResponse {
