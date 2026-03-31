@@ -62,6 +62,23 @@ export class MovieExplorerModalComponent extends LitElement {
     return uniqueIds.filter((id) => MovieGenreMap.has(id));
   }
 
+  private getMoodButtonClass(mood: Mood): string {
+    const isSelected = this.isMoodSelected(mood);
+    const isLocked = this.isSubmitting || (!isSelected && this.selectedMoods.length >= 1);
+
+    if (isSelected) {
+      return this.isSubmitting
+        ? 'btn-primary ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 opacity-100 cursor-wait'
+        : 'btn-primary';
+    }
+
+    if (isLocked) {
+      return 'btn-outline border-base-300 text-base-content/50 opacity-35 cursor-not-allowed';
+    }
+
+    return 'btn-outline border-base-300 text-base-content hover:bg-base-200 hover:border-base-300 hover:text-base-content';
+  }
+
   private async startSession(event: Event) {
     event.preventDefault();
     event.stopPropagation();
@@ -99,13 +116,7 @@ export class MovieExplorerModalComponent extends LitElement {
                 <button
                   type="button"
                   ?disabled=${this.isSubmitting || (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)}
-                  class="btn btn-sm rounded-full
-                    ${this.isMoodSelected(m)
-                    ? 'btn-primary'
-                    : 'btn-outline border-base-300 text-base-content hover:bg-base-200 hover:border-base-300 hover:text-base-content'}
-                    ${this.isSubmitting || (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)
-                    ? 'opacity-40 cursor-not-allowed'
-                    : ''}"
+                  class="btn btn-sm rounded-full transition-all ${this.getMoodButtonClass(m)}"
                   @click=${() => this.toggleMood(m)}
                 >
                   ${m.name}
