@@ -49,7 +49,7 @@ export class MovieExplorerModalComponent extends LitElement {
     if (this.isMoodSelected(mood)) {
       this.selectedMoods = this.selectedMoods.filter((m) => m.id !== mood.id);
     } else {
-      if (this.selectedMoods.length >= 2) return;
+      if (this.selectedMoods.length >= 1) return;
       this.selectedMoods = [...this.selectedMoods, mood];
     }
   }
@@ -75,7 +75,7 @@ export class MovieExplorerModalComponent extends LitElement {
         <!-- Header -->
         <div>
           <h2 class="text-2xl font-bold text-base-content">Movie night for one?</h2>
-          <p class="text-sm text-base-content/60 mt-1">Choose your mood. (Up to 2)</p>
+          <p class="text-sm text-base-content/60 mt-1">Choose your mood</p>
         </div>
 
         <div class="divider border-base-300 my-0"></div>
@@ -91,7 +91,7 @@ export class MovieExplorerModalComponent extends LitElement {
                     ${this.isMoodSelected(m)
                     ? 'btn-primary'
                     : 'btn-outline border-base-300 text-base-content hover:bg-base-200 hover:border-base-300 hover:text-base-content'}
-                    ${!this.isMoodSelected(m) && this.selectedMoods.length >= 2
+                    ${!this.isMoodSelected(m) && this.selectedMoods.length >= 1
                     ? 'opacity-40 cursor-not-allowed'
                     : ''}"
                   @click=${() => this.toggleMood(m)}
