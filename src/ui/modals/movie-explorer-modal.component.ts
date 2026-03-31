@@ -74,8 +74,9 @@ export class MovieExplorerModalComponent extends LitElement {
       const tag = authStore.getState().userProfile?.tag;
       await this.authState.startSoloSession(tag, this.selectedGenreIds);
       this.toastService.show(this.invitationMessage, { type: 'success' });
-    } finally {
+    } catch (error) {
       this.isSubmitting = false;
+      throw error;
     }
   }
 
