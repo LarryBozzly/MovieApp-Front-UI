@@ -10,6 +10,7 @@ export class MovieMatchResultModal extends LitElement {
   `;
 
   @property({ type: Object }) movie!: Movie;
+  @property({ type: String }) title!: string;
   @property() onClose!: () => void;
   @state() private canClose = false;
 
@@ -23,7 +24,7 @@ export class MovieMatchResultModal extends LitElement {
         class="max-height-modal p-6 space-y-4 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
         <h2 id="match-title" class="text-3xl font-extrabold text-center text-primary flex-shrink-0">
-          It's a Match!
+          ${this.title}
         </h2>
 
         <img

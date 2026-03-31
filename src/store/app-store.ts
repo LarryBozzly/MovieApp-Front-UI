@@ -78,7 +78,7 @@ export interface AppState {
   openReceivedInvitationModal: (notification: Notification) => Promise<void>;
   openStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
   openOnboardingStartMovieMatchModal: (movies: Movie[]) => Promise<void>;
-  openMovieMatchModal: (movie: Movie) => Promise<void>;
+  openMovieMatchModal: (movie: Movie, solo: boolean) => Promise<void>;
   openMoviePreviewModal: (movie: Movie) => Promise<void>;
   openEditTagModal: (tag: string) => Promise<void>;
   openErrorModal: (message: string) => Promise<void>;
@@ -380,13 +380,15 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       modalMode: 'nonModal',
     });
   }),
-  openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie) => {
+  openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie, solo: boolean) => {
     const { modalService } = deps;
     const { closeModal } = store.getState();
+    const title = solo ? "It's a Hit!" : "It's a Match!";
     modalService.open({
       tag: 'movie-match-result-modal',
       modalMode: 'modal',
       props: {
+        title,
         movie,
         onClose: closeModal,
       },

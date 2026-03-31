@@ -103,7 +103,9 @@ export default class WebSocketService {
 
             if (msg.movieMatch) {
               await appStore.getState().closeModal();
-              await appStore.getState().openMovieMatchModal(msg.movieMatch.movie);
+              await appStore
+                .getState()
+                .openMovieMatchModal(msg.movieMatch.movie, msg.movieMatch.solo);
             }
 
             if (msg.error) {

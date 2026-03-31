@@ -106,6 +106,7 @@ message StartMovieMatch {
 message MovieMatch {
   // Server → Both users: A match on a movie both liked
   Movie movie = 1;
+  bool solo = 2;
 }
 
 message WatchlistMoviesUpdate {
