@@ -24,6 +24,7 @@ export class MovieExplorerModalComponent extends LitElement {
   private readonly invitationMessage = 'Session started.';
 
   @state() private selectedMoods: Mood[] = [];
+  @state() private isSubmitting = false;
 
   private moods: Mood[] = [
     {
@@ -46,6 +47,8 @@ export class MovieExplorerModalComponent extends LitElement {
   }
 
   private toggleMood(mood: Mood) {
+    if (this.isSubmitting) return;
+
     if (this.isMoodSelected(mood)) {
       this.selectedMoods = this.selectedMoods.filter((m) => m.id !== mood.id);
     } else {
@@ -63,10 +66,17 @@ export class MovieExplorerModalComponent extends LitElement {
     event.preventDefault();
     event.stopPropagation();
 
-    const tag = authStore.getState().userProfile?.tag;
-    await this.authState.startSoloSession(tag, this.selectedGenreIds);
+    if (this.isSubmitting || this.selectedMoods.length === 0) return;
 
-    this.toastService.show(this.invitationMessage, { type: 'success' });
+    this.isSubmitting = true;
+
+    try {
+      const tag = authStore.getState().userProfile?.tag;
+      await this.authState.startSoloSession(tag, this.selectedGenreIds);
+      this.toastService.show(this.invitationMessage, { type: 'success' });
+    } finally {
+      this.isSubmitting = false;
+    }
   }
 
   render() {
@@ -87,11 +97,12 @@ export class MovieExplorerModalComponent extends LitElement {
               (m) => html`
                 <button
                   type="button"
+                  ?disabled=${this.isSubmitting || (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)}
                   class="btn btn-sm rounded-full
                     ${this.isMoodSelected(m)
                     ? 'btn-primary'
                     : 'btn-outline border-base-300 text-base-content hover:bg-base-200 hover:border-base-300 hover:text-base-content'}
-                    ${!this.isMoodSelected(m) && this.selectedMoods.length >= 1
+                    ${this.isSubmitting || (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)
                     ? 'opacity-40 cursor-not-allowed'
                     : ''}"
                   @click=${() => this.toggleMood(m)}
@@ -108,9 +119,9 @@ export class MovieExplorerModalComponent extends LitElement {
           <button
             type="submit"
             class="btn btn-primary w-full"
-            ?disabled=${this.selectedMoods.length === 0}
+            ?disabled=${this.isSubmitting || this.selectedMoods.length === 0}
           >
-            Start
+            ${this.isSubmitting ? 'Starting...' : 'Start'}
           </button>
         </form>
       </div>
