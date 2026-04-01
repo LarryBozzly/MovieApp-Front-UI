@@ -34,12 +34,12 @@ export class MovieExplorerModalComponent extends LitElement {
     },
     { id: 2, name: 'Emotional', genres: [MovieGenre.Drama, MovieGenre.Romance] },
     { id: 3, name: 'Intense', genres: [MovieGenre.Thriller, MovieGenre.Crime] },
-    { id: 4, name: 'Scary', genres: [MovieGenre.Horror, MovieGenre.Thriller] },
+    { id: 4, name: 'Scary', genres: [MovieGenre.Horror] },
     { id: 5, name: 'Mind-Bending', genres: [MovieGenre.SciFi, MovieGenre.Mystery] },
     { id: 6, name: 'Adventure', genres: [MovieGenre.Adventure, MovieGenre.Fantasy] },
     { id: 7, name: 'Action', genres: [MovieGenre.Action, MovieGenre.Adventure] },
     { id: 8, name: 'Animated', genres: [MovieGenre.Animation, MovieGenre.Family] },
-    { id: 9, name: 'Real & Raw', genres: [MovieGenre.Documentary, MovieGenre.Drama] },
+    { id: 9, name: 'Real & Raw', genres: [MovieGenre.Documentary] },
   ];
 
   private isMoodSelected(mood: Mood): boolean {
@@ -115,7 +115,8 @@ export class MovieExplorerModalComponent extends LitElement {
               (m) => html`
                 <button
                   type="button"
-                  ?disabled=${this.isSubmitting || (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)}
+                  ?disabled=${this.isSubmitting ||
+                  (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)}
                   class="btn btn-sm rounded-full transition-all ${this.getMoodButtonClass(m)}"
                   @click=${() => this.toggleMood(m)}
                 >
