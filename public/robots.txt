@@ -1,6 +1,8 @@
 User-agent: *
-Disallow: /
+Allow: /
 
-Allow: /home
-Allow: /login
-Allow: /signup
+# Crawl delay (optional - 1 second between requests)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://movviator.tech/sitemap.xml

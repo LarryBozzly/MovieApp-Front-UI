@@ -22,6 +22,7 @@ export class LoginPage extends LitElement {
       description:
         'Log in to your Movviator account to access your watchlist and match movies with friends.',
       robots: 'index, follow',
+      canonicalUrl: 'https://movviator.tech/login',
     });
   }
 

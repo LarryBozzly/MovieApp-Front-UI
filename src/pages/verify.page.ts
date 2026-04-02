@@ -9,6 +9,7 @@ import {
   type AuthState,
 } from '@store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
+import { setPageMeta } from '@utils/setPageMeta';
 
 @customElement('verify-page')
 export class VerifyPage extends LitElement {
@@ -24,6 +25,12 @@ export class VerifyPage extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
+    setPageMeta({
+      title: 'Verify Your Account – Movviator',
+      description: 'Verify your Movviator email address to complete your account registration.',
+      robots: 'noindex, follow',
+      canonicalUrl: 'https://movviator.tech/verify',
+    });
     await this.verifyAccount();
   }
 

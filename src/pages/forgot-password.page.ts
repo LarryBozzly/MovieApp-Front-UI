@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { watch, watchWithSelector } from 'zustand-lit';
 import '@ui/components/movies-list.component';
 import { tailwindStyles } from '@utils/app.constants';
+import { setPageMeta } from '@utils/setPageMeta';
 import {
   authStore,
   selectError,
@@ -34,6 +35,16 @@ export class ForgotPasswordPage extends LitElement {
   static styles = css`
     ${tailwindStyles}
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    setPageMeta({
+      title: 'Forgot Password – Movviator',
+      description: 'Reset your Movviator password. Enter your email address to get started.',
+      robots: 'index, follow',
+      canonicalUrl: 'https://movviator.tech/forgot-password',
+    });
+  }
 
   disconnectedCallback() {
     super.disconnectedCallback();

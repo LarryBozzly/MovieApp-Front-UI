@@ -9,17 +9,110 @@
   <meta name="keywords"
     content="movies, movie app, what to watch, movie night, find movies, movie suggestions, film matcher, Movviator" />
   <meta name="author" content="Movviator Team" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  
+  <!-- Canonical URL - Replace with your actual domain -->
+  <link rel="canonical" href="https://movviator.tech/" />
+  
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1d232a" media="(prefers-color-scheme: dark)">
+  
+  <!-- Favicons -->
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" sizes="180x180">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1d232a" media="(prefers-color-scheme: dark)">
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Movviator – Find the Perfect Movie to Watch Together" />
+  <meta property="og:description" content="Movviator helps you and your loved ones find the perfect movie to watch together. Match based on your watchlist and preferences, and never argue about movie night again!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://movviator.tech/" />
+  <meta property="og:image" content="https://movviator.tech/images/landing/hero_people.webp" />
+  <meta property="og:site_name" content="Movviator" />
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Movviator – Find the Perfect Movie to Watch Together" />
+  <meta name="twitter:description" content="Movviator helps you and your loved ones find the perfect movie to watch together." />
+  <meta name="twitter:image" content="https://movviator.tech/images/landing/hero_people.webp" />
+  
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="./src/index.css" />
+  
+  <!-- JSON-LD Structured Data for Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Movviator",
+    "url": "https://movviator.tech",
+    "logo": "https://movviator.tech/images/movviator.svg",
+    "description": "Match, watch, and enjoy movie nights effortlessly!",
+    "sameAs": [
+      "https://www.instagram.com/movviator",
+      "https://www.twitter.com/movviator",
+      "https://www.facebook.com/movviator"
+    ],
+    "contact": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Support",
+      "email": "support@movviator.com"
+    }
+  }
+  </script>
+  
+  <!-- JSON-LD Structured Data for WebSite with Search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Movviator",
+    "url": "https://movviator.tech",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://movviator.tech/home?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }f
+  }
+  </script>
+  
+  <!-- JSON-LD for BreadcrumbList (optional, useful for SPA navigation) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://movviator.tech/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Login",
+        "item": "https://movviator.tech/login"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Sign Up",
+        "item": "https://movviator.tech/signup"
+      }
+    ]
+  }
+  </script>
+  
+  <!-- Main Script -->
   <script type="module" src="/src/main.ts"></script>
   
-  <!-- Eruda Debugger -->
+  <!-- Eruda Debugger (commented out) -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
   <script>
     eruda.init(); // initialize Eruda

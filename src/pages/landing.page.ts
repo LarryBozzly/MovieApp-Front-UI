@@ -101,6 +101,7 @@ export class LandingPage extends LitElement {
         'Movviator helps you and your loved ones find the perfect movie to watch together. Match based on your watchlist and preferences, and never argue about movie night again.',
       robots: 'index, follow',
       ogImage: '/images/landing/hero_people.webp',
+      canonicalUrl: 'https://movviator.tech/',
     });
   }
 
