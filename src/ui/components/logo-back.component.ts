@@ -89,10 +89,7 @@ export class LogoBackComponent extends LitElement {
           `
         : showBackButton
           ? html`
-              <button
-                ${ghostTap(() => this.goHome())}
-                class="btn btn-ghost btn-circle"
-              >
+              <button ${ghostTap(() => this.goHome())} class="btn btn-ghost btn-circle">
                 ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
               </button>
             `
