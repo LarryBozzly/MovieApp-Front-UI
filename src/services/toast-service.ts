@@ -19,12 +19,19 @@ class ToastService {
   private container: HTMLElement;
 
   private constructor() {
-    let container = document.querySelector('.toast.toast-bottom.toast-center') as HTMLElement;
+    let container = document.querySelector('.toast.toast-top.toast-center') as HTMLElement;
 
     if (!container) {
       container = document.createElement('div');
       container.className = 'toast toast-top toast-center';
-      container.style.zIndex = '500';
+      container.style.position = 'fixed';
+      container.style.right = '1rem';
+      container.style.transform = 'translateY(-10%)';
+      container.style.width = '300px';
+      container.style.maxHeight = 'var(--app-height)';
+      container.style.overflowY = 'none';
+      container.style.zIndex = '10000';
+      container.style.pointerEvents = 'none';
       document.body.appendChild(container);
     }
 
@@ -57,6 +64,7 @@ class ToastService {
 
     const toast = document.createElement('div');
     toast.className = `${this.getAlertClass(type)} shadow-lg`;
+    toast.style.pointerEvents = 'auto'; // Capture events on toast
 
     // Mobile-friendly animation setup
     toast.style.opacity = '0';
