@@ -34,10 +34,6 @@ class ModalService {
 
     // Safe-area and scrolling
     Object.assign(modalBox.style, {
-      // paddingTop: 'env(safe-area-inset-top)',
-      paddingBottom: 'env(safe-area-inset-bottom)',
-      // paddingLeft: 'env(safe-area-inset-left)',
-      // paddingRight: 'env(safe-area-inset-right)',
       padding: '0',
       boxSizing: 'border-box',
       overflowY: 'auto',
