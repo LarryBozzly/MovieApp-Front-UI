@@ -17,22 +17,25 @@ interface ToastOptions {
 class ToastService {
   private static instance: ToastService;
   private container: HTMLElement;
+  private supportsPopover: boolean;
 
   private constructor() {
-    let container = document.querySelector('.toast.toast-top.toast-center') as HTMLElement;
+    const container = document.createElement('div');
 
-    if (!container) {
-      container = document.createElement('div');
-      container.className = 'toast toast-top toast-center';
-      container.style.position = 'fixed';
-      container.style.right = '1rem';
-      container.style.transform = 'translateY(-10%)';
-      container.style.width = '300px';
-      container.style.maxHeight = 'var(--app-height)';
-      container.style.overflowY = 'none';
-      container.style.zIndex = '10000';
-      container.style.pointerEvents = 'none';
-      document.body.appendChild(container);
+    // DaisyUI does ALL the positioning — center bottom
+    container.className = 'toast toast-bottom toast-center toast-service-container';
+    container.style.width = '50%';
+    container.style.overflowY = 'hidden'; // prevent scrollbars on unsupported browsers
+    this.supportsPopover = 'showPopover' in container;
+
+    if (this.supportsPopover) {
+      container.setAttribute('popover', 'manual');
+    }
+
+    document.body.appendChild(container);
+
+    if (this.supportsPopover) {
+      (container as any).showPopover(); // enter the top layer
     }
 
     this.container = container;
@@ -43,6 +46,21 @@ class ToastService {
       ToastService.instance = new ToastService();
     }
     return ToastService.instance;
+  }
+
+  /**
+   * Pulls the container out and re-inserts it at the TOP of the top layer stack.
+   * Since top layer orders by insertion time (last = on top), this guarantees
+   * toasts always render above any open showModal() dialogs.
+   */
+  private promoteToTopLayer(): void {
+    if (!this.supportsPopover) return;
+    try {
+      (this.container as any).hidePopover();
+    } catch {
+      // was already hidden — fine
+    }
+    (this.container as any).showPopover();
   }
 
   private getAlertClass(type: ToastType): string {
@@ -61,6 +79,8 @@ class ToastService {
 
   show(content: ToastContent, options: ToastOptions = {}): void {
     const { type = 'info', duration = 3000 } = options;
+    // Always climb to the top of the top layer before showing
+    this.promoteToTopLayer();
 
     const toast = document.createElement('div');
     toast.className = `${this.getAlertClass(type)} shadow-lg`;
