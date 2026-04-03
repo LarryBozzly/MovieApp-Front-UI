@@ -24,7 +24,7 @@ class ToastService {
 
     // DaisyUI does ALL the positioning — center bottom
     container.className = 'toast toast-bottom toast-center toast-service-container';
-    container.style.width = '50%';
+    container.style.width = '100%';
     container.style.overflowY = 'hidden'; // prevent scrollbars on unsupported browsers
     this.supportsPopover = 'showPopover' in container;
 
