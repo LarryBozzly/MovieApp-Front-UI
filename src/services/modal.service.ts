@@ -38,6 +38,7 @@ class ModalService {
       // paddingBottom: 'env(safe-area-inset-bottom)',
       // paddingLeft: 'env(safe-area-inset-left)',
       // paddingRight: 'env(safe-area-inset-right)',
+      borderRadius: '13px',
       padding: '0',
       boxSizing: 'border-box',
       overflowY: 'auto',
