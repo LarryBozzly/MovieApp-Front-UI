@@ -142,7 +142,9 @@ export default class WebSocketService {
     }
     const msg = this.ClientMessage.create(payload);
     const buffer = this.ClientMessage.encode(msg).finish();
-    this.socket.send(buffer);
+    const arrayBuffer = new ArrayBuffer(buffer.byteLength);
+    new Uint8Array(arrayBuffer).set(buffer);
+    this.socket.send(arrayBuffer);
   }
 
   sendInvitationRequest(toTag: string, genreIds: number[] = []) {
