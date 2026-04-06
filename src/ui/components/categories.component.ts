@@ -60,7 +60,7 @@ export class CategoriesComponent extends LitElement {
     if (!this.selectIsOnInitLoaded) return html``;
 
     return html`
-      <div class="p-2 h-16 flex items-center gap-3 w-full">
+      <div class="p-2 h-16 flex items-center gap-3 w-full ${this.isNavbarVisible ? 'pr-8' : ''}">
         ${!this.searchOpen
           ? html`
               <button
@@ -97,7 +97,7 @@ export class CategoriesComponent extends LitElement {
                 >
                   ${OutlineChevronLeftIcon('w-8 h-8 text-primary')}
                 </button>
-                <search-component .query=${this.query}></search-component>
+                <search-component class="w-full" .query=${this.query}></search-component>
               </div>
             `
           : ''}
