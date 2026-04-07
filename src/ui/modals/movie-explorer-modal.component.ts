@@ -55,6 +55,7 @@ export class MovieExplorerModalComponent extends LitElement {
       if (this.selectedMoods.length >= 1) return;
       this.selectedMoods = [...this.selectedMoods, mood];
     }
+    this.requestUpdate();
   }
 
   private get selectedGenreIds(): number[] {
