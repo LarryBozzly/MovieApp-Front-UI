@@ -337,7 +337,7 @@ export class MovieMatchModalComponent extends LitElement {
 
     if (!movie) {
       return html`
-        <div class="p-6 text-center bg-base-100 rounded-3xl shadow-xl max-w-sm mx-auto my-4">
+        <div class="p-6 text-center bg-base-100 rounded-lg shadow-xl max-w-sm mx-auto">
           <h2 class="text-2xl font-bold text-base-content">No more movies</h2>
           <p class="text-base-content/70">You’ve reviewed all the available titles.</p>
         </div>

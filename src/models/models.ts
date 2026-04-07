@@ -198,6 +198,10 @@ export const ERROR_NAMES = {
 };
 export type ErrorName = (typeof ERROR_NAMES)[keyof typeof ERROR_NAMES];
 
+export interface AppError extends Error {
+  retry: () => void;
+}
+
 export interface MovieListResponse {
   created_by?: string;
   description?: string;

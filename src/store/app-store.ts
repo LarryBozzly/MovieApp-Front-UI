@@ -9,6 +9,7 @@ import {
   type MoviesResponse,
   type Notification,
   type MovieVideosResponse,
+  type AppError,
   VideoSite,
   VideoType,
   NotificationType,
@@ -45,8 +46,10 @@ export interface AppState {
   notifications: Notification[];
   query: string;
   isLoading: boolean;
+  error: AppError | null;
   storeInit: (deps: Required<AppState>['deps']) => void;
   setLoading: (loading: boolean) => void;
+  setError: (error: AppError | null) => void;
   setOnInitLoaded: (onInitLoaded: boolean) => void;
   setPage: (value: number) => void;
   setQuery: (query: string) => void;
@@ -94,6 +97,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   notifications: [],
   query: '',
   isLoading: false,
+  error: null,
   deps: undefined,
   globalAbortController: new AbortController(),
   category: undefined,
@@ -102,6 +106,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   // reducers
   storeInit: (deps) => set({ deps }),
   setLoading: (isLoading: boolean) => set({ isLoading }),
+  setError: (error: AppError | null) => set({ error }),
   setOnInitLoaded: (onInitLoaded: boolean) => set({ onInitLoaded }),
   setPage: (value: number) => set((state) => ({ ...state, page: value })),
   setNavbarVisibility: (isNavbarVisible: boolean) =>
@@ -167,9 +172,17 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   ),
   fetchTrendingMovies: createEffect(store, async (deps, store, page: number) => {
     const { httpService } = deps;
-    const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
-    setPage(page);
+    const {
+      setPage,
+      setMaxPage,
+      setLoading,
+      setMovies,
+      setError,
+      globalAbortController,
+      fetchTrendingMovies,
+    } = store.getState();
     setLoading(true);
+    setError(null);
 
     const params = { language: 'en-US', page };
 
@@ -181,15 +194,30 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     if (error?.name === ERROR_NAMES.ABORT) return;
 
     setLoading(false);
+    if (error) {
+      setError({
+        ...error,
+        retry: () => fetchTrendingMovies(page),
+      });
+    }
+    setPage(page);
     setMaxPage(data?.total_pages ?? 1);
     const movies = data?.results ?? [];
     setMovies(movies);
   }),
   fetchTopRatedMovies: createEffect(store, async (deps, store, page: number) => {
     const { httpService } = deps;
-    const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
-    setPage(page);
+    const {
+      setPage,
+      setMaxPage,
+      setLoading,
+      setMovies,
+      setError,
+      globalAbortController,
+      fetchTopRatedMovies,
+    } = store.getState();
     setLoading(true);
+    setError(null);
 
     const params = { language: 'en-US', page };
 
@@ -201,17 +229,33 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     if (error?.name === ERROR_NAMES.ABORT) return;
 
     setLoading(false);
+    if (error) {
+      setError({
+        ...error,
+        retry: () => fetchTopRatedMovies(page),
+      });
+    }
+
+    setPage(page);
     setMaxPage(data?.total_pages ?? 1);
     const movies = data?.results ?? [];
     setMovies(movies);
   }),
   fetchFindMovie: createEffect(store, async (deps, store, page: number, query: string) => {
     const { httpService } = deps;
-    const { setPage, setMaxPage, setLoading, setQuery, setMovies, globalAbortController } =
-      store.getState();
-    setPage(page);
+    const {
+      setPage,
+      setMaxPage,
+      setLoading,
+      setQuery,
+      setMovies,
+      setError,
+      globalAbortController,
+      fetchFindMovie,
+    } = store.getState();
     setQuery(query);
     setLoading(true);
+    setError(null);
 
     const params = { query: encodeURIComponent(query) };
 
@@ -223,15 +267,31 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     if (error?.name === ERROR_NAMES.ABORT) return;
 
     setLoading(false);
+    if (error) {
+      setError({
+        ...error,
+        retry: () => fetchFindMovie(page, query),
+      });
+    }
+
+    setPage(page);
     setMaxPage(data?.total_pages ?? 1);
     const movies = data?.results ?? [];
     setMovies(movies);
   }),
   fetchWatchlistMovies: createEffect(store, async (deps, store, page: number) => {
     const { httpService } = deps;
-    const { setPage, setMaxPage, setLoading, setMovies, globalAbortController } = store.getState();
-    setPage(page);
+    const {
+      setPage,
+      setMaxPage,
+      setLoading,
+      setMovies,
+      setError,
+      globalAbortController,
+      fetchWatchlistMovies,
+    } = store.getState();
     setLoading(true);
+    setError(null);
 
     const params = { language: 'en-US', page };
 
@@ -244,6 +304,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     if (error?.name === ERROR_NAMES.ABORT) return;
 
     setLoading(false);
+    if (error) {
+      setError({
+        ...error,
+        retry: () => fetchWatchlistMovies(page),
+      });
+    }
+
+    setPage(page);
     setMaxPage(data?.total_pages ?? 1);
     const movies = data?.items ?? [];
     setMovies(movies);
@@ -452,3 +520,4 @@ export const selectMaxPage = (state: AppState) => state.maxPage;
 export const selectedCategory = (state: AppState) => state.category;
 export const selectisNavbarVisible = (state: AppState) => state.isNavbarVisible;
 export const selectNotifications = (state: AppState) => state.notifications;
+export const selectError = (state: AppState) => state.error;

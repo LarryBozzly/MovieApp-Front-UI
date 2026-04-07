@@ -3,6 +3,7 @@ import { customElement, query } from 'lit/decorators.js';
 import {
   appStore,
   selectedCategory,
+  selectError,
   selectIsLoading,
   selectisNavbarVisible,
   selectIsOnInitLoaded,
@@ -19,7 +20,13 @@ import '@ui/components/categories.component';
 import '@ui/components/invite-fab.component';
 import { tailwindStyles } from '../utils/app.constants';
 import { watch, watchWithSelector } from 'zustand-lit';
-import { MovieCategory, type Movie, type Notification, type UserProfile } from '@models/models';
+import {
+  MovieCategory,
+  type AppError,
+  type Movie,
+  type Notification,
+  type UserProfile,
+} from '@models/models';
 import { authStore, selectUserProfile } from '@store/auth-store';
 
 @customElement('home-page')
@@ -40,6 +47,8 @@ export class HomePage extends LitElement {
   readonly userProfile!: UserProfile;
   @watchWithSelector({ store: appStore, selector: selectNotifications })
   readonly notifications!: Notification[];
+  @watchWithSelector({ store: appStore, selector: selectError })
+  readonly error!: AppError | null;
 
   static styles = css`
     ${tailwindStyles}
@@ -200,6 +209,7 @@ export class HomePage extends LitElement {
           class="block pt-18"
           .isLoading=${this.isLoading}
           .movies=${this.movies}
+          .error=${this.error}
         ></movies-list-component>
 
         <div id="sentinel"></div>

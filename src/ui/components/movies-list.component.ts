@@ -1,9 +1,9 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { WatchlistState, Movie } from '@models/models.ts';
+import type { WatchlistState, Movie, AppError } from '@models/models.ts';
 import { tailwindStyles } from '@utils/app.constants.ts';
 import { getPopularityClasses } from '@utils/popularity-ui-classes.functions.ts';
-import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon } from '@ui/icons';
+import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon, RetryIcon } from '@ui/icons';
 import { appStore, selectWatchlistIds } from '@store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
@@ -11,16 +11,45 @@ import { watchWithSelector } from 'zustand-lit';
 export class MoviesListComponent extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectWatchlistIds })
   readonly watchlistIds!: Record<number, WatchlistState>;
-  static styles = css`
-    ${tailwindStyles}
-  `;
+  static styles = [tailwindStyles, css``];
 
   @property({ type: Array }) movies: Movie[] = [];
   @property({ type: Boolean }) isLoading!: boolean;
+  @property({ type: Object }) error!: AppError | null;
 
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric' });
+  }
+
+  private renderErrorState(error: AppError): TemplateResult {
+    return html`
+      <div
+        class="col-span-full flex justify-center items-center
+        ${this.movies.length ? 'mt-2' : 'min-h-[25vh]'}"
+      >
+        <button @click=${error.retry} class="btn btn-ghost btn-circle w-14 h-auto" title="Retry">
+          ${RetryIcon('w-14 h-14 text-primary')}
+        </button>
+      </div>
+    `;
+  }
+
+  private renderLoadingIndicator(): TemplateResult {
+    return html`
+      <div
+        class="col-span-full flex justify-center items-center
+          ${this.movies.length ? 'mt-2' : 'min-h-[25vh]'}"
+      >
+        <span class="loading loading-dots w-14 text-primary"></span>
+      </div>
+    `;
+  }
+
+  private renderStatus(): TemplateResult | null {
+    if (this.error) return this.renderErrorState(this.error);
+    if (this.isLoading) return this.renderLoadingIndicator();
+    return null;
   }
 
   private async handleWatchlistClick(event: Event, movie: Movie): Promise<void> {
@@ -135,16 +164,7 @@ export class MoviesListComponent extends LitElement {
             </div>
           `
         )}
-        ${this.isLoading
-          ? html`
-              <div
-                class="col-span-full flex justify-center items-center
-                ${this.movies.length ? 'mt-2' : 'min-h-[25vh]'}"
-              >
-                <span class="loading loading-dots w-14 text-primary"></span>
-              </div>
-            `
-          : null}
+        ${this.renderStatus()}
       </div>
     `;
   }
