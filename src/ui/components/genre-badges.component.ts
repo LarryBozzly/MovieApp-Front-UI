@@ -36,6 +36,13 @@ export class GenreBadges extends LitElement {
     this.resizeObserver.observe(el);
   }
 
+  protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
+    super.updated(changedProperties);
+    if (changedProperties.has('genreIds')) {
+      this.checkOverflow();
+    }
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
     this.resizeObserver?.disconnect();

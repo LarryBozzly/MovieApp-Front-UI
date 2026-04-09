@@ -44,7 +44,7 @@ export class MovieMatchResultModal extends LitElement {
           <div
             class="flex gap-2 mt-1 overflow-x-auto scrollbar-hide whitespace-nowrap flex-shrink-0 px-1"
           >
-            <genre-badges .genreIds=${this.movie.genre_ids} .scrollable=${true}></genre-badges>
+            <genre-badges .genreIds=${this.movie.genre_ids}></genre-badges>
           </div>
 
           <p class="mt-2 flex-1 overflow-y-auto pr-1 text-base-content/80">
