@@ -373,7 +373,7 @@ export class MovieMatchModalComponent extends LitElement {
               </button>
             </div>
             <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
-              <genre-badges .genreIds=${movie.genre_ids} .scrollable=${false}></genre-badges>
+              <genre-badges .genreIds=${movie.genre_ids}></genre-badges>
             </div>
             <div class="flex items-center gap-3 mt-1">
               <span class="text-yellow-500 text-lg">★</span>

@@ -2,6 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { tailwindStyles } from '@utils/app.constants';
 import { customElement, property, state } from 'lit/decorators.js';
 import { MovieGenreMap } from '@models/models';
+import { OutlineChevronLeftIcon, OutlineChevronRightIcon } from '@ui/icons';
+import { ref, createRef } from 'lit/directives/ref.js';
 
 @customElement('genre-badges')
 export class GenreBadges extends LitElement {
@@ -14,31 +16,61 @@ export class GenreBadges extends LitElement {
   `;
 
   @property({ type: Array }) genreIds: number[] = [];
-  @property({ type: Number }) maxVisible: number = 2;
-  @property({ type: Boolean }) scrollable!: boolean;
-  @state() private expanded = false;
 
-  private toggleExpanded() {
-    this.expanded = !this.expanded;
+  @state() private canScrollRight = false;
+  @state() private canScrollLeft = false;
+
+  private scrollContainerRef = createRef<HTMLDivElement>();
+  private resizeObserver?: ResizeObserver;
+
+  protected firstUpdated(): void {
+    const el = this.scrollContainerRef.value;
+    if (!el) return;
+
+    this.checkOverflow();
+
+    this.resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => this.checkOverflow());
+    });
+
+    this.resizeObserver.observe(el);
   }
 
-  protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
-    super.updated(changedProperties);
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.resizeObserver?.disconnect();
+  }
 
-    if (
-      changedProperties.has('genreIds') ||
-      changedProperties.has('maxVisible') ||
-      changedProperties.has('scrollable')
-    ) {
-      this.expanded = false;
-    }
+  private checkOverflow() {
+    const el = this.scrollContainerRef.value;
+    if (!el) return;
+
+    const { scrollWidth, clientWidth, scrollLeft } = el;
+
+    this.canScrollLeft = scrollLeft > 0;
+    this.canScrollRight = scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 1;
+  }
+
+  private scrollByDirection(direction: 'left' | 'right') {
+    const el = this.scrollContainerRef.value;
+    if (!el) return;
+
+    const scrollAmount = Math.floor(el.clientWidth * 0.35);
+
+    el.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
   }
 
   render() {
-    if (this.scrollable) {
-      // Scrollable version
-      return html`
-        <div class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap">
+    return html`
+      <div class="relative">
+        <div
+          ${ref(this.scrollContainerRef)}
+          class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap py-1"
+          @scroll=${this.checkOverflow}
+        >
           ${this.genreIds.map(
             (id) => html`
               <span
@@ -49,42 +81,22 @@ export class GenreBadges extends LitElement {
             `
           )}
         </div>
-      `;
-    }
 
-    // Non-scrollable version with "+N more"
-    const visibleGenres = this.expanded ? this.genreIds : this.genreIds.slice(0, this.maxVisible);
-    const hiddenCount = this.genreIds.length - visibleGenres.length;
+        <div
+          class="absolute top-0 bottom-0 flex items-center justify-center cursor-pointer z-20 left-0 border-r border-base-content/70 bg-base-100 
+          ${this.canScrollLeft ? '' : 'hidden'}"
+          @click=${() => this.scrollByDirection('left')}
+        >
+          ${OutlineChevronLeftIcon('w-6 h-6 text-base-content/70')}
+        </div>
 
-    return html`
-      <div class="flex flex-wrap gap-2">
-        ${visibleGenres.map(
-          (id) => html`
-            <span class="badge badge-outline bg-base-200/60 text-base-content/70 text-xs">
-              ${MovieGenreMap.get(id)}
-            </span>
-          `
-        )}
-        ${hiddenCount > 0 && !this.expanded
-          ? html`
-              <span
-                class="badge badge-outline bg-primary text-primary-content text-xs cursor-pointer hover:bg-primary-focus transition"
-                @click=${this.toggleExpanded}
-              >
-                +${hiddenCount} more
-              </span>
-            `
-          : null}
-        ${this.expanded && this.genreIds.length > this.maxVisible
-          ? html`
-              <span
-                class="badge badge-outline bg-secondary text-secondary-content text-xs cursor-pointer hover:bg-secondary-focus transition"
-                @click=${this.toggleExpanded}
-              >
-                Show less
-              </span>
-            `
-          : null}
+        <div
+          class="absolute top-0 bottom-0 flex items-center justify-center cursor-pointer z-20 right-0 border-l border-base-content/70 bg-base-100 
+          ${this.canScrollRight ? '' : 'hidden'}"
+          @click=${() => this.scrollByDirection('right')}
+        >
+          ${OutlineChevronRightIcon('w-6 h-6 text-base-content/70')}
+        </div>
       </div>
     `;
   }
