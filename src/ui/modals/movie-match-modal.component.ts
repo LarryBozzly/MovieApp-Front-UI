@@ -1,6 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { MovieMatchDirection, type Movie, type WatchlistState } from '../../models/models.ts';
+import {
+  MovieMatchDirection,
+  type GestureArea,
+  type Movie,
+  type WatchlistState,
+} from '../../models/models.ts';
 import { tailwindStyles } from '@utils/app.constants.ts';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { authStore, type AuthState } from '@store/auth-store.ts';
@@ -114,122 +119,92 @@ export class MovieMatchModalComponent extends LitElement {
 
     const container = this as HTMLElement;
     const modalContent = this.closest('.modal-box') as HTMLElement;
-    modalContent.style.willChange = 'transform';
     if (!modalContent) return;
+
+    modalContent.style.willChange = 'transform';
 
     this.manager = new Hammer.Manager(container, {
       inputClass: Hammer.TouchMouseInput,
       touchAction: 'pan-y',
     });
 
-    const pan = new Hammer.Pan({
-      threshold: 0,
-      direction: Hammer.DIRECTION_HORIZONTAL,
-    });
-    this.manager.add(pan);
+    this.manager.add(
+      new Hammer.Pan({
+        threshold: 0,
+        direction: Hammer.DIRECTION_HORIZONTAL,
+      })
+    );
 
     let currentX = 0;
+    let lastPanTime = 0;
 
-    // --- Gesture-decision flags ---
-    // gestureStartedInOverview: true if pointerdown began inside the description
-    // gestureDecided: true after we decide horizontal vs vertical for this gesture
-    // ignorePan: true if we decided it is vertical (so ignore Hammer pan movement)
-    let gestureStartedInOverview = false;
-    let gestureStartedInBadge = false;
-    let gestureDecided = false;
-    let ignorePan = false;
-    let ignorePanForBadge = false;
+    const gesture = {
+      area: 'none' as GestureArea,
+      decided: false,
+      ignorePan: false,
+    };
 
-    this.manager.on('panstart pancancel', (_e) => {
-      // reset per-gesture flags on panstart/pancancel (panstart happens when hammer decides to start)
-      // But we keep gestureStartedInOverview as set by pointerdown (below).
-      gestureDecided = false;
-      ignorePan = false;
-      ignorePanForBadge = false;
+    const resetGesture = () => {
+      gesture.area = 'none';
+      gesture.decided = false;
+      gesture.ignorePan = false;
+      currentX = 0;
+      this.isSwiping = false;
+    };
+
+    const decideIntent = (absX: number, absY: number, directionX: 'left' | 'right') => {
+      const threshold = 8;
+
+      if (gesture.decided || (absX < threshold && absY < threshold)) return;
+
+      // ===== OVERVIEW =====
+      if (gesture.area === 'overview') {
+        gesture.ignorePan = absY > absX;
+      }
+
+      // ===== BADGE =====
+      if (gesture.area === 'badge') {
+        if (absX > absY) {
+          const canSwipe =
+            (directionX === 'right' && !this.canScrollLeft) ||
+            (directionX === 'left' && !this.canScrollRight) ||
+            (!this.canScrollLeft && !this.canScrollRight);
+
+          gesture.ignorePan = !canSwipe;
+        } else {
+          gesture.ignorePan = false;
+        }
+      }
+
+      gesture.decided = true;
+    };
+
+    // ==============================
+    // HAMMER EVENTS
+    // ==============================
+    this.manager.on('panstart pancancel', () => {
+      gesture.decided = false;
+      gesture.ignorePan = false;
       currentX = 0;
       this.isSwiping = true;
     });
 
-    let lastPanTime = 0;
     this.manager.on('panmove', (e) => {
-      // throttle to ~60fps
-      if (performance.now() - lastPanTime < 16) return; // ~60fps
+      // throttle ~60fps
+      if (performance.now() - lastPanTime < 16) return;
       lastPanTime = performance.now();
 
-      const directionX = e.deltaX > 0 ? 'right' : 'left';
       const absX = Math.abs(e.deltaX);
       const absY = Math.abs(e.deltaY);
-      const threshold = 8;
+      const directionX = e.deltaX > 0 ? 'right' : 'left';
 
-      // If the gesture started in the overview, we need to decide intent.
-      if (gestureStartedInOverview && !gestureDecided) {
-        if (absX >= threshold || absY >= threshold) {
-          if (absY > absX) {
-            // Vertical intent -> ignore Hammer pans for the rest of this gesture
-            ignorePan = true;
-            gestureDecided = true;
-            // Do NOT call preventDefault() so browser can continue scrolling
-            return;
-          } else {
-            // Horizontal intent -> allow Hammer to handle the pan smoothly
-            ignorePan = false;
-            gestureDecided = true;
-            try {
-              e.srcEvent?.preventDefault?.();
-            } catch (err) {
-              /* some environments may not allow; it's best-effort */
-            }
-          }
-        } else {
-          // Not enough movement yet — don't do anything
-          return;
-        }
-      }
+      decideIntent(absX, absY, directionX);
 
-      // ===== BADGE LOGIC (FIXED: mirror overview but X axis) =====
-      if (gestureStartedInBadge && !gestureDecided) {
-        if (absX >= threshold || absY >= threshold) {
-          if (absX > absY) {
-            const swipe =
-              (directionX === 'right' && !this.canScrollLeft) ||
-              (directionX === 'left' && !this.canScrollRight) ||
-              (!this.canScrollLeft && !this.canScrollRight);
+      if (gesture.ignorePan) return;
 
-            if (swipe) {
-              ignorePanForBadge = false;
-              gestureDecided = true;
-              return;
-            }
-
-            // Horizontal intent -> ignore Hammer pans for the rest of this gesture
-            ignorePanForBadge = true;
-            gestureDecided = true;
-            // Do NOT call preventDefault() so browser can continue scrolling
-            return;
-          } else {
-            // Vertical intent -> allow Hammer to handle the pan smoothly
-            ignorePanForBadge = false;
-            gestureDecided = true;
-            try {
-              e.srcEvent?.preventDefault?.();
-            } catch (err) {
-              /* some environments may not allow; it's best-effort */
-            }
-          }
-        } else {
-          return;
-        }
-      }
-
-      if ((gestureStartedInOverview && ignorePan) || (gestureStartedInBadge && ignorePanForBadge)) {
-        // User intent is scroll (overview or badges) -> do nothing
-        return;
-      }
-
-      // Normal pan handling (either started outside OR decided horizontal swipe)
       currentX = e.deltaX;
-      const maxRotate = 15;
-      const rotate = Math.max(-maxRotate, Math.min(maxRotate, currentX / 10));
+
+      const rotate = Math.max(-15, Math.min(15, currentX / 10));
 
       modalContent.style.transition = 'none';
       modalContent.style.transformOrigin = 'bottom center';
@@ -244,26 +219,20 @@ export class MovieMatchModalComponent extends LitElement {
 
     this.manager.on('panend', (e) => {
       this.isSwiping = false;
-      // At panend we only proceed if we didn't ignore the pan
-      if ((gestureStartedInOverview && ignorePan) || (gestureStartedInBadge && ignorePanForBadge)) {
-        // Reset flags and do nothing (native scroll handled it)
-        gestureStartedInOverview = false;
-        gestureStartedInBadge = false;
-        gestureDecided = false;
-        ignorePan = false;
-        ignorePanForBadge = false;
-        currentX = 0;
+
+      if (gesture.ignorePan) {
+        resetGesture();
         return;
       }
 
-      const tempCurrentX = currentX;
+      const tempX = currentX;
       currentX = 0;
-      const threshold = 150;
-      const velocity = Math.abs(e.velocityX);
-      const shouldDismiss = Math.abs(tempCurrentX) > threshold || velocity > 0.5;
+
+      const shouldDismiss = Math.abs(tempX) > 150 || Math.abs(e.velocityX) > 0.5;
 
       if (shouldDismiss) {
-        const direction = tempCurrentX > 0 ? 1 : -1;
+        const direction = tempX > 0 ? 1 : -1;
+
         modalContent.style.transition = 'transform 0.4s ease-out';
         modalContent.style.transform = `translate3d(${direction * 1000}px, 0, 0) rotate(${direction * 15}deg)`;
 
@@ -276,25 +245,21 @@ export class MovieMatchModalComponent extends LitElement {
         modalContent.style.transform = 'translate3d(0, 0, 0) rotate(0)';
       }
 
-      // Reset flags for the next gesture
-      gestureStartedInOverview = false;
-      gestureStartedInBadge = false;
-      gestureDecided = false;
-      ignorePan = false;
-      ignorePanForBadge = false;
+      resetGesture();
     });
 
-    // --- Listen for pointerdown inside the overview area ---
+    // ==============================
+    // POINTER BINDINGS
+    // ==============================
     const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement;
     if (overview) {
       this.addToCleanup(
         overview,
         'pointerdown',
-        (_ev: PointerEvent) => {
-          gestureStartedInOverview = true;
-          gestureStartedInBadge = false;
-          gestureDecided = false;
-          ignorePan = false;
+        () => {
+          gesture.area = 'overview';
+          gesture.decided = false;
+          gesture.ignorePan = false;
         },
         { passive: true }
       );
@@ -302,45 +267,24 @@ export class MovieMatchModalComponent extends LitElement {
       this.addToCleanup(
         overview,
         'touchstart',
-        (_ev: TouchEvent) => {
-          gestureStartedInOverview = true;
-          gestureStartedInBadge = false;
-          gestureDecided = false;
-          ignorePan = false;
+        () => {
+          gesture.area = 'overview';
+          gesture.decided = false;
+          gesture.ignorePan = false;
         },
         { passive: true }
       );
-
-      this.addToCleanup(window, 'pointerup', () => {
-        gestureStartedInOverview = false;
-        gestureStartedInBadge = false;
-        gestureDecided = false;
-        ignorePan = false;
-        ignorePanForBadge = false;
-        this.isSwiping = false;
-      });
-
-      this.addToCleanup(window, 'touchend', () => {
-        gestureStartedInOverview = false;
-        gestureStartedInBadge = false;
-        gestureDecided = false;
-        ignorePan = false;
-        ignorePanForBadge = false;
-        this.isSwiping = false;
-      });
     }
 
-    // --- BADGE LISTENERS (same pattern as overview) ---
     const badges = this.renderRoot.querySelector('genre-badges') as HTMLElement;
     if (badges) {
       this.addToCleanup(
         badges,
         'pointerdown',
-        (_ev: PointerEvent) => {
-          gestureStartedInBadge = true;
-          gestureStartedInOverview = false;
-          gestureDecided = false;
-          ignorePanForBadge = false;
+        () => {
+          gesture.area = 'badge';
+          gesture.decided = false;
+          gesture.ignorePan = false;
         },
         { passive: true }
       );
@@ -348,18 +292,20 @@ export class MovieMatchModalComponent extends LitElement {
       this.addToCleanup(
         badges,
         'touchstart',
-        (_ev: TouchEvent) => {
-          gestureStartedInBadge = true;
-          gestureStartedInOverview = false;
-          gestureDecided = false;
-          ignorePanForBadge = false;
+        () => {
+          gesture.area = 'badge';
+          gesture.decided = false;
+          gesture.ignorePan = false;
         },
         { passive: true }
       );
     }
 
-    // Also track Hammer manager cleanup
+    // ==============================
+    // CLEANUP + NUDGE
+    // ==============================
     this.cleanupFns.push(() => this.manager.destroy());
+
     if (this.currentIndex === 0) {
       await new Promise((resolve) => setTimeout(resolve, 350));
       this.nudge();
