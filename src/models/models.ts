@@ -223,3 +223,11 @@ export interface UserProfile {
   tag: string;
   createdAt: string;
 }
+
+export type GestureArea = 'none' | 'overview' | 'badge';
+
+export interface GestureState {
+  area: GestureArea;
+  decided: boolean;
+  ignorePan: boolean;
+}
