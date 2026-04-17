@@ -71,9 +71,7 @@ export class MovieMatchModalComponent extends LitElement {
       // Trigger pre-fetch for the movie *after* the one we just swiped to
       this.prefetchNextImage();
       const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement | null;
-      const badges = this.renderRoot.querySelector('genre-badges') as HTMLElement;
       if (overview) overview.scrollTop = 0;
-      if (badges) badges.scrollLeft = 0;
     }
   }
 
@@ -409,6 +407,7 @@ export class MovieMatchModalComponent extends LitElement {
               <genre-badges
                 @onScrollChange=${this.onScrollChanged}
                 .genreIds=${movie.genre_ids}
+                .movieId=${movie.id}
               ></genre-badges>
             </div>
             <div class="flex items-center gap-3 mt-1">

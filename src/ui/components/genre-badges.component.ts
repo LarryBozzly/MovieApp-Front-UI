@@ -16,6 +16,7 @@ export class GenreBadges extends LitElement {
   `;
 
   @property({ type: Array }) genreIds: number[] = [];
+  @property({ type: Number }) movieId!: number;
 
   @state() private canScrollRight = false;
   @state() private canScrollLeft = false;
@@ -38,14 +39,25 @@ export class GenreBadges extends LitElement {
 
   protected updated(changedProperties: Map<string | PropertyKey, unknown>): void {
     super.updated(changedProperties);
-    if (changedProperties.has('genreIds')) {
+    if (changedProperties.has('movieId')) {
       this.checkOverflow();
+      this.resetScroll();
     }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.resizeObserver?.disconnect();
+  }
+
+  private resetScroll() {
+    const el = this.scrollContainerRef.value;
+    if (!el) return;
+
+    el.scrollTo({
+      left: 0,
+      behavior: 'auto',
+    });
   }
 
   private checkOverflow() {
