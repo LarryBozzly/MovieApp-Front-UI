@@ -27,6 +27,8 @@ export class MovieMatchModalComponent extends LitElement {
   @property({ type: Array }) movies: Movie[] = [];
   @state() private currentIndex = 0;
   @state() private isSwiping = false;
+  @state() private canScrollLeft = false;
+  @state() private canScrollRight = false;
 
   private closeHandler = () => {
     // Reset content visibility when the dialog is closed
@@ -154,6 +156,7 @@ export class MovieMatchModalComponent extends LitElement {
       if (performance.now() - lastPanTime < 16) return; // ~60fps
       lastPanTime = performance.now();
 
+      const directionX = e.deltaX > 0 ? 'right' : 'left';
       const absX = Math.abs(e.deltaX);
       const absY = Math.abs(e.deltaY);
       const threshold = 8;
@@ -187,6 +190,17 @@ export class MovieMatchModalComponent extends LitElement {
       if (gestureStartedInBadge && !gestureDecided) {
         if (absX >= threshold || absY >= threshold) {
           if (absX > absY) {
+            const swipe =
+              (directionX === 'right' && !this.canScrollLeft) ||
+              (directionX === 'left' && !this.canScrollRight) ||
+              (!this.canScrollLeft && !this.canScrollRight);
+
+            if (swipe) {
+              ignorePanForBadge = false;
+              gestureDecided = true;
+              return;
+            }
+
             // Horizontal intent -> ignore Hammer pans for the rest of this gesture
             ignorePanForBadge = true;
             gestureDecided = true;
@@ -207,10 +221,7 @@ export class MovieMatchModalComponent extends LitElement {
         }
       }
 
-      if (
-        (gestureStartedInOverview && ignorePan) ||
-        (gestureStartedInBadge && ignorePanForBadge)
-      ) {
+      if ((gestureStartedInOverview && ignorePan) || (gestureStartedInBadge && ignorePanForBadge)) {
         // User intent is scroll (overview or badges) -> do nothing
         return;
       }
@@ -234,10 +245,7 @@ export class MovieMatchModalComponent extends LitElement {
     this.manager.on('panend', (e) => {
       this.isSwiping = false;
       // At panend we only proceed if we didn't ignore the pan
-      if (
-        (gestureStartedInOverview && ignorePan) ||
-        (gestureStartedInBadge && ignorePanForBadge)
-      ) {
+      if ((gestureStartedInOverview && ignorePan) || (gestureStartedInBadge && ignorePanForBadge)) {
         // Reset flags and do nothing (native scroll handled it)
         gestureStartedInOverview = false;
         gestureStartedInBadge = false;
@@ -404,6 +412,11 @@ export class MovieMatchModalComponent extends LitElement {
     return isWatchlisted ? FilledBookmarkIcon() : OutlineBookmarkIcon();
   }
 
+  private onScrollChanged(e: CustomEvent<{ canScrollLeft: boolean; canScrollRight: boolean }>) {
+    this.canScrollLeft = e.detail.canScrollLeft;
+    this.canScrollRight = e.detail.canScrollRight;
+  }
+
   render() {
     const movie = this.currentMovie;
 
@@ -446,6 +459,7 @@ export class MovieMatchModalComponent extends LitElement {
             </div>
             <div class="flex gap-2 mt-1 overflow-hidden whitespace-nowrap flex-shrink-0">
               <genre-badges
+                @onScrollChange=${this.onScrollChanged}
                 .genreIds=${movie.genre_ids}
               ></genre-badges>
             </div>
@@ -456,8 +470,8 @@ export class MovieMatchModalComponent extends LitElement {
               </span>
               <span
                 class="badge badge-outline text-sm ${getPopularityClasses(
-      movie.percentage_popularity
-    )}"
+                  movie.percentage_popularity
+                )}"
               >
                 Popularity: ${movie.percentage_popularity}%
               </span>

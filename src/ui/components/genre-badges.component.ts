@@ -56,6 +56,17 @@ export class GenreBadges extends LitElement {
 
     this.canScrollLeft = scrollLeft > 0;
     this.canScrollRight = scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 1;
+
+    this.dispatchEvent(
+      new CustomEvent('onScrollChange', {
+        detail: {
+          canScrollLeft: this.canScrollLeft,
+          canScrollRight: this.canScrollRight,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   private scrollByDirection(direction: 'left' | 'right') {
