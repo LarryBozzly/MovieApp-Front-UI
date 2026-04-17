@@ -71,7 +71,9 @@ export class MovieMatchModalComponent extends LitElement {
       // Trigger pre-fetch for the movie *after* the one we just swiped to
       this.prefetchNextImage();
       const overview = this.renderRoot.querySelector('#scroll-overview') as HTMLElement | null;
+      const badges = this.renderRoot.querySelector('genre-badges') as HTMLElement;
       if (overview) overview.scrollTop = 0;
+      if (badges) badges.scrollLeft = 0;
     }
   }
 
