@@ -115,7 +115,7 @@ class VFXService {
     this.promoteToTopLayer(); // 🔥 SAME IDEA AS TOAST
 
     for (let i = 0; i < count; i++) {
-      setTimeout(() => this.spawnBurst(), i * 500);
+      setTimeout(() => this.spawnBurst(), i * 620);
     }
   }
 
