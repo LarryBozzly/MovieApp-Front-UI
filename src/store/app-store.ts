@@ -24,6 +24,7 @@ import type ModalService from '@services/modal.service';
 import type AppVersionService from '@services/app-version.service';
 import type ToastService from '@services/toast-service';
 import type OnboardingService from '@services/onboarding.service';
+import type VFXService from '@services/vfx.service';
 
 export interface AppState {
   deps?: {
@@ -34,6 +35,7 @@ export interface AppState {
     onboardingService: OnboardingService;
     appVersionService: AppVersionService;
     toastService: ToastService;
+    vfxService: VFXService;
   };
   globalAbortController: AbortController;
   category: MovieCategory | undefined;
@@ -449,7 +451,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     });
   }),
   openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie, solo: boolean) => {
-    const { modalService } = deps;
+    const { modalService, vfxService } = deps;
     const { closeModal } = store.getState();
     const title = solo ? "It's a Hit!" : "It's a Match!";
     modalService.open({
@@ -460,6 +462,13 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         movie,
         onClose: closeModal,
       },
+    });
+
+    // queue twice to solve toplayer racing issue
+    queueMicrotask(() => {
+      queueMicrotask(() => {
+        vfxService.popcornBurst(3);
+      });
     });
   }),
   openMoviePreviewModal: createEffect(store, async (deps, store, movie: Movie) => {

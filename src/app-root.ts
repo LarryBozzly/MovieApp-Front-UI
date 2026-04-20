@@ -19,6 +19,7 @@ import { AuthChannelEvent, BroadcastChannelType } from './models/models';
 import '@ui/components/loading-overlay.component';
 import ToastService from '@services/toast-service';
 import OnboardingService from '@services/onboarding.service';
+import VFXService from '@services/vfx.service';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -54,6 +55,7 @@ export class AppRoot extends LitElement {
       onboardingService: OnboardingService.getInstance(),
       appVersionService: AppVersionService.getInstance(),
       toastService: ToastService.getInstance(),
+      vfxService: VFXService.getInstance(),
     });
   }
 
