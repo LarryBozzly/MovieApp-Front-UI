@@ -451,7 +451,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     });
   }),
   openMovieMatchModal: createEffect(store, async (deps, store, movie: Movie, solo: boolean) => {
-    const { modalService, vfxService } = deps;
+    const { modalService } = deps;
     const { closeModal } = store.getState();
     const title = solo ? "It's a Hit!" : "It's a Match!";
     modalService.open({
@@ -464,12 +464,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       },
     });
 
-    // queue twice to solve toplayer racing issue
-    queueMicrotask(() => {
-      queueMicrotask(() => {
-        vfxService.popcornBurst(3);
-      });
-    });
+    // vfxService.popcornBurst(3);
   }),
   openMoviePreviewModal: createEffect(store, async (deps, store, movie: Movie) => {
     const { modalService } = deps;
