@@ -147,11 +147,13 @@ class VFXService {
     const h = window.innerHeight;
 
     for (let i = 0; i < 25; i++) {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
+      const speed = Math.random() * 10 + 10;
       this.particles.push({
         x: w / 2,
         y: h * 0.7,
-        vx: (Math.random() - 0.5) * 7,
-        vy: -(Math.random() * 10 + 10),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
         size: Math.random() * 10 + 18,
         tilt: Math.random() * 0.5,
       });
