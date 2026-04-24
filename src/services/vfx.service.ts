@@ -8,17 +8,25 @@ class VFXService {
   private animationFrame: number | null = null;
 
   private popcornImg = new Image();
-  private imageReady = false;
+  private offscreenPopcorn: HTMLCanvasElement | null = null;
 
   private dpr = window.devicePixelRatio || 1;
 
   private container!: HTMLDivElement;
 
+  private running = false;
+
+  // ----------------------------
+  // Reactive burst scheduler
+  // ----------------------------
+  private burstQueue: number[] = [];
+  private nextBurstAt = 0;
+  private burstInterval = 480;
+
   private constructor() {
     this.createTopLayerContainer();
     this.createCanvas();
     this.loadSVG();
-    this.loop();
 
     window.addEventListener('resize', () => this.resize());
   }
@@ -31,7 +39,7 @@ class VFXService {
   }
 
   // ---------------------------------------------------
-  // TOP LAYER (Popover like ToastService)
+  // TOP LAYER
   // ---------------------------------------------------
 
   private createTopLayerContainer() {
@@ -45,7 +53,6 @@ class VFXService {
 
     document.body.appendChild(container);
 
-    // enter top-layer
     (container as any).showPopover?.();
 
     this.container = container;
@@ -74,6 +81,7 @@ class VFXService {
 
     const ctx = this.canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas not supported');
+
     this.ctx = ctx;
 
     this.resize();
@@ -97,7 +105,17 @@ class VFXService {
 
   private loadSVG() {
     this.popcornImg.onload = () => {
-      this.imageReady = true;
+      const maxParticleSize = (10 + 18) * 2.4;
+      const px = Math.ceil(maxParticleSize * this.dpr);
+
+      const offscreen = document.createElement('canvas');
+      offscreen.width = px;
+      offscreen.height = px;
+
+      const octx = offscreen.getContext('2d')!;
+      octx.drawImage(this.popcornImg, 0, 0, px, px);
+
+      this.offscreenPopcorn = offscreen;
     };
 
     this.popcornImg.onerror = (e) => {
@@ -111,12 +129,13 @@ class VFXService {
   // PUBLIC API
   // ---------------------------------------------------
 
-  public popcornBurst(count = 3) {
-    this.promoteToTopLayer(); // 🔥 SAME IDEA AS TOAST
+  public popcornBurst() {
+    this.promoteToTopLayer();
 
-    for (let i = 0; i < count; i++) {
-      setTimeout(() => this.spawnBurst(), i * 620);
-    }
+    // queue burst sequence instead of setTimeout chain
+    this.burstQueue.push(2);
+
+    this.start();
   }
 
   // ---------------------------------------------------
@@ -140,15 +159,48 @@ class VFXService {
   }
 
   // ---------------------------------------------------
-  // LOOP
+  // LOOP CONTROL
+  // ---------------------------------------------------
+
+  private start() {
+    if (this.running) return;
+
+    this.running = true;
+    this.nextBurstAt = performance.now() + this.burstInterval;
+
+    this.animationFrame = requestAnimationFrame(this.loop);
+  }
+
+  // ---------------------------------------------------
+  // MAIN LOOP (reactive scheduler)
   // ---------------------------------------------------
 
   private loop = () => {
     const w = window.innerWidth;
     const h = window.innerHeight;
+    const now = performance.now();
 
     this.ctx.clearRect(0, 0, w, h);
 
+    // ----------------------------
+    // reactive burst timing
+    // ----------------------------
+    if (this.burstQueue.length > 0 && now >= this.nextBurstAt) {
+      this.spawnBurst();
+
+      // decrement current burst group
+      this.burstQueue[0]--;
+
+      if (this.burstQueue[0] <= 0) {
+        this.burstQueue.shift();
+      }
+
+      this.nextBurstAt = now + this.burstInterval;
+    }
+
+    // ----------------------------
+    // physics update
+    // ----------------------------
     const ground = h - 20;
 
     for (const p of this.particles) {
@@ -161,6 +213,16 @@ class VFXService {
 
     this.particles = this.particles.filter((p) => p.y < ground);
 
+    // ----------------------------
+    // stop condition
+    // ----------------------------
+    if (this.particles.length === 0 && this.burstQueue.length === 0) {
+      this.running = false;
+      this.animationFrame = null;
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      return;
+    }
+
     this.animationFrame = requestAnimationFrame(this.loop);
   };
 
@@ -169,7 +231,7 @@ class VFXService {
   // ---------------------------------------------------
 
   private draw(p: any) {
-    if (!this.imageReady) return;
+    if (!this.offscreenPopcorn) return;
 
     const ctx = this.ctx;
     const size = p.size * 2.4;
@@ -180,7 +242,7 @@ class VFXService {
     const wobble = Math.sin((p.x + p.y) * 0.02) * p.tilt;
     ctx.rotate(wobble);
 
-    ctx.drawImage(this.popcornImg, -size / 2, -size / 2, size, size);
+    ctx.drawImage(this.offscreenPopcorn, -size / 2, -size / 2, size, size);
 
     ctx.restore();
   }
