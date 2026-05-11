@@ -7,6 +7,7 @@ export const tailwindStyles = unsafeCSS(globalStyles);
 export const MOCK_MOVIES: Movie[] = [
   {
     adult: false,
+    softcore: false,
     backdrop_path: '/oiwc338EoBgS4sEI2ixAny4KQKg.jpg',
     genre_ids: [12, 14, 28],
     id: 120,

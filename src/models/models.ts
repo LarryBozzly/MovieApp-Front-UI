@@ -17,6 +17,7 @@ export interface MoviesResponse {
 
 export interface Movie {
   adult: boolean;
+  softcore: boolean;
   backdrop_path: string;
   genre_ids: number[];
   id: number;
