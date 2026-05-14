@@ -4,13 +4,7 @@ import { tailwindStyles } from '@utils/app.constants';
 import { watch } from 'zustand-lit';
 import { authStore, type AuthState } from '@store/auth-store';
 import ToastService from '@services/toast-service';
-import { MovieGenre, MovieGenreMap } from '@models/models';
-
-interface Mood {
-  id: number;
-  name: string;
-  genres: MovieGenre[]; // typed as MovieGenre instead of plain number
-}
+import { MovieGenre, MovieGenreMap, type Mood } from '@models/models';
 
 @customElement('movie-explorer-modal-component')
 export class MovieExplorerModalComponent extends LitElement {

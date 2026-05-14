@@ -69,7 +69,7 @@ export interface AuthState {
   refresh: () => Promise<void>;
   updateTag: (newTag: string) => Promise<void>;
   sendReadNotificationRequest: (notificationId: number) => Promise<void>;
-  sendInvitationRequest: (toTag: string) => Promise<void>;
+  sendInvitationRequest: (toTag: string, genreIds: number[]) => Promise<void>;
   acceptInvitationResponse: (notification: Notification) => Promise<void>;
   rejectInvitationResponse: (notification: Notification) => Promise<void>;
   sendMovieSelection: (movie: Movie) => Promise<void>;
@@ -268,7 +268,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
     webSocketService.sendReadNotificationRequest(notificationId);
   }),
-  sendInvitationRequest: createEffect(store, async (deps, _store, toTag: string) => {
+  sendInvitationRequest: createEffect(store, async (deps, _store, toTag: string, genreIds: number[]) => {
     const { webSocketService } = deps;
 
     if (!webSocketService) {
@@ -276,7 +276,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       return;
     }
 
-    webSocketService.sendInvitationRequest(toTag);
+    webSocketService.sendInvitationRequest(toTag, genreIds);
   }),
   acceptInvitationResponse: createEffect(
     store,

@@ -232,3 +232,9 @@ export interface GestureState {
   decided: boolean;
   ignorePan: boolean;
 }
+
+export interface Mood {
+  id: number;
+  name: string;
+  genres: MovieGenre[];
+}
