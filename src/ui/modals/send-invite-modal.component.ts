@@ -120,7 +120,7 @@ export class SendInviteModalComponent extends LitElement {
           <h2 class="text-2xl font-bold">Send Invitation</h2>
 
           <p class="text-sm text-base-content/60 mt-1">
-            Enter the user tag to send a movie match invitation.
+            Enter a user tag and choose the mood you want the movie match invitation to have.
           </p>
         </div>
 
@@ -140,24 +140,18 @@ export class SendInviteModalComponent extends LitElement {
             />
           </div>
 
-          <div class="divider border-base-300 my-4"></div>
-
-          <div>
-            <p class="text-sm text-base-content/60 mb-2">Choose a mood</p>
-
-            <div class="flex flex-wrap gap-2">
-              ${this.moods.map(
-                (mood) => html`
-                  <button
-                    type="button"
-                    class="btn btn-sm rounded-full ${this.getMoodButtonClass(mood)}"
-                    @click=${() => this.toggleMood(mood)}
-                  >
-                    ${mood.name}
-                  </button>
-                `
-              )}
-            </div>
+          <div class="flex flex-wrap gap-2 mt-4">
+            ${this.moods.map(
+              (mood) => html`
+                <button
+                  type="button"
+                  class="btn btn-sm rounded-full ${this.getMoodButtonClass(mood)}"
+                  @click=${() => this.toggleMood(mood)}
+                >
+                  ${mood.name}
+                </button>
+              `
+            )}
           </div>
 
           <div class="pt-4">
