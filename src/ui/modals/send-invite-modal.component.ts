@@ -109,6 +109,7 @@ export class SendInviteModalComponent extends LitElement {
 
     const trimmedTag = this.tag.trim();
     if (!trimmedTag || !this.selectedMood) return;
+    (event.currentTarget as HTMLFormElement)?.blur?.();
     await this.authState.sendInvitationRequest(trimmedTag, this.selectedGenreIds);
     this.toastService.show(this.invitationMessage, { type: 'success' });
   }
