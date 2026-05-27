@@ -17,7 +17,7 @@ export class MovieExplorerModalComponent extends LitElement {
   private readonly toastService = ToastService.getInstance();
   private readonly invitationMessage = 'Session started.';
 
-  @state() private selectedMoods: Mood[] = [];
+  @state() private selectedMood: Mood | undefined = undefined;
   @state() private isSubmitting = false;
 
   private moods: Mood[] = [
@@ -37,48 +37,36 @@ export class MovieExplorerModalComponent extends LitElement {
   ];
 
   private isMoodSelected(mood: Mood): boolean {
-    return this.selectedMoods.some((m) => m.id === mood.id);
+    return this.selectedMood?.id === mood.id;
   }
 
   private toggleMood(mood: Mood) {
     if (this.isSubmitting) return;
-
-    if (this.isMoodSelected(mood)) {
-      this.selectedMoods = this.selectedMoods.filter((m) => m.id !== mood.id);
-    } else {
-      if (this.selectedMoods.length >= 1) return;
-      this.selectedMoods = [...this.selectedMoods, mood];
-    }
-    this.requestUpdate();
+    this.selectedMood = mood;
   }
 
   private get selectedGenreIds(): number[] {
-    const uniqueIds = [...new Set(this.selectedMoods.flatMap((m) => m.genres))];
-    return uniqueIds.filter((id) => MovieGenreMap.has(id));
+    if (!this.selectedMood) return [];
+    return [...new Set(this.selectedMood.genres)].filter((id) => MovieGenreMap.has(id));
   }
 
   private getMoodButtonClass(mood: Mood): string {
-    const isSelected = this.isMoodSelected(mood);
-    const isLocked = this.isSubmitting || (!isSelected && this.selectedMoods.length >= 1);
-
-    if (isSelected) {
-      return this.isSubmitting
-        ? 'btn-primary ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 opacity-100 cursor-wait'
-        : 'btn-primary';
+    if (this.isSubmitting) {
+      return this.isMoodSelected(mood)
+        ? 'btn-primary ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 cursor-wait'
+        : 'btn-outline border-base-300 text-base-content/50 opacity-35 cursor-not-allowed';
     }
 
-    if (isLocked) {
-      return 'btn-outline border-base-300 text-base-content/50 opacity-35 cursor-not-allowed';
-    }
-
-    return 'btn-outline border-base-300 text-base-content hover:bg-base-200 hover:border-base-300 hover:text-base-content';
+    return this.isMoodSelected(mood)
+      ? 'btn-primary'
+      : 'btn-outline border-base-300 text-base-content hover:bg-base-200 hover:border-base-300';
   }
 
   private async startSession(event: Event) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (this.isSubmitting || this.selectedMoods.length === 0) return;
+    if (this.isSubmitting || !this.selectedMood) return;
 
     this.isSubmitting = true;
 
@@ -110,8 +98,7 @@ export class MovieExplorerModalComponent extends LitElement {
               (m) => html`
                 <button
                   type="button"
-                  ?disabled=${this.isSubmitting ||
-                  (!this.isMoodSelected(m) && this.selectedMoods.length >= 1)}
+                  ?disabled=${this.isSubmitting}
                   class="btn btn-sm rounded-full transition-all ${this.getMoodButtonClass(m)}"
                   @click=${() => this.toggleMood(m)}
                 >
@@ -127,7 +114,7 @@ export class MovieExplorerModalComponent extends LitElement {
           <button
             type="submit"
             class="btn btn-primary w-full"
-            ?disabled=${this.isSubmitting || this.selectedMoods.length === 0}
+            ?disabled=${this.isSubmitting || !this.selectedMood}
           >
             ${this.isSubmitting ? 'Starting...' : 'Start'}
           </button>
