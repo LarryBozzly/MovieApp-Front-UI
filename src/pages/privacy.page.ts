@@ -33,6 +33,12 @@ export class PrivacyPage extends LitElement {
               <h1 class="text-3xl font-bold mb-2">Movviator – Privacy Policy</h1>
               <p class="text-sm text-base-content/70">Last Updated: 30/05/2026</p>
             </header>
+            <p class="text-base-content/90 leading-relaxed">
+              This Privacy Policy explains how we collect, use, and protect your personal data when
+              you use Movviator. As a user-focused, non-commercial indie project, we only collect
+              what is strictly necessary to make the app function.
+            </p>
+
             <section class="space-y-2">
               <h2 class="text-xl font-semibold">1. Who We Are</h2>
               <p class="text-base-content/90 leading-relaxed">
@@ -55,7 +61,6 @@ export class PrivacyPage extends LitElement {
                   Usage Data: To provide our core feature (movie recommendations), we track how you
                   interact with the app, such as the movies you explore, like, or save.
                 </li>
-                <li>We are under no obligation to provide maintenance, support, or updates.</li>
                 <li>
                   Technical Log Data: We temporarily collect basic connection data (like your IP
                   address and browser type) to ensure the server is functioning and to prevent
