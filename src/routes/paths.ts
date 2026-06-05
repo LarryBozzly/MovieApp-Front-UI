@@ -1,6 +1,7 @@
 export const PUBLIC_ROUTES = {
   HOME: '/home',
   TERMS: '/terms',
+  PRIVACY: '/privacy',
   LOGIN: '/login',
   SIGNUP: '/signup',
   VERIFY: '/verify',
