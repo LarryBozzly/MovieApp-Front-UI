@@ -10,7 +10,7 @@ export class FooterComponent extends LitElement {
 
   render() {
     return html`
-      <footer class="bg-[#1c2024] text-neutral-content mt-auto">
+      <footer class="text-base-content mt-auto">
         <div class="max-w-6xl mx-auto px-6 py-16 flex flex-col items-center">
           <!-- Links + Contact -->
           <div
@@ -19,14 +19,23 @@ export class FooterComponent extends LitElement {
             <!-- Links -->
             <div class="flex flex-col gap-3 items-center md:items-start">
               <h4 class="text-sm font-semibold uppercase tracking-wide opacity-80 mb-2">Links</h4>
-              <a href="/terms" class="text-sm font-medium hover:text-white transition-colors">
+              <a
+                href="/terms"
+                class="text-sm font-medium hover:text-base-content transition-colors"
+              >
                 Terms of Use
               </a>
-              <a href="/privacy" class="text-sm font-medium hover:text-white transition-colors">
+              <a
+                href="/privacy"
+                class="text-sm font-medium hover:text-base-content transition-colors"
+              >
                 Privacy Policy
               </a>
 
-              <a href="/contact" class="text-sm font-medium hover:text-white transition-colors">
+              <a
+                href="/contact"
+                class="text-sm font-medium hover:text-base-content transition-colors"
+              >
                 Contact Page
               </a>
             </div>
@@ -35,7 +44,7 @@ export class FooterComponent extends LitElement {
               <h4 class="text-sm font-semibold uppercase tracking-wide opacity-80 mb-2">Contact</h4>
               <a
                 href="mailto:contact@movviator.tech"
-                class="text-sm font-semibold text-white hover:underline underline-offset-4"
+                class="text-sm font-semibold text-base-content hover:underline underline-offset-4"
               >
                 contact@movviator.tech
               </a>
@@ -44,9 +53,9 @@ export class FooterComponent extends LitElement {
           <!-- Legal -->
           <div class="text-center text-sm opacity-70 leading-relaxed max-w-4xl space-y-4 mb-6">
             <p>
-              By using <span class="text-white font-semibold">Movviator</span>, you agree to our
-              Terms of Use and Privacy Policy. All film-related metadata is supplied by
-              <span class="text-white font-semibold">The Movie Database (TMDB)</span>.
+              By using <span class="text-base-content font-semibold">Movviator</span>, you agree to
+              our Terms of Use and Privacy Policy. All film-related metadata is supplied by
+              <span class="text-base-content font-semibold">The Movie Database (TMDB)</span>.
             </p>
 
             <p class="text-xs italic opacity-60">
@@ -54,7 +63,7 @@ export class FooterComponent extends LitElement {
             </p>
           </div>
           <!-- Divider -->
-          <div class="border-t border-neutral-content/20 w-full max-w-4xl mb-6"></div>
+          <div class="border-t border-base-content/20 w-full max-w-4xl mb-6"></div>
           <!-- TMDB -->
           <div class="flex flex-col items-center gap-3">
             <img src="/images/tmdb-logo.svg" alt="TMDB Logo" class="h-8 w-auto" />
