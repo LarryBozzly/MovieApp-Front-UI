@@ -16,7 +16,7 @@ import '@pages/privacy.page';
 
 const children: Route[] = [...homeViews, ...profileViews, ...notificationViews, ...aboutViews];
 
-export const routes: Route[] = [
+export const routes = [
   {
     path: '',
     children,
@@ -61,4 +61,4 @@ export const routes: Route[] = [
     path: '(.*)',
     redirect: '/',
   },
-];
+] as Route[];
