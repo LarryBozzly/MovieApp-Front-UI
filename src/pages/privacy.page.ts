@@ -158,6 +158,7 @@ export class PrivacyPage extends LitElement {
             </section>
           </section>
         </main>
+        <footer-component></footer-component>
       </div>
     `;
   }

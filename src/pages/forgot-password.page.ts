@@ -34,6 +34,22 @@ export class ForgotPasswordPage extends LitElement {
 
   static styles = css`
     ${tailwindStyles}
+
+    :host {
+      display: block;
+      height: 100dvh;
+      position: relative;
+    }
+
+    .scroll-container {
+      position: absolute;
+      top: 4rem;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
   `;
 
   connectedCallback() {
@@ -85,17 +101,22 @@ export class ForgotPasswordPage extends LitElement {
 
   render() {
     return html`
-      <div class="min-h-screen flex flex-col items-center justify-center bg-base-200">
-        <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
-          ${this.error
-            ? html`
-                <div class="alert alert-error text-sm mb-3">
-                  <span>${this.error.message}</span>
-                </div>
-              `
-            : null}
-          ${this.renderStep()}
+      <div class="scroll-container">
+        <div
+          class="min-h-[calc(var(--app-height)-4rem)]  flex flex-col items-center justify-center bg-base-200"
+        >
+          <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">
+            ${this.error
+              ? html`
+                  <div class="alert alert-error text-sm mb-3">
+                    <span>${this.error.message}</span>
+                  </div>
+                `
+              : null}
+            ${this.renderStep()}
+          </div>
         </div>
+        <footer-component></footer-component>
       </div>
     `;
   }

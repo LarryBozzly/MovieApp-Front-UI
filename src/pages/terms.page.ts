@@ -49,9 +49,8 @@ export class TermsPage extends LitElement {
                 rel="noopener noreferrer"
                 class="link link-primary"
               >
-                (https://movviator.tech/)
-              </a>.
-              By registering for or using Movviator, you acknowledge that it is a beta,
+                (https://movviator.tech/) </a
+              >. By registering for or using Movviator, you acknowledge that it is a beta,
               non-commercial project provided on an <strong>AS IS</strong> and
               <strong>AS AVAILABLE</strong> basis.
             </p>
@@ -205,6 +204,7 @@ export class TermsPage extends LitElement {
             </section>
           </section>
         </main>
+        <footer-component></footer-component>
       </div>
     `;
   }
