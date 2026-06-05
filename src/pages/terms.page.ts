@@ -26,7 +26,7 @@ export class TermsPage extends LitElement {
 
   render() {
     return html`
-      <div class="scroll-container bg-base-200">
+      <div class="scroll-container">
         <main class="max-w-4xl mx-auto p-4 md:p-6 pb-12">
           <section class="bg-base-100 shadow-lg rounded-xl p-6 md:p-8 space-y-6">
             <header>
