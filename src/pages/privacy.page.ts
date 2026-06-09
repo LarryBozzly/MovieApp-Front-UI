@@ -27,7 +27,8 @@ export class PrivacyPage extends LitElement {
   render() {
     return html`
       <div class="scroll-container">
-        <main class="max-w-4xl mx-auto p-4 md:p-6 pb-12">
+        <main class="bg-base-200 w-full">
+          <div class="max-w-4xl mx-auto p-4 md:p-6 pb-12">
           <section class="bg-base-100 shadow-lg rounded-xl p-6 md:p-8 space-y-6">
             <header>
               <h1 class="text-3xl font-bold mb-2">Movviator – Privacy Policy</h1>
@@ -157,6 +158,7 @@ export class PrivacyPage extends LitElement {
               </p>
             </section>
           </section>
+          </div>
         </main>
         <footer-component></footer-component>
       </div>

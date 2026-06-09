@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '../../utils/app.constants';
 import {
   authStore,
@@ -16,6 +16,7 @@ import {
 } from '@store/app-store';
 import '@ui/components/logo-back.component';
 import '@ui/components/profile-button.component';
+import '@ui/components/burger-menu.component';
 import type { Notification, UserProfile } from '@models/models';
 
 @customElement('navbar-component')
@@ -31,29 +32,9 @@ export class NavbarComponent extends LitElement {
   @watchWithSelector({ store: appStore, selector: selectNotifications })
   readonly notifications!: Notification[];
 
-  @state() private path = window.location.pathname;
-
   static styles = css`
     ${tailwindStyles}
   `;
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('popstate', this.handleRouteChange);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('popstate', this.handleRouteChange);
-  }
-
-  private handleRouteChange = () => {
-    this.path = window.location.pathname;
-  };
-
-  private get isHomePage() {
-    return this.path === '/home' || this.path === '/home/';
-  }
 
   render() {
     return html`
@@ -72,28 +53,7 @@ export class NavbarComponent extends LitElement {
                 .userProfile=${this.userProfile}
               ></profile-button-component>
             `
-          : this.isHomePage
-            ? html`
-                <div class="flex items-center gap-3 pr-4">
-                  <a
-                    href="/signup"
-                    class="btn btn-outline btn-primary btn-sm rounded-full px-4 border-2 transition-all hover:scale-105 no-underline flex items-center justify-center"
-                  >
-                    <span class="text-[10px] sm:text-xs uppercase tracking-wider font-bold">
-                      Sign Up
-                    </span>
-                  </a>
-                  <a
-                    href="/login"
-                    class="btn btn-primary btn-sm rounded-full px-4 shadow-md transition-all hover:scale-105 no-underline flex items-center justify-center"
-                  >
-                    <span class="text-[10px] sm:text-xs uppercase tracking-wider font-bold">
-                      Login
-                    </span>
-                  </a>
-                </div>
-              `
-            : ''}
+          : html` <burger-menu-component></burger-menu-component> `}
       </div>
     `;
   }
