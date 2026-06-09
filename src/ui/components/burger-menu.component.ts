@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { MenuIcon, CloseIcon } from '@ui/icons';
+import { ghostTap } from '@ui/directives/ghost-tap.directive';
 
 interface MenuItem {
   label: string;
@@ -60,7 +61,11 @@ export class BurgerMenuComponent extends LitElement {
           )}
         </nav>
 
-        <button class="btn btn-ghost btn-circle md:hidden" @click=${this.toggle} aria-label="Menu">
+        <button
+          class="btn btn-ghost btn-circle md:hidden"
+          ${ghostTap(() => this.toggle())}
+          aria-label="Menu"
+        >
           ${this.isOpen ? CloseIcon('w-6 h-6 text-base-content') : MenuIcon()}
         </button>
 
