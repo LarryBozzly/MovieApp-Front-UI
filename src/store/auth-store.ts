@@ -268,16 +268,19 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
 
     webSocketService.sendReadNotificationRequest(notificationId);
   }),
-  sendInvitationRequest: createEffect(store, async (deps, _store, toTag: string, genreIds: number[]) => {
-    const { webSocketService } = deps;
+  sendInvitationRequest: createEffect(
+    store,
+    async (deps, _store, toTag: string, genreIds: number[]) => {
+      const { webSocketService } = deps;
 
-    if (!webSocketService) {
-      console.error('WebSocketService not initialized');
-      return;
+      if (!webSocketService) {
+        console.error('WebSocketService not initialized');
+        return;
+      }
+
+      webSocketService.sendInvitationRequest(toTag, genreIds);
     }
-
-    webSocketService.sendInvitationRequest(toTag, genreIds);
-  }),
+  ),
   acceptInvitationResponse: createEffect(
     store,
     async (deps, _store, notification: Notification) => {

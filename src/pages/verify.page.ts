@@ -113,7 +113,9 @@ export class VerifyPage extends LitElement {
 
     return html`
       <div class="scroll-container">
-        <div class="min-h-[calc(var(--app-height)-4rem)] flex flex-col items-center justify-center bg-base-200">
+        <div
+          class="min-h-[calc(var(--app-height)-4rem)] flex flex-col items-center justify-center bg-base-200"
+        >
           <div class="card w-full max-w-md bg-base-100 shadow-xl p-6 text-center">${content}</div>
         </div>
         <footer-component></footer-component>
