@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { MenuIcon, CloseIcon } from '@ui/icons';
+import { ghostTap } from '@ui/directives/ghost-tap.directive';
 
 interface MenuItem {
   label: string;
@@ -22,6 +23,17 @@ export class BurgerMenuComponent extends LitElement {
     ${tailwindStyles}
     .menu a:active {
       background-color: rgba(0, 0, 0, 0.05) !important;
+    }
+    @keyframes spin {
+      from {
+        transform: rotate(90deg);
+      }
+      to {
+        transform: rotate(0deg);
+      }
+    }
+    .icon-animate {
+      animation: spin 0.25s ease-out forwards;
     }
   `;
 
@@ -52,10 +64,6 @@ export class BurgerMenuComponent extends LitElement {
     Router.go(path);
   }
 
-  private handleOverlayClick() {
-    this.handleClose();
-  }
-
   render() {
     return html`
       <div class="flex items-center gap-3">
@@ -72,14 +80,25 @@ export class BurgerMenuComponent extends LitElement {
           )}
         </nav>
 
-        <button
-          class="btn btn-ghost btn-circle md:hidden"
-          @click=${this.handleToggle}
-          aria-label="Menu"
-        >
-          ${this.isMenuOpen ? CloseIcon('w-6 h-6 text-base-content') : MenuIcon()}
-        </button>
-
+        ${this.isMenuOpen
+          ? html`
+              <button
+                class="btn btn-ghost btn-circle md:hidden"
+                ${ghostTap(() => this.handleClose())}
+                aria-label="Close menu"
+              >
+                <span class="icon-animate">${CloseIcon('w-6 h-6 text-base-content')}</span>
+              </button>
+            `
+          : html`
+              <button
+                class="btn btn-ghost btn-circle md:hidden"
+                ${ghostTap(() => this.handleToggle())}
+                aria-label="Open menu"
+              >
+                <span class="icon-animate">${MenuIcon()}</span>
+              </button>
+            `}
         ${this.isMenuOpen ? this.renderDrawer() : ''}
       </div>
     `;
@@ -87,12 +106,9 @@ export class BurgerMenuComponent extends LitElement {
 
   private renderDrawer() {
     return html`
-      <div
-        class="fixed top-16 right-0 bottom-0 left-0 z-[100] md:hidden"
-        @click=${this.handleOverlayClick}
-      >
+      <div class="fixed top-16 right-0 bottom-0 left-0 z-[100] md:hidden">
         <div class="absolute inset-0 bg-black/40"></div>
-        <div class="absolute inset-0 bg-base-100" @click=${(e: Event) => e.stopPropagation()}>
+        <div class="absolute inset-0 bg-base-100">
           <ul class="menu p-4 gap-1 w-full">
             ${menuItems.map(
               (item) => html`
