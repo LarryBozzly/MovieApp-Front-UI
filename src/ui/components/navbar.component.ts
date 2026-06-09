@@ -4,12 +4,14 @@ import { tailwindStyles } from '../../utils/app.constants';
 import {
   authStore,
   selectIsAuthorized,
+  selectIsLoading,
   selectUserProfile,
   type AuthState,
 } from '@store/auth-store';
 import { watch, watchWithSelector } from 'zustand-lit';
 import {
   appStore,
+  selectIsMenuOpen,
   selectisNavbarVisible,
   selectNotifications,
   type AppState,
@@ -31,10 +33,19 @@ export class NavbarComponent extends LitElement {
   readonly isNavbarVisible!: boolean;
   @watchWithSelector({ store: appStore, selector: selectNotifications })
   readonly notifications!: Notification[];
+  @watchWithSelector({ store: authStore, selector: selectIsLoading })
+  readonly isLoading!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectIsMenuOpen })
+  readonly isMenuOpen!: boolean;
 
   static styles = css`
     ${tailwindStyles}
   `;
+
+  private onMenuChange(e: CustomEvent<{ isMenuOpen: boolean }>) {
+    const isMenuOpen = e.detail.isMenuOpen;
+    appStore.getState().setIsMenuOpen(isMenuOpen);
+  }
 
   render() {
     return html`
@@ -53,7 +64,15 @@ export class NavbarComponent extends LitElement {
                 .userProfile=${this.userProfile}
               ></profile-button-component>
             `
-          : html` <burger-menu-component></burger-menu-component> `}
+          : !this.isLoading
+            ? html`
+                <burger-menu-component
+                  .isMenuOpen=${this.isMenuOpen}
+                  @onHandleToggle=${this.onMenuChange}
+                  @onHandleClose=${this.onMenuChange}
+                ></burger-menu-component>
+              `
+            : ''}
       </div>
     `;
   }

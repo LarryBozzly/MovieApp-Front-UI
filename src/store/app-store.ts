@@ -48,9 +48,11 @@ export interface AppState {
   notifications: Notification[];
   query: string;
   isLoading: boolean;
+  isMenuOpen: boolean;
   error: AppError | null;
   storeInit: (deps: Required<AppState>['deps']) => void;
   setLoading: (loading: boolean) => void;
+  setIsMenuOpen: (isMenuOpen: boolean) => void;
   setError: (error: AppError | null) => void;
   setOnInitLoaded: (onInitLoaded: boolean) => void;
   setPage: (value: number) => void;
@@ -99,6 +101,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   notifications: [],
   query: '',
   isLoading: false,
+  isMenuOpen: false,
   error: null,
   deps: undefined,
   globalAbortController: new AbortController(),
@@ -108,6 +111,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   // reducers
   storeInit: (deps) => set({ deps }),
   setLoading: (isLoading: boolean) => set({ isLoading }),
+  setIsMenuOpen: (isMenuOpen: boolean) => set({ isMenuOpen }),
   setError: (error: AppError | null) => set({ error }),
   setOnInitLoaded: (onInitLoaded: boolean) => set({ onInitLoaded }),
   setPage: (value: number) => set((state) => ({ ...state, page: value })),
@@ -516,6 +520,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 // selectors
 export const selectIsOnInitLoaded = (state: AppState) => state.onInitLoaded;
 export const selectIsLoading = (state: AppState) => state.isLoading;
+export const selectIsMenuOpen = (state: AppState) => state.isMenuOpen;
 export const selectMovies = (state: AppState) => state.movies;
 export const selectWatchlistIds = (state: AppState) => state.watchlistIds;
 export const selectPage = (state: AppState) => state.page;

@@ -1,9 +1,8 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { MenuIcon, CloseIcon } from '@ui/icons';
-import { ghostTap } from '@ui/directives/ghost-tap.directive';
 
 interface MenuItem {
   label: string;
@@ -19,8 +18,6 @@ const menuItems: MenuItem[] = [
 
 @customElement('burger-menu-component')
 export class BurgerMenuComponent extends LitElement {
-  @state() private isOpen = false;
-
   static styles = css`
     ${tailwindStyles}
     .menu a:active {
@@ -28,21 +25,35 @@ export class BurgerMenuComponent extends LitElement {
     }
   `;
 
-  private toggle() {
-    this.isOpen = !this.isOpen;
+  @property({ type: Boolean }) isMenuOpen!: boolean;
+
+  private handleToggle() {
+    this.dispatchEvent(
+      new CustomEvent('onHandleToggle', {
+        detail: { isMenuOpen: !this.isMenuOpen },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
-  private close() {
-    this.isOpen = false;
+  private handleClose() {
+    this.dispatchEvent(
+      new CustomEvent('onHandleClose', {
+        detail: { isMenuOpen: false },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   private navigate(path: string) {
-    this.close();
+    this.handleClose();
     Router.go(path);
   }
 
   private handleOverlayClick() {
-    this.close();
+    this.handleClose();
   }
 
   render() {
@@ -63,13 +74,13 @@ export class BurgerMenuComponent extends LitElement {
 
         <button
           class="btn btn-ghost btn-circle md:hidden"
-          ${ghostTap(() => this.toggle())}
+          @click=${this.handleToggle}
           aria-label="Menu"
         >
-          ${this.isOpen ? CloseIcon('w-6 h-6 text-base-content') : MenuIcon()}
+          ${this.isMenuOpen ? CloseIcon('w-6 h-6 text-base-content') : MenuIcon()}
         </button>
 
-        ${this.isOpen ? this.renderDrawer() : ''}
+        ${this.isMenuOpen ? this.renderDrawer() : ''}
       </div>
     `;
   }

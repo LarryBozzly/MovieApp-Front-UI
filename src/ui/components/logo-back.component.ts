@@ -7,6 +7,7 @@ import { routes } from '@routes/app.routes';
 import { publicGuard } from '@guards/public-guard';
 import { authGuard } from '@guards/auth-guard';
 import { ghostTap } from '@ui/directives/ghost-tap.directive';
+import { appStore } from '@store/app-store';
 
 @customElement('logo-back-component')
 export class LogoBackComponent extends LitElement {
@@ -34,6 +35,7 @@ export class LogoBackComponent extends LitElement {
   private goHome() {
     Router.go('/');
     this.updateRoute();
+    appStore.getState().setIsMenuOpen(false);
   }
 
   get publicPages() {
