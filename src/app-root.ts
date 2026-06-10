@@ -21,6 +21,7 @@ import '@ui/components/loading-overlay.component';
 import ToastService from '@services/toast-service';
 import OnboardingService from '@services/onboarding.service';
 import VFXService from '@services/vfx.service';
+import NavigationService from '@services/navigation-service';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -57,6 +58,7 @@ export class AppRoot extends LitElement {
       appVersionService: AppVersionService.getInstance(),
       toastService: ToastService.getInstance(),
       vfxService: VFXService.getInstance(),
+      navigationService: NavigationService.getInstance(),
     });
   }
 
@@ -83,6 +85,7 @@ export class AppRoot extends LitElement {
     this.initAuthStore();
     this.initAppStore();
 
+    appStore.getState().initNavigationListener();
     authStore.getState().initDeviceVisibilityListener();
     authStore.getState().initCrossTabListener();
   }

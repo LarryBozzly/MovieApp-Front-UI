@@ -25,6 +25,8 @@ import type AppVersionService from '@services/app-version.service';
 import type ToastService from '@services/toast-service';
 import type OnboardingService from '@services/onboarding.service';
 import type VFXService from '@services/vfx.service';
+import type NavigationService from '@services/navigation-service';
+import type { NavigationState } from '@services/navigation-service';
 
 export interface AppState {
   deps?: {
@@ -36,11 +38,13 @@ export interface AppState {
     appVersionService: AppVersionService;
     toastService: ToastService;
     vfxService: VFXService;
+    navigationService: NavigationService;
   };
   globalAbortController: AbortController;
   category: MovieCategory | undefined;
   onInitLoaded: boolean;
   isNavbarVisible: boolean;
+  navigation: NavigationState;
   page: number;
   maxPage: number;
   movies: Movie[];
@@ -59,6 +63,7 @@ export interface AppState {
   setQuery: (query: string) => void;
   setMaxPage: (maxPage: number) => void;
   setNavbarVisibility: (isNavbarVisible: boolean) => void;
+  setNavigationState: (navigation: NavigationState) => void;
   setCategory: (category: MovieCategory | undefined) => void;
   setMovies: (movies: Movie[]) => void;
   clearMovies: () => void;
@@ -66,6 +71,7 @@ export interface AppState {
   setWatchlistIds: (ids: Record<number, WatchlistState>) => void;
   setNotifications: (notifications: Notification[]) => void;
   onInit: () => Promise<void>;
+  initNavigationListener: () => Promise<void>;
   fetchTrendingMovies: (page: number) => Promise<void>;
   fetchTopRatedMovies: (page: number) => Promise<void>;
   fetchWatchlistMovies: (page: number) => Promise<void>;
@@ -108,6 +114,12 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   category: undefined,
   onInitLoaded: false,
   isNavbarVisible: true,
+  navigation: {
+    isHome: false,
+    isPublicPage: false,
+    isPrivatePage: false,
+    path: '',
+  },
   // reducers
   storeInit: (deps) => set({ deps }),
   setLoading: (isLoading: boolean) => set({ isLoading }),
@@ -119,6 +131,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     set((state) => ({ ...state, isNavbarVisible })),
   setQuery: (query: string) => set((state) => ({ ...state, query })),
   setMaxPage: (maxPage: number) => set((state) => ({ ...state, maxPage })),
+  setNavigationState: (navigation: NavigationState) => set({ navigation }),
   setCategory: (category: MovieCategory | undefined) => set((state) => ({ ...state, category })),
   setMovies: (movies: Movie[]) =>
     set((state) => ({
@@ -135,6 +148,18 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     })),
   setNotifications: (notifications: Notification[]) =>
     set((state) => ({ ...state, notifications })),
+  initNavigationListener: createEffect(store, async (deps, _store) => {
+    const { navigationService } = deps;
+    const { setNavigationState } = store.getState();
+    navigationService.onRouteChange(async () => {
+      setNavigationState({
+        isHome: navigationService.isHome(),
+        isPrivatePage: navigationService.isPrivatePage(),
+        isPublicPage: navigationService.isPublicPage(),
+        path: navigationService.getPath(),
+      });
+    });
+  }),
   onInit: createEffect(store, async (deps, store) => {
     const { appVersionService, modalService, onboardingService } = deps;
     const { fetchCategoryMovies, setOnInitLoaded, closeModal, page } = store.getState();
@@ -521,6 +546,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
 export const selectIsOnInitLoaded = (state: AppState) => state.onInitLoaded;
 export const selectIsLoading = (state: AppState) => state.isLoading;
 export const selectIsMenuOpen = (state: AppState) => state.isMenuOpen;
+export const selectNavigation = (state: AppState) => state.navigation;
 export const selectMovies = (state: AppState) => state.movies;
 export const selectWatchlistIds = (state: AppState) => state.watchlistIds;
 export const selectPage = (state: AppState) => state.page;

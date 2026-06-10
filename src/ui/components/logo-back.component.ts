@@ -1,11 +1,8 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { Router } from '@vaadin/router';
 import { OutlineChevronLeftIcon } from '@ui/icons';
-import { routes } from '@routes/app.routes';
-import { publicGuard } from '@guards/public-guard';
-import { authGuard } from '@guards/auth-guard';
 import { ghostTap } from '@ui/directives/ghost-tap.directive';
 import { appStore } from '@store/app-store';
 
@@ -16,67 +13,18 @@ export class LogoBackComponent extends LitElement {
   `;
 
   @property({ type: Boolean }) isAuthorized!: boolean;
-  @state() private path = window.location.pathname;
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('popstate', this.updateRoute);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('popstate', this.updateRoute);
-  }
-
-  private updateRoute = () => {
-    this.path = window.location.pathname;
-  };
+  @property({ type: Boolean }) isHome!: boolean;
+  @property({ type: Boolean }) isPublicPage!: boolean;
+  @property({ type: Boolean }) isPrivatePage!: boolean;
 
   private goHome() {
     Router.go('/');
-    this.updateRoute();
     appStore.getState().setIsMenuOpen(false);
   }
 
-  get publicPages() {
-    const pages: string[] = [];
-
-    routes.forEach((route) => {
-      if (route.action === publicGuard) {
-        if (route.path) pages.push(route.path);
-      }
-    });
-
-    return pages;
-  }
-
-  get privatePages() {
-    const pages: string[] = [];
-
-    routes.forEach((route) => {
-      if (route.action === authGuard) {
-        if (route.path) pages.push(route.path);
-        if (Array.isArray(route.children)) {
-          route.children.forEach((child) => {
-            if (child.path) pages.push(child.path);
-          });
-        }
-      }
-    });
-
-    return pages;
-  }
-
   render() {
-    const isHome = this.path === '/';
-
-    const isPublicPage = this.publicPages.some((p) => p && this.path.startsWith(p));
-
-    const isPrivatePage = this.privatePages.some((p) => p && this.path.startsWith(p));
-
-    const showLogo = isPublicPage || (isHome && this.isAuthorized);
-
-    const showBackButton = this.isAuthorized && isPrivatePage && !isHome;
+    const showLogo = this.isPublicPage || (this.isHome && this.isAuthorized);
+    const showBackButton = this.isAuthorized && this.isPrivatePage && !this.isHome;
 
     return html`
       ${showLogo

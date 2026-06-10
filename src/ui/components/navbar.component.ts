@@ -13,6 +13,7 @@ import {
   appStore,
   selectIsMenuOpen,
   selectisNavbarVisible,
+  selectNavigation,
   selectNotifications,
   type AppState,
 } from '@store/app-store';
@@ -20,6 +21,7 @@ import '@ui/components/logo-back.component';
 import '@ui/components/profile-button.component';
 import '@ui/components/burger-menu.component';
 import type { Notification, UserProfile } from '@models/models';
+import { type NavigationState } from '@services/navigation-service';
 
 @customElement('navbar-component')
 export class NavbarComponent extends LitElement {
@@ -37,6 +39,8 @@ export class NavbarComponent extends LitElement {
   readonly isLoading!: boolean;
   @watchWithSelector({ store: appStore, selector: selectIsMenuOpen })
   readonly isMenuOpen!: boolean;
+  @watchWithSelector({ store: appStore, selector: selectNavigation })
+  readonly navigation!: NavigationState;
 
   static styles = css`
     ${tailwindStyles}
@@ -55,7 +59,13 @@ export class NavbarComponent extends LitElement {
           : 'hidden'}"
       >
         <div class="flex-1">
-          <logo-back-component .isAuthorized=${this.isAuthorized}></logo-back-component>
+          <logo-back-component
+            .isHome=${this.navigation.isHome}
+            .isPublicPage=${this.navigation.isPublicPage}
+            .isPrivatePage=${this.navigation.isPrivatePage}
+            .isAuthorized=${this.isAuthorized}
+          >
+          </logo-back-component>
         </div>
         ${this.isAuthorized && this.isNavbarVisible
           ? html`
@@ -64,7 +74,7 @@ export class NavbarComponent extends LitElement {
                 .userProfile=${this.userProfile}
               ></profile-button-component>
             `
-          : !this.isLoading
+          : this.navigation.isPublicPage
             ? html`
                 <burger-menu-component
                   .isMenuOpen=${this.isMenuOpen}
