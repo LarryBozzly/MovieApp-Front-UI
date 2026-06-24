@@ -152,8 +152,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       return;
     }
 
-    showToast('Account deleted', 'success');
-    logout();
+    await logout();
+    await showToast('Account deleted', 'success');
   }),
   login: createEffect(store, async (deps, store, loginData) => {
     const { httpService, authService, webSocketService, authChannelService } = deps;
