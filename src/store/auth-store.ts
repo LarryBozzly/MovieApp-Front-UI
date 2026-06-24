@@ -143,9 +143,9 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     const { setLoading, closeModal, showToast, logout } = store.getState();
 
     setLoading(true);
+    await closeModal();
     const { error } = await tryCatch(httpService.delete<GdprEraseResponse>('/gdpr/erase'));
     setLoading(false);
-    await closeModal();
 
     if (error) {
       await showToast('Something went wrong, please try again later', 'error');
