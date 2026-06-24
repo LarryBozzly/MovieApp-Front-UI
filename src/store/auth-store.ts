@@ -151,7 +151,7 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       await showToast('Something went wrong, please try again later', 'error');
       return;
     }
-    
+
     await showToast('Account deleted', 'success');
     await logout();
   }),
