@@ -555,9 +555,12 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   }),
   getGdpr: createEffect(store, async (deps, store) => {
     const { httpService } = deps;
-    const { closeModal, showToast } = store.getState();
+    const { setLoading, closeModal, showToast } = store.getState();
 
+    setLoading(true);
     await closeModal();
+    setLoading(false);
+
     httpService.get<GdprExportResponse>('/gdpr/export');
     await showToast('GDPR data has been sent to your email', 'success');
   }),
