@@ -544,7 +544,8 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       modalMode: 'modal',
       props: {
         title: 'Export my data',
-        description: 'Are you sure you want to proceed?',
+        description:
+          'GDPR data will be sent to your email address are you sure you want to proceed?',
         confirmLabel: 'Confirm',
         cancelLabel: 'Cancel',
         onConfirm: getGdpr,
@@ -554,19 +555,11 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
   }),
   getGdpr: createEffect(store, async (deps, store) => {
     const { httpService } = deps;
-    const { setLoading, closeModal, showToast } = store.getState();
+    const { closeModal, showToast } = store.getState();
 
-    setLoading(true);
-    const { error } = await tryCatch(httpService.get<GdprExportResponse>('/gdpr/export'));
-    setLoading(false);
     await closeModal();
-
-    if (error) {
-      await showToast('Something went wrong, please try again later', 'error');
-      return;
-    }
-
-    await showToast('GDPR export ready', 'success');
+    httpService.get<GdprExportResponse>('/gdpr/export');
+    await showToast('GDPR data has been sent to your email', 'success');
   }),
   closeModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
