@@ -142,8 +142,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
     const { httpService } = deps;
     const { setLoading, closeModal, showToast, logout } = store.getState();
 
-    setLoading(true);
     await closeModal();
+    setLoading(true);
     const { error } = await tryCatch(httpService.delete<GdprEraseResponse>('/gdpr/erase'));
     setLoading(false);
 
@@ -152,8 +152,8 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
       return;
     }
 
-    await showToast('Account deleted', 'success');
-    await logout();
+    showToast('Account deleted', 'success');
+    logout();
   }),
   login: createEffect(store, async (deps, store, loginData) => {
     const { httpService, authService, webSocketService, authChannelService } = deps;
