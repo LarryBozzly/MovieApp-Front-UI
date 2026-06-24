@@ -69,6 +69,7 @@ export class AppRoot extends LitElement {
       webSocketService: new WebSocketService(),
       deviceInfoService: DeviceInfoService.getInstance(),
       modalService: ModalService.getInstance(),
+      toastService: ToastService.getInstance(),
       connectivityService: ConnectivityService.getInstance(),
       onboardingService: OnboardingService.getInstance(),
       appVersionService: AppVersionService.getInstance(),

@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { tailwindStyles } from '@utils/app.constants';
 import { watchWithSelector } from 'zustand-lit';
 import { authStore, selectUserProfile } from '@store/auth-store';
-import { FilledCopyIcon, PencilEditIcon } from '@ui/icons';
+import { FilledCopyIcon, PencilEditIcon, DownloadIcon, TrashIcon } from '@ui/icons';
 import type { UserProfile } from '@models/models';
 import { appStore } from '@store/app-store';
 import '@ui/components/invite-fab.component';
@@ -43,6 +43,20 @@ export class ProfilePage extends LitElement {
     e.stopPropagation();
 
     appStore.getState().openEditTagModal(this.userProfile.tag);
+  }
+
+  private handleExportGdpr(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    appStore.getState().openGdprConfirmModal();
+  }
+
+  private handleDeleteAccount(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    authStore.getState().openDeleteAccountConfirmModal();
   }
 
   private formatDate(dateString: string): string {
@@ -116,6 +130,63 @@ export class ProfilePage extends LitElement {
                   </span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Data & Privacy -->
+          <div class="bg-base-100 shadow-lg rounded-xl p-6 mt-4">
+            <h2 class="text-lg font-semibold mb-1">Data & Privacy</h2>
+            <p class="text-sm text-base-content/60 mb-5">Manage your personal data and account.</p>
+
+            <!-- Export data row -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-start gap-3">
+                <span
+                  class="flex-shrink-0 w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center"
+                >
+                  ${DownloadIcon('w-5 h-5 text-primary')}
+                </span>
+                <div>
+                  <p class="font-medium text-base-content">Export your data</p>
+                  <p class="text-sm text-base-content/60">
+                    Download a copy of the personal data we hold about you (GDPR).
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-outline btn-primary shrink-0"
+                @click=${this.handleExportGdpr}
+              >
+                Export my data
+              </button>
+            </div>
+
+            <hr class="border-t border-base-content/10 my-4" />
+
+            <!-- Delete account row -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-start gap-3">
+                <span
+                  class="flex-shrink-0 w-9 h-9 rounded-full bg-error/10 flex items-center justify-center"
+                >
+                  ${TrashIcon('w-5 h-5 text-error')}
+                </span>
+                <div>
+                  <p class="font-medium text-base-content">Delete account</p>
+                  <p class="text-sm text-base-content/60">
+                    Permanently remove your account and all associated data. This action cannot be
+                    undone.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-outline btn-error shrink-0"
+                @click=${this.handleDeleteAccount}
+              >
+                Delete account
+              </button>
             </div>
           </div>
         </main>

@@ -1,5 +1,6 @@
 import { createStore } from 'zustand/vanilla';
 import type {
+  GdprEraseResponse,
   LoginRequest,
   LoginResponse,
   Movie,
@@ -25,6 +26,8 @@ import type BroadcastChannelService from '../services/broadcast-channel.service'
 import { env } from '@config';
 import { AuthChannelEvent } from '@models/models';
 import type OnboardingService from '@services/onboarding.service';
+import type ToastService from '@services/toast-service';
+import type { ToastType } from '@services/toast-service';
 
 export interface AuthState {
   deps?: {
@@ -35,6 +38,7 @@ export interface AuthState {
     connectivityService: ConnectivityService;
     onboardingService: OnboardingService;
     modalService: ModalService;
+    toastService: ToastService;
     appVersionService: AppVersionService;
     authChannelService: BroadcastChannelService<AuthChannelEvent>;
   };
@@ -59,6 +63,8 @@ export interface AuthState {
   setIsForgottenPasswordSent: (isForgottenPasswordSent: boolean) => void;
   setIsVerifiedPasswordCodeSent: (isVerifiedPasswordCodeSent: boolean) => void;
   setIsPasswordChanged: (isPasswordChanged: boolean) => void;
+  openDeleteAccountConfirmModal: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   login: (loginData: LoginRequest) => Promise<void>;
   register: (loginData: RegisterRequest) => Promise<void>;
   verifyAccount: (token: string) => Promise<void>;
@@ -78,6 +84,7 @@ export interface AuthState {
   initDeviceVisibilityListener: () => Promise<void>;
   initCrossTabListener: () => Promise<void>;
   closeModal: () => Promise<void>;
+  showToast: (message: string, type: ToastType) => Promise<void>;
 }
 
 export const authStore = createStore<AuthState>((set, _get, store) => ({
@@ -112,6 +119,42 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   setIsPasswordChanged: (isPasswordChanged: boolean) => set({ isPasswordChanged }),
   setAuthorization: (status: boolean) => set({ isAuthorized: status }),
   // effects
+  openDeleteAccountConfirmModal: createEffect(store, async (deps, store) => {
+    const { modalService } = deps;
+    const { deleteAccount, closeModal } = store.getState();
+    modalService.open({
+      tag: 'confirm-action-modal',
+      className: 'modal-bottom sm:modal-middle',
+      modalMode: 'modal',
+      props: {
+        title: 'Delete my account',
+        description:
+          'Are you sure you want to delete your account? Once deleted, your account and all associated data will be permanently removed.',
+        confirmLabel: 'Confirm',
+        cancelLabel: 'Cancel',
+        danger: true,
+        onConfirm: deleteAccount,
+        onClose: closeModal,
+      },
+    });
+  }),
+  deleteAccount: createEffect(store, async (deps, store) => {
+    const { httpService } = deps;
+    const { setLoading, closeModal, showToast, logout } = store.getState();
+
+    setLoading(true);
+    const { error } = await tryCatch(httpService.delete<GdprEraseResponse>('/gdpr/erase'));
+    setLoading(false);
+    await closeModal();
+
+    if (error) {
+      await showToast('Something went wrong, please try again later', 'error');
+      return;
+    }
+    
+    await showToast('Account deleted', 'success');
+    await logout();
+  }),
   login: createEffect(store, async (deps, store, loginData) => {
     const { httpService, authService, webSocketService, authChannelService } = deps;
     const { setLoading, setAuthorization, setUserProfile, setError } = store.getState();
@@ -376,6 +419,10 @@ export const authStore = createStore<AuthState>((set, _get, store) => ({
   closeModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
     modalService.close();
+  }),
+  showToast: createEffect(store, async (deps, _store, message: string, type: ToastType) => {
+    const { toastService } = deps;
+    toastService.show(message, { type });
   }),
 }));
 

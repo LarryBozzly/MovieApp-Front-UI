@@ -10,6 +10,7 @@ import {
   type Notification,
   type MovieVideosResponse,
   type AppError,
+  type GdprExportResponse,
   VideoSite,
   VideoType,
   NotificationType,
@@ -95,6 +96,8 @@ export interface AppState {
   openMoviePreviewModal: (movie: Movie) => Promise<void>;
   openEditTagModal: (tag: string) => Promise<void>;
   openErrorModal: (message: string) => Promise<void>;
+  openGdprConfirmModal: () => Promise<void>;
+  getGdpr: () => Promise<void>;
   closeModal: () => Promise<void>;
   showToast: (message: string, type: ToastType) => Promise<void>;
 }
@@ -531,6 +534,39 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
         onClose: closeModal,
       },
     });
+  }),
+  openGdprConfirmModal: createEffect(store, async (deps, store) => {
+    const { modalService } = deps;
+    const { getGdpr, closeModal } = store.getState();
+    modalService.open({
+      tag: 'confirm-action-modal',
+      className: 'modal-bottom sm:modal-middle',
+      modalMode: 'modal',
+      props: {
+        title: 'Export my data',
+        description: 'Are you sure you want to proceed?',
+        confirmLabel: 'Confirm',
+        cancelLabel: 'Cancel',
+        onConfirm: getGdpr,
+        onClose: closeModal,
+      },
+    });
+  }),
+  getGdpr: createEffect(store, async (deps, store) => {
+    const { httpService } = deps;
+    const { setLoading, closeModal, showToast } = store.getState();
+
+    setLoading(true);
+    const { error } = await tryCatch(httpService.get<GdprExportResponse>('/gdpr/export'));
+    setLoading(false);
+    await closeModal();
+
+    if (error) {
+      await showToast('Something went wrong, please try again later', 'error');
+      return;
+    }
+
+    await showToast('GDPR export ready', 'success');
   }),
   closeModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;

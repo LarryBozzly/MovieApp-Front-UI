@@ -163,6 +163,14 @@ export interface CheckLoginResponse {
   message: string;
 }
 
+export interface GdprExportResponse {
+  message: string;
+}
+
+export interface GdprEraseResponse {
+  message: string;
+}
+
 export interface WatchlistMoviesResponse {
   success: boolean;
   status_code: number;
