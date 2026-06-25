@@ -35,7 +35,13 @@ export class ProfilePage extends LitElement {
 
   private async copyTagToClipboard(e: Event) {
     e.stopPropagation();
-    await navigator.clipboard.writeText(this.userProfile.tag);
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText(this.userProfile.tag);
+      await appStore.getState().showToast('Tag copied to clipboard', 'success');
+    } catch {
+      await appStore.getState().showToast('Could not copy tag', 'error');
+    }
   }
 
   private handleEditTag(e: Event) {
