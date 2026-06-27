@@ -78,65 +78,66 @@ export class ProfilePage extends LitElement {
     return html`
       <div class="scroll-container">
         <main class="p-4 max-w-4xl mx-auto">
-          <div class="bg-base-100 shadow-lg rounded-xl p-6 flex flex-col md:flex-row gap-6">
-            <!-- Avatar -->
-            <div class="flex-shrink-0 flex justify-center md:justify-start">
-              <div
-                class="w-32 h-32 rounded-full shadow-md bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase flex items-center justify-center text-4xl leading-none"
-              >
-                ${this.userProfile.tag?.[0] ?? '?'}
+          <div class="bg-base-100 shadow-lg rounded-xl overflow-hidden">
+            <!-- Identity hero -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-5 p-6">
+              <!-- Avatar -->
+              <div class="flex-shrink-0 flex justify-center sm:justify-start">
+                <div
+                  class="w-24 h-24 rounded-full shadow-md bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase flex items-center justify-center text-4xl leading-none"
+                >
+                  ${this.userProfile.tag?.[0] ?? '?'}
+                </div>
               </div>
-            </div>
 
-            <!-- Profile Info -->
-            <div class="flex-1 flex flex-col gap-6">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <!-- Tag Section -->
-                <div class="flex flex-col gap-2">
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm text-base-content/50">Tag</span>
-                    <button
-                      class="btn btn-ghost btn-sm gap-1.5"
-                      title="Edit tag"
-                      @click="${this.handleEditTag}"
-                      aria-label="Edit tag"
-                    >
-                      ${PencilEditIcon('w-4 h-4 text-primary/80')}
-                      <span class="text-sm text-primary/80">Edit</span>
-                    </button>
-                  </div>
-                  <div
-                    class="inline-flex items-center gap-2 rounded-full bg-base-200/80 px-3 py-1.5 text-sm font-medium text-base-content/80 border border-base-300/50 w-fit"
+              <!-- Identity + actions -->
+              <div class="flex-1 min-w-0 text-center sm:text-left">
+                <span class="text-xs font-semibold uppercase tracking-wider text-base-content/40">
+                  Your tag
+                </span>
+                <h2 class="text-2xl font-bold text-base-content break-words whitespace-normal mt-1">
+                  ${this.userProfile.tag}
+                </h2>
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
+                  <button
+                    class="btn btn-primary btn-sm gap-1.5"
+                    title="Copy tag"
+                    @click="${this.copyTagToClipboard}"
+                    aria-label="Copy tag"
                   >
-                    <span class="text-base font-semibold text-base-content">
-                      ${this.userProfile.tag}
-                    </span>
-                    <button
-                      class="btn btn-ghost btn-sm btn-circle"
-                      title="Copy tag"
-                      @click="${this.copyTagToClipboard}"
-                      aria-label="Copy tag"
-                    >
-                      ${FilledCopyIcon('w-4 h-4 text-primary/80')}
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                  <span class="text-sm text-base-content/50">Email</span>
-                  <span class="font-medium text-base-content break-words whitespace-normal">
-                    ${this.userProfile.email}
-                  </span>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                  <span class="text-sm text-base-content/50">Joined</span>
-                  <span class="font-medium text-base-content">
-                    ${this.formatDate(this.userProfile.createdAt)}
-                  </span>
+                    ${FilledCopyIcon('w-4 h-4')}
+                    <span>Copy tag</span>
+                  </button>
+                  <button
+                    class="btn btn-ghost btn-sm gap-1.5"
+                    title="Edit tag"
+                    @click="${this.handleEditTag}"
+                    aria-label="Edit tag"
+                  >
+                    ${PencilEditIcon('w-4 h-4 text-primary/80')}
+                    <span>Edit</span>
+                  </button>
                 </div>
               </div>
             </div>
+
+            <hr class="border-t border-base-content/10" />
+
+            <!-- Metadata -->
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 p-6">
+              <div class="flex flex-col gap-1">
+                <dt class="text-sm text-base-content/50">Email</dt>
+                <dd class="font-medium text-base-content break-words whitespace-normal">
+                  ${this.userProfile.email}
+                </dd>
+              </div>
+              <div class="flex flex-col gap-1">
+                <dt class="text-sm text-base-content/50">Joined</dt>
+                <dd class="font-medium text-base-content">
+                  ${this.formatDate(this.userProfile.createdAt)}
+                </dd>
+              </div>
+            </dl>
           </div>
 
           <!-- Data & Privacy -->
