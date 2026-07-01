@@ -142,8 +142,8 @@ export class PrivacyPage extends LitElement {
                 <p class=" text-base-content/80 leading-relaxed space-y-2">
                   To exercise any of these rights, or to request complete account deletion, please
                   email
-                  <a href="mailto:contact@movviator.tech" class="link link-primary ">
-                    contact@movviator.tech </a
+                  <a href="mailto:contact@movviator.com" class="link link-primary ">
+                    contact@movviator.com </a
                   >. We intend to fulfill your request within 30 days.
                 </p>
               </section>
@@ -152,8 +152,8 @@ export class PrivacyPage extends LitElement {
                 <h2 class="text-xl font-semibold">8. Contact Us</h2>
                 <p class=" text-base-content/80 leading-relaxed space-y-2">
                   If you have any questions or concerns about this Privacy Policy, reach out at:
-                  <a href="mailto:contact@movviator.tech" class="link link-primary ">
-                    contact@movviator.tech
+                  <a href="mailto:contact@movviator.com" class="link link-primary ">
+                    contact@movviator.com
                   </a>
                 </p>
               </section>

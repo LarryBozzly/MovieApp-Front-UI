@@ -5,19 +5,19 @@
 
   <!-- Landing Page (Homepage) -->
   <url>
-    <loc>https://movviator.tech/</loc>
+    <loc>https://movviator.com/</loc>
     <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://movviator.tech/images/landing/hero_people.webp</image:loc>
+      <image:loc>https://movviator.com/images/landing/hero_people.webp</image:loc>
       <image:title>Movviator - Find the Perfect Movie to Watch Together</image:title>
     </image:image>
   </url>
 
   <!-- Login Page -->
   <url>
-    <loc>https://movviator.tech/login</loc>
+    <loc>https://movviator.com/login</loc>
     <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -25,7 +25,7 @@
 
   <!-- Signup Page -->
   <url>
-    <loc>https://movviator.tech/signup</loc>
+    <loc>https://movviator.com/signup</loc>
     <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -33,7 +33,7 @@
 
   <!-- Email Verification Page -->
   <url>
-    <loc>https://movviator.tech/verify</loc>
+    <loc>https://movviator.com/verify</loc>
     <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -41,7 +41,7 @@
 
   <!-- Forgot Password Page -->
   <url>
-    <loc>https://movviator.tech/forgot-password</loc>
+    <loc>https://movviator.com/forgot-password</loc>
     <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

@@ -45,7 +45,7 @@ export class VerifyPage extends LitElement {
       title: 'Verify Your Account – Movviator',
       description: 'Verify your Movviator email address to complete your account registration.',
       robots: 'noindex, follow',
-      canonicalUrl: 'https://movviator.tech/verify',
+      canonicalUrl: 'https://movviator.com/verify',
     });
     await this.verifyAccount();
   }

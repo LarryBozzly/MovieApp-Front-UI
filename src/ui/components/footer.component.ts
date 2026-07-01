@@ -43,10 +43,10 @@ export class FooterComponent extends LitElement {
             <div class="flex flex-col gap-3 items-center md:items-start">
               <h4 class="text-sm font-semibold uppercase tracking-wide opacity-80 mb-2">Contact</h4>
               <a
-                href="mailto:contact@movviator.tech"
+                href="mailto:contact@movviator.com"
                 class="text-sm font-semibold text-base-content hover:underline underline-offset-4"
               >
-                contact@movviator.tech
+                contact@movviator.com
               </a>
             </div>
           </div>

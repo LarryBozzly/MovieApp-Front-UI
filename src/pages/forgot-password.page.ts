@@ -58,7 +58,7 @@ export class ForgotPasswordPage extends LitElement {
       title: 'Forgot Password – Movviator',
       description: 'Reset your Movviator password. Enter your email address to get started.',
       robots: 'index, follow',
-      canonicalUrl: 'https://movviator.tech/forgot-password',
+      canonicalUrl: 'https://movviator.com/forgot-password',
     });
   }
 

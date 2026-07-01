@@ -45,12 +45,12 @@ export class TermsPage extends LitElement {
               <p class="text-base-content/90 leading-relaxed">
                 These Terms and Conditions (“Terms”) govern your access to and use of Movviator
                 <a
-                  href="https://movviator.tech/"
+                  href="https://movviator.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="link link-primary"
                 >
-                  (https://movviator.tech/) </a
+                  (https://movviator.com/) </a
                 >. By registering for or using Movviator, you acknowledge that it is a beta,
                 non-commercial project provided on an <strong>AS IS</strong> and
                 <strong>AS AVAILABLE</strong> basis.
@@ -200,8 +200,8 @@ export class TermsPage extends LitElement {
                 <h2 class="text-xl font-semibold">9. Contact</h2>
                 <p class=" text-base-content/80 leading-relaxed space-y-2">
                   If you have any questions about these Terms, please contact:
-                  <a href="mailto:contact@movviator.tech" class="link link-primary"
-                    >contact@movviator.tech</a
+                  <a href="mailto:contact@movviator.com" class="link link-primary"
+                    >contact@movviator.com</a
                   >
                 </p>
               </section>
