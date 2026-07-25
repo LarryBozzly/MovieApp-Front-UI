@@ -3,10 +3,10 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0">
 
-  <!-- Landing Page -->
+  <!-- Landing Page (site root - canonical) -->
   <url>
-    <loc>https://movviator.com/home</loc>
-    <lastmod>2026-07-10</lastmod>
+    <loc>https://movviator.com/</loc>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -18,7 +18,7 @@
   <!-- Login Page -->
   <url>
     <loc>https://movviator.com/login</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -26,7 +26,7 @@
   <!-- Signup Page -->
   <url>
     <loc>https://movviator.com/signup</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -34,7 +34,7 @@
   <!-- Email Verification Page -->
   <url>
     <loc>https://movviator.com/verify</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -42,7 +42,7 @@
   <!-- Forgot Password Page -->
   <url>
     <loc>https://movviator.com/forgot-password</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -50,7 +50,7 @@
   <!-- Terms of Service -->
   <url>
     <loc>https://movviator.com/terms</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -58,7 +58,7 @@
   <!-- Privacy Policy -->
   <url>
     <loc>https://movviator.com/privacy</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
