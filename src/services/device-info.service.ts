@@ -5,6 +5,10 @@ class DeviceInfoService {
   constructor() {
     if (typeof document !== 'undefined') {
       document.addEventListener('visibilitychange', this.handleVisibilityChange);
+      // Frozen/suspended pages (mobile background) don't always re-fire
+      // visibilitychange on resume; these two cover that case.
+      document.addEventListener('resume', this.handleVisibilityChange);
+      window.addEventListener('pageshow', this.handlePageShow);
     }
   }
 
@@ -50,8 +54,15 @@ class DeviceInfoService {
   /** Cleanup all listeners */
   public destroy(): void {
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    document.removeEventListener('resume', this.handleVisibilityChange);
+    window.removeEventListener('pageshow', this.handlePageShow);
     this.listeners.clear();
   }
+
+  /** Internal: bfcache restore (fires without visibilitychange) */
+  private handlePageShow = (event: PageTransitionEvent): void => {
+    if (event.persisted) this.handleVisibilityChange();
+  };
 
   /** Internal: notify all listeners */
   private handleVisibilityChange = (): void => {
