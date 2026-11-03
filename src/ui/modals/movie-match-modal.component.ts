@@ -9,7 +9,6 @@ import {
 import { tailwindStyles } from '@utils/app.constants.ts';
 import { watch, watchWithSelector } from 'zustand-lit';
 import { authStore, type AuthState } from '@store/auth-store.ts';
-import { getPopularityClasses } from '@utils/popularity-ui-classes.functions.ts';
 import '@ui/components/genre-badges.component.ts';
 import '@ui/components/figure-video.component.ts';
 import Hammer from 'hammerjs';
@@ -415,12 +414,8 @@ export class MovieMatchModalComponent extends LitElement {
               <span class="text-base text-base-content/80 font-medium">
                 ${movie.vote_average?.toFixed(1)}
               </span>
-              <span
-                class="badge badge-outline text-sm ${getPopularityClasses(
-                  movie.percentage_popularity
-                )}"
-              >
-                Popularity: ${movie.percentage_popularity}%
+              <span class="text-sm text-base-content/60">
+                (${movie.vote_count.toLocaleString('en-US')})
               </span>
             </div>
           </div>

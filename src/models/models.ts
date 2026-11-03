@@ -31,7 +31,6 @@ export interface Movie {
   video: boolean;
   vote_average: number | null;
   vote_count: number;
-  percentage_popularity: number;
   videos?: MovieVideo[];
 }
 export const BroadcastChannelType = {

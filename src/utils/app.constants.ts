@@ -22,6 +22,5 @@ export const MOCK_MOVIES: Movie[] = [
     video: false,
     vote_average: 8.4,
     vote_count: 26980,
-    percentage_popularity: 81,
   },
 ];

@@ -2,7 +2,6 @@ import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { WatchlistState, Movie, AppError } from '@models/models.ts';
 import { tailwindStyles } from '@utils/app.constants.ts';
-import { getPopularityClasses } from '@utils/popularity-ui-classes.functions.ts';
 import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon, RetryIcon } from '@ui/icons';
 import { appStore, selectWatchlistIds } from '@store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
@@ -143,12 +142,8 @@ export class MoviesListComponent extends LitElement {
                   <span class="text-base text-base-content/70 font-medium">
                     ${movie.vote_average?.toFixed(1)}
                   </span>
-                  <span
-                    class="badge badge-outline text-xs ${getPopularityClasses(
-                      movie.percentage_popularity
-                    )}"
-                  >
-                    Popularity: ${movie.percentage_popularity}%
+                  <span class="text-sm text-base-content/60">
+                    (${movie.vote_count.toLocaleString('en-US')})
                   </span>
 
                   <button

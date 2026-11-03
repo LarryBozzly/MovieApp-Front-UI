@@ -83,8 +83,7 @@ message Movie {
   bool video = 12;
   double vote_average = 13;
   uint32 vote_count = 14;
-  uint32 percentage_popularity = 15;
-  bool softcore = 16;
+  bool softcore = 15;
 }
 
 message MovieSelection {
