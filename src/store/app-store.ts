@@ -390,7 +390,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     }
   ),
   addToWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
-    const { httpService } = deps;
+    const { httpService, toastService } = deps;
     const { setLoading, setWatchlistIds } = store.getState();
 
     const currentWatchlist = { ...selectWatchlistIds(store.getState()) }; // clone
@@ -401,7 +401,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       [movie.id]: { isWatchlist: prev?.isWatchlist ?? false, isLoading: true },
     });
 
-    const { data } = await tryCatch(
+    const { data, error } = await tryCatch(
       httpService.post<WatchlistMoviesResponse>('/movie/watchlist', { ...movie })
     );
 
@@ -409,9 +409,15 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setWatchlistIds({
       [movie.id]: { isWatchlist: data?.success ?? false, isLoading: false },
     });
+
+    if (error) {
+      await toastService.show('Could not add to watchlist, please try again.', { type: 'error' });
+    } else if (data && !data.success) {
+      await toastService.show(data.status_message, { type: 'error' });
+    }
   }),
   removeFromWatchlist: createEffect(store, async (deps, store, movie: Movie) => {
-    const { httpService } = deps;
+    const { httpService, toastService } = deps;
     const { setLoading, setWatchlistIds } = store.getState();
 
     const currentWatchlist = { ...selectWatchlistIds(store.getState()) }; // clone
@@ -422,7 +428,7 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
       [movie.id]: { isWatchlist: prev?.isWatchlist ?? true, isLoading: true },
     });
 
-    const { data } = await tryCatch(
+    const { data, error } = await tryCatch(
       httpService.delete<WatchlistMoviesResponse>(`/movie/watchlist/${movie.id}`)
     );
 
@@ -430,6 +436,14 @@ export const appStore = createStore<AppState>((set, _get, store) => ({
     setWatchlistIds({
       [movie.id]: { isWatchlist: data?.success ? false : true, isLoading: false },
     });
+
+    if (error) {
+      await toastService.show('Could not remove from watchlist, please try again.', {
+        type: 'error',
+      });
+    } else if (data && !data.success) {
+      await toastService.show(data.status_message, { type: 'error' });
+    }
   }),
   openMovieExplorerModal: createEffect(store, async (deps, _store) => {
     const { modalService } = deps;
