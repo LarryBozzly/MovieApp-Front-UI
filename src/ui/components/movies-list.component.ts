@@ -89,7 +89,7 @@ export class MoviesListComponent extends LitElement {
     appStore.getState().openMoviePreviewModal(movie);
   }
 
-  private handleImageError(event: Event, clickHandler?: (e: Event) => void) {
+  private handleImageError(event: Event) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -102,7 +102,6 @@ export class MoviesListComponent extends LitElement {
     ).documentElement;
 
     svg.setAttribute('class', 'w-full h-full text-base-content/40 select-none cursor-pointer');
-    if (clickHandler) svg.addEventListener('click', clickHandler);
     svg.dataset.fallback = 'true';
     img.replaceWith(svg);
   }
@@ -115,33 +114,27 @@ export class MoviesListComponent extends LitElement {
         ${this.movies.map(
           (movie, index) => html`
             <div
-              class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex sm:flex-col flex-row h-full"
+              class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex sm:flex-col flex-row h-full cursor-pointer"
+              @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
             >
               <figure
                 class="relative w-20 sm:w-auto flex-shrink-0 aspect-[2/3] overflow-hidden rounded-lg m-2 sm:m-0"
               >
                 <img
                   fetchpriority=${index < 6 ? 'high' : 'auto'}
-                  @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
                   draggable="false"
                   class="w-full h-full object-cover select-none cursor-pointer"
                   src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
                   alt="${movie.title}"
                   @contextmenu=${this.disableContextMenu}
-                  @error=${(event: Event) =>
-                    this.handleImageError(event, (ev: Event) =>
-                      this.openMoviePreviewModal(ev, movie)
-                    )}
+                  @error=${(event: Event) => this.handleImageError(event)}
                 />
               </figure>
               <div class="card-body p-3 flex flex-col flex-grow min-w-0">
                 <h2
                   class="card-title text-sm font-semibold text-base-content leading-tight line-clamp-2"
                 >
-                  <span
-                    @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
-                    class="inline cursor-pointer"
-                  >
+                  <span class="inline">
                     ${movie.title}
                     <span class="font-normal text-base-content/50">
                       ${movie.release_date ? `(${this.formatDate(movie.release_date)})` : ''}
