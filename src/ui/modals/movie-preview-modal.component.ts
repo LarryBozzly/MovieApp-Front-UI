@@ -41,7 +41,11 @@ export class MoviePreviewModal extends LitElement {
       <div
         class="max-height-modal p-7.5 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
-        <figure-video-component .movie=${this.movie}></figure-video-component>
+        <figure-video-component
+          .movie=${this.movie}
+          .voteAverage=${this.movie.vote_average}
+          .voteCount=${this.movie.vote_count}
+        ></figure-video-component>
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
           <h3 class="text-2xl font-semibold flex-shrink-0">

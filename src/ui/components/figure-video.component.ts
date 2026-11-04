@@ -4,6 +4,7 @@ import { tailwindStyles } from '@utils/app.constants';
 import { NoImageIcon, PlayIcon } from '@ui/icons';
 import type { Movie } from '@models/models';
 import { appStore } from '@store/app-store';
+import '@ui/components/rating-badge.component';
 
 @customElement('figure-video-component')
 export class FigureVideoComponent extends LitElement {
@@ -13,6 +14,8 @@ export class FigureVideoComponent extends LitElement {
 
   @property({ type: Object }) movie!: Movie;
   @property({ type: Boolean }) closeVideo!: boolean;
+  @property({ type: Number }) voteAverage: number | null = null;
+  @property({ type: Number }) voteCount = 0;
 
   @state() private trailerKey: string | undefined = undefined;
   @state() private isLoadingTrailer = false;
@@ -115,6 +118,16 @@ export class FigureVideoComponent extends LitElement {
                 </button>
               `
             : ''}
+        ${!isTrailer && this.voteAverage != null
+          ? html`
+              <rating-badge
+                class="absolute bottom-2 left-2"
+                size="md"
+                .voteAverage=${this.voteAverage}
+                .voteCount=${this.voteCount}
+              ></rating-badge>
+            `
+          : ''}
       </figure>
     `;
   }

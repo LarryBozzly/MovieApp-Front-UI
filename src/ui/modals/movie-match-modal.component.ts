@@ -381,6 +381,8 @@ export class MovieMatchModalComponent extends LitElement {
         <figure-video-component
           class="pt-7.5 px-4"
           .movie=${movie}
+          .voteAverage=${movie.vote_average}
+          .voteCount=${movie.vote_count}
           style=${this.isSwiping ? 'pointer-events: none;' : ''}
         ></figure-video-component>
 
@@ -408,15 +410,6 @@ export class MovieMatchModalComponent extends LitElement {
                 .genreIds=${movie.genre_ids}
                 .movieId=${movie.id}
               ></genre-badges>
-            </div>
-            <div class="flex items-center gap-3 mt-1">
-              <span class="text-yellow-500 text-lg">★</span>
-              <span class="text-base text-base-content/80 font-medium">
-                ${movie.vote_average?.toFixed(1)}
-              </span>
-              <span class="text-sm text-base-content/60">
-                (${movie.vote_count.toLocaleString('en-US')})
-              </span>
             </div>
           </div>
 
