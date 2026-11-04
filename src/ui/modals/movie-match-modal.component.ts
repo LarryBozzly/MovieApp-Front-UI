@@ -13,7 +13,8 @@ import '@ui/components/genre-badges.component.ts';
 import '@ui/components/figure-video.component.ts';
 import Hammer from 'hammerjs';
 import { appStore, selectWatchlistIds } from '@store/app-store.ts';
-import { FilledBookmarkIcon, OutlineBookmarkIcon } from '@ui/icons';
+import { FilledBookmarkIcon, OutlineBookmarkIcon, StarIcon } from '@ui/icons';
+import { formatCompactCount } from '@utils/format-compact-count.ts';
 
 @customElement('movie-match-modal-component')
 export class MovieMatchModalComponent extends LitElement {
@@ -381,8 +382,6 @@ export class MovieMatchModalComponent extends LitElement {
         <figure-video-component
           class="pt-7.5 px-4"
           .movie=${movie}
-          .voteAverage=${movie.vote_average}
-          .voteCount=${movie.vote_count}
           style=${this.isSwiping ? 'pointer-events: none;' : ''}
         ></figure-video-component>
 
@@ -410,6 +409,20 @@ export class MovieMatchModalComponent extends LitElement {
                 .genreIds=${movie.genre_ids}
                 .movieId=${movie.id}
               ></genre-badges>
+            </div>
+            <div class="flex items-center gap-1.5 mt-1 text-sm">
+              ${movie.vote_average != null
+                ? html`
+                    ${StarIcon('w-4 h-4 text-warning flex-shrink-0')}
+                    <span class="font-semibold text-base-content/80">
+                      ${movie.vote_average.toFixed(1)}
+                    </span>
+                    <span class="text-base-content/30">·</span>
+                  `
+                : ''}
+              <span class="text-base-content/60"
+                >${formatCompactCount(movie.vote_count)} votes</span
+              >
             </div>
           </div>
 

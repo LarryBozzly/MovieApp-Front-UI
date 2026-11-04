@@ -2,6 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { type Movie } from '@models/models';
 import { tailwindStyles } from '@utils/app.constants';
+import { StarIcon } from '@ui/icons';
+import { formatCompactCount } from '@utils/format-compact-count.ts';
 import '@ui/components/genre-badges.component';
 import '@ui/components/figure-video.component';
 
@@ -41,11 +43,7 @@ export class MoviePreviewModal extends LitElement {
       <div
         class="max-height-modal p-7.5 gap-3 flex flex-col overflow-hidden bg-base-100 text-base-content rounded-2xl shadow-2xl"
       >
-        <figure-video-component
-          .movie=${this.movie}
-          .voteAverage=${this.movie.vote_average}
-          .voteCount=${this.movie.vote_count}
-        ></figure-video-component>
+        <figure-video-component .movie=${this.movie}></figure-video-component>
 
         <div class="flex gap-3 flex-col flex-1 overflow-hidden">
           <h3 class="text-2xl font-semibold flex-shrink-0">
@@ -57,6 +55,21 @@ export class MoviePreviewModal extends LitElement {
 
           <div class="flex gap-2 overflow-hidden whitespace-nowrap flex-shrink-0">
             <genre-badges .genreIds=${this.movie.genre_ids}></genre-badges>
+          </div>
+
+          <div class="flex items-center gap-1.5 flex-shrink-0 text-sm">
+            ${this.movie.vote_average != null
+              ? html`
+                  ${StarIcon('w-4 h-4 text-warning flex-shrink-0')}
+                  <span class="font-semibold text-base-content/80">
+                    ${this.movie.vote_average.toFixed(1)}
+                  </span>
+                  <span class="text-base-content/30">·</span>
+                `
+              : ''}
+            <span class="text-base-content/60">
+              ${formatCompactCount(this.movie.vote_count)} votes
+            </span>
           </div>
 
           <div

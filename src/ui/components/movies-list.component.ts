@@ -2,8 +2,14 @@ import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { WatchlistState, Movie, AppError } from '@models/models.ts';
 import { tailwindStyles } from '@utils/app.constants.ts';
-import { FilledBookmarkIcon, NoImageIcon, OutlineBookmarkIcon, RetryIcon } from '@ui/icons';
-import '@ui/components/rating-badge.component';
+import {
+  FilledBookmarkIcon,
+  NoImageIcon,
+  OutlineBookmarkIcon,
+  RetryIcon,
+  StarIcon,
+} from '@ui/icons';
+import { formatCompactCount } from '@utils/format-compact-count.ts';
 import { appStore, selectWatchlistIds } from '@store/app-store.ts';
 import { watchWithSelector } from 'zustand-lit';
 
@@ -104,12 +110,16 @@ export class MoviesListComponent extends LitElement {
   render() {
     return html`
       <div
-        class="grid bg-base-300 grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3 sm:gap-4 pt-0 px-4 pb-4"
+        class="flex flex-col gap-2 px-3 sm:grid sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] sm:gap-4 sm:px-4 pt-0 pb-4 bg-base-300"
       >
         ${this.movies.map(
           (movie, index) => html`
-            <div class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex flex-col h-full">
-              <figure class="relative flex-shrink-0 aspect-[2/3] overflow-hidden">
+            <div
+              class="card bg-base-100 shadow-xl rounded-xl overflow-hidden flex sm:flex-col flex-row h-full"
+            >
+              <figure
+                class="relative w-20 sm:w-auto flex-shrink-0 aspect-[2/3] overflow-hidden rounded-lg m-2 sm:m-0"
+              >
                 <img
                   fetchpriority=${index < 6 ? 'high' : 'auto'}
                   @click=${(event: Event) => this.openMoviePreviewModal(event, movie)}
@@ -123,14 +133,8 @@ export class MoviesListComponent extends LitElement {
                       this.openMoviePreviewModal(ev, movie)
                     )}
                 />
-                <rating-badge
-                  class="absolute bottom-2 left-2"
-                  size="sm"
-                  .voteAverage=${movie.vote_average}
-                  .voteCount=${movie.vote_count}
-                ></rating-badge>
               </figure>
-              <div class="card-body p-3 flex flex-col flex-grow">
+              <div class="card-body p-3 flex flex-col flex-grow min-w-0">
                 <h2
                   class="card-title text-sm font-semibold text-base-content leading-tight line-clamp-2"
                 >
@@ -139,14 +143,27 @@ export class MoviesListComponent extends LitElement {
                     class="inline cursor-pointer"
                   >
                     ${movie.title}
+                    <span class="font-normal text-base-content/50">
+                      ${movie.release_date ? `(${this.formatDate(movie.release_date)})` : ''}
+                    </span>
                   </span>
                 </h2>
-                <div class="flex items-center justify-between gap-2 mt-auto">
-                  <p class="text-xs text-base-content/50">${this.formatDate(movie.release_date)}</p>
+                <!-- rating + meta row: all breakpoints -->
+                <div class="flex items-center gap-1.5 text-xs mt-auto">
+                  ${movie.vote_average != null
+                    ? html`
+                        ${StarIcon('w-3.5 h-3.5 text-warning flex-shrink-0')}
+                        <span class="font-semibold text-base-content/80">
+                          ${movie.vote_average.toFixed(1)}
+                        </span>
+                        <span class="text-base-content/30">·</span>
+                      `
+                    : ''}
+                  <span class="text-base-content/50">${formatCompactCount(movie.vote_count)}</span>
 
                   <button
                     @click=${(event: Event) => this.handleWatchlistClick(event, movie)}
-                    class="focus:outline-none"
+                    class="ml-auto focus:outline-none"
                     title="Toggle watchlist"
                     ?disabled=${this.watchlistIds[movie.id]?.isLoading}
                   >
