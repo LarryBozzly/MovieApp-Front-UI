@@ -71,7 +71,7 @@ export class MoviesListComponent extends LitElement {
   private renderWatchlistIcon(movie: Movie) {
     const watchlistItem = this.watchlistIds[movie.id];
     if (watchlistItem?.isLoading)
-      return html` <span class="loading loading-spinner w-5 h-5 text-primary"></span> `;
+      return html` <span class="loading loading-spinner w-6 h-6 text-primary"></span> `;
     const isWatchlisted = Boolean(watchlistItem?.isWatchlist);
     return isWatchlisted ? FilledBookmarkIcon() : OutlineBookmarkIcon();
   }
@@ -163,7 +163,7 @@ export class MoviesListComponent extends LitElement {
 
                   <button
                     @click=${(event: Event) => this.handleWatchlistClick(event, movie)}
-                    class="ml-auto focus:outline-none"
+                    class="ml-auto flex items-center justify-center w-6 h-6 focus:outline-none"
                     title="Toggle watchlist"
                     ?disabled=${this.watchlistIds[movie.id]?.isLoading}
                   >
