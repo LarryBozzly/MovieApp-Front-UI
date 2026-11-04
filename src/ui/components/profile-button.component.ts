@@ -50,7 +50,9 @@ export class ProfileButtonComponent extends LitElement {
         <details
           class="dropdown dropdown-end"
           ${ref(this.detailsRef)}
-          ${clickOutside(() => this.closeDropdown())}
+          ${clickOutside(() => this.closeDropdown(), {
+            isActive: () => Boolean(this.detailsRef.value?.open),
+          })}
         >
           <summary
             class="btn btn-circle bg-gradient-to-br from-primary to-secondary/70 text-white font-bold uppercase relative"

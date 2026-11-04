@@ -38,11 +38,23 @@ export class InviteFab extends LitElement {
     this.isOpen = !this.isOpen;
   };
 
-  private handleOutsideClick = (event: PointerEvent) => {
+  private swallowNextClick = (event: MouseEvent) => {
     event.stopPropagation();
+    document.removeEventListener('click', this.swallowNextClick, true);
+  };
+
+  private handleOutsideClick = (event: PointerEvent) => {
+    // Clear any stale swallow listener first — every real click is preceded
+    // by its own pointerdown, so a leftover (e.g. after a drag-scroll with
+    // no click) can never eat a later legitimate tap.
+    document.removeEventListener('click', this.swallowNextClick, true);
+
     const path = event.composedPath();
     if (this.isOpen && !path.includes(this)) {
       this.isOpen = false;
+      // Swallow the click that follows this pointerdown so the tap that
+      // dismisses the menu doesn't also activate the element underneath.
+      document.addEventListener('click', this.swallowNextClick, true);
     }
   };
 
@@ -80,6 +92,7 @@ export class InviteFab extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('pointerdown', this.handleOutsideClick);
+    document.removeEventListener('click', this.swallowNextClick, true);
   }
 
   render() {
